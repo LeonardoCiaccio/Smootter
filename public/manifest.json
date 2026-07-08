@@ -1,6 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Pippo",
+  "short_name": "pippo_magic",
   "version": "0.1.0",
   "description": "Fabbrica di tool nel browser: crea strumenti su misura, a costo zero all'uso.",
   "icons": {
