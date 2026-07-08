@@ -24,6 +24,12 @@
     "type": "module"
   },
   "permissions": ["scripting", "activeTab"],
+  "web_accessible_resources": [
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["src/iframe/index.html"]
+    }
+  ],
   "browser_specific_settings": {
     "gecko": {
       "id": "pippo@leonardo.local",
