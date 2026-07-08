@@ -15,7 +15,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex h-full items-center justify-center bg-white">
-    <p class="text-lg font-semibold text-gray-900">{{ status }}</p>
+  <div class="flex h-full items-center justify-center bg-white dark:bg-gray-900">
+    <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ status }}</p>
   </div>
 </template>

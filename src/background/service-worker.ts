@@ -4,7 +4,10 @@
  * Acts as the hub for the private UI ⇄ background channel.
  */
 import { PORT_NAME, RUNTIME_PORT_NAME, type ChannelRequest } from '@/shared/messages'
-import { getPreference, setPreference } from '@/shared/preferences'
+import { getPreference, setPreference, type Preferences } from '@/shared/preferences'
+
+// All connected channel ports (UI + environment)
+const ports = new Set<chrome.runtime.Port>()
 
 /** Inject environment into the given tab. */
 function injectEnvironment(tabId: number): void {
@@ -12,6 +15,13 @@ function injectEnvironment(tabId: number): void {
     target: { tabId },
     files: ['environment.js'],
   })
+}
+
+/** Push a preference value to every connected port. */
+function broadcastPreference<K extends keyof Preferences>(key: K, value: Preferences[K]): void {
+  for (const port of ports) {
+    port.postMessage({ type: 'preferenceValue', key, value })
+  }
 }
 
 /** Handle a single channel message and reply on the same port. */
@@ -32,6 +42,7 @@ async function handleChannelMessage(
       ok = false
     }
     port.postMessage({ type: 'preferenceSaved', key: message.key, ok })
+    if (ok) broadcastPreference(message.key, message.value)
     return
   }
 
@@ -46,9 +57,11 @@ async function handleChannelMessage(
   }
 }
 
-/** Accept a known channel connection and wire its message handler. */
+/** Accept a known channel connection, track it, and wire its message handler. */
 function handleConnection(port: chrome.runtime.Port): void {
   if (port.name !== PORT_NAME && port.name !== RUNTIME_PORT_NAME) return
+  ports.add(port)
+  port.onDisconnect.addListener(() => ports.delete(port))
   port.onMessage.addListener((message: ChannelRequest) => handleChannelMessage(port, message))
 }
 
