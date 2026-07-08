@@ -1,22 +1,30 @@
 import { defineConfig } from 'vite'
 import { fileURLToPath, URL } from 'node:url'
 import vue from '@vitejs/plugin-vue'
-import { crx } from '@crxjs/vite-plugin'
-import manifest from './manifest.json'
+
+const entry = (path: string) => fileURLToPath(new URL(path, import.meta.url))
 
 export default defineConfig({
-  plugins: [
-    vue(),
-    crx({ manifest }),
-  ],
+  plugins: [vue()],
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
     },
   },
-  server: {
-    port: 5173,
-    strictPort: true,
-    hmr: { port: 5173 },
+  build: {
+    outDir: 'dist',
+    emptyOutDir: true,
+    rollupOptions: {
+      input: {
+        'service-worker': entry('./src/background/service-worker.ts'),
+        environment: entry('./src/content/environment.ts'),
+      },
+      output: {
+        format: 'es',
+        entryFileNames: '[name].js',
+        chunkFileNames: '[name].js',
+        assetFileNames: '[name].[ext]',
+      },
+    },
   },
 })

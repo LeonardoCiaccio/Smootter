@@ -1,7 +1,7 @@
 /**
- * Stili centralizzati.
- * Un solo punto per tipo di elemento. I componenti importano da qui.
- * Mai classi Tailwind hardcoded/ripetute nei .vue.
+ * Centralized styles.
+ * One place per element type. Components import from here.
+ * Never hardcode/repeat Tailwind classes in .vue files.
  */
 export const ui = {
   toolButton:
