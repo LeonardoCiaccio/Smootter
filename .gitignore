@@ -1,0 +1,22 @@
+# Servizio AI
+.claude/
+CLAUDE.md
+
+# Dipendenze
+node_modules/
+
+# Build / output estensione
+dist/
+release/
+.vite/
+.cache/
+coverage/
+
+# Env con segreti
+.env
+.env.local
+.env.*.local
+
+# Lock locali / OS
+.DS_Store
+Thumbs.db
