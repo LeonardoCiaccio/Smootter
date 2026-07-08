@@ -31,17 +31,18 @@ async function handleChannelMessage(
     } catch {
       ok = false
     }
-    port.postMessage({ type: 'preferenceResult', ok })
+    port.postMessage({ type: 'preferenceSaved', key: message.key, ok })
     return
   }
 
   if (message.type === 'getPreference') {
+    let value
     try {
-      const value = await getPreference(message.key)
-      port.postMessage({ type: 'preferenceResult', ok: true, value })
+      value = await getPreference(message.key)
     } catch {
-      port.postMessage({ type: 'preferenceResult', ok: false })
+      value = undefined
     }
+    port.postMessage({ type: 'preferenceValue', key: message.key, value })
   }
 }
 

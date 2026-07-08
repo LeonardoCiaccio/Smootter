@@ -28,14 +28,22 @@ export interface GetPreferenceRequest {
   key: keyof Preferences
 }
 
-export interface PreferenceResult {
-  type: 'preferenceResult'
-  ok: boolean
+/** Reply to getPreference: value is undefined when not stored. */
+export interface PreferenceValue {
+  type: 'preferenceValue'
+  key: keyof Preferences
   value?: Preferences[keyof Preferences]
+}
+
+/** Reply to setPreference: acknowledges the write. */
+export interface PreferenceSaved {
+  type: 'preferenceSaved'
+  key: keyof Preferences
+  ok: boolean
 }
 
 /** Messages sent from the UI to the background. */
 export type ChannelRequest = PingRequest | SetPreferenceRequest | GetPreferenceRequest
 
 /** Messages sent from the background to the UI. */
-export type ChannelResponse = PongResponse | PreferenceResult
+export type ChannelResponse = PongResponse | PreferenceValue | PreferenceSaved
