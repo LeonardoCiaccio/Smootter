@@ -1,5 +1,6 @@
 import { createApp } from 'vue'
 import App from './App.vue'
+import { messaging } from './plugins/messaging'
 import '@/styles/tailwind.css'
 
-createApp(App).mount('#app')
+createApp(App).use(messaging).mount('#app')

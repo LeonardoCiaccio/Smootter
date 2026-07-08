@@ -4,8 +4,55 @@
  * with a close button. Clicking the toolbar icon again re-opens it.
  */
 
-// Injected in the isolated world (executeScript), so chrome.* is available
+import type { ChannelRequest, ChannelResponse } from '@/shared/messages'
+
+// Injected in the isolated world (executeScript), so chrome.* is available.
+// Injected as a classic script → must stay self-contained (no runtime imports).
 const modalId = chrome.runtime.getManifest().short_name + '_environment_modal'
+
+// Mirrors RUNTIME_PORT_NAME in messages.ts (kept local to avoid a runtime import)
+const PORT_NAME = chrome.runtime.getManifest().short_name + '_runtime'
+
+type Theme = 'light' | 'dark'
+
+// Two modal styles: backdrop + icon color per theme
+const modalStyles: Record<Theme, { backdrop: string; icon: string }> = {
+  light: { backdrop: 'rgba(255, 255, 255, 0.9)', icon: '#000' },
+  dark: { backdrop: 'rgba(0, 0, 0, 0.9)', icon: '#fff' },
+}
+
+// Persistent channel to the background (hub)
+let port: chrome.runtime.Port | undefined
+
+/** Apply a theme to the modal backdrop. */
+function applyModalTheme(theme: Theme): void {
+  const modal = document.getElementById(modalId)
+  if (!modal) return
+  const style = modalStyles[theme]
+  modal.style.backgroundColor = style.backdrop
+  modal.querySelectorAll('button').forEach((button) => (button.style.color = style.icon))
+}
+
+/** Handle a reply from the background. */
+function handleWorkerMessage(message: ChannelResponse): void {
+  if (message.type === 'preferenceResult' && message.ok && message.value) {
+    applyModalTheme(message.value)
+  }
+}
+
+/** Open the channel once and attach the reply handler. */
+function ensurePort(): chrome.runtime.Port {
+  if (!port) {
+    port = chrome.runtime.connect({ name: PORT_NAME })
+    port.onMessage.addListener(handleWorkerMessage)
+  }
+  return port
+}
+
+/** Send a message to the background over the channel. */
+function sendToWorker(message: ChannelRequest): void {
+  ensurePort().postMessage(message)
+}
 
 // Extension page loaded inside the iframe
 const iframeUrl = chrome.runtime.getURL('src/iframe/index.html')
@@ -52,7 +99,6 @@ function styleIconButton(button: HTMLButtonElement): void {
   button.style.padding = '0'
   button.style.border = 'none'
   button.style.background = 'transparent'
-  button.style.color = '#fff'
   button.style.cursor = 'pointer'
 }
 
@@ -67,17 +113,21 @@ function buildCloseButton(): HTMLButtonElement {
   return button
 }
 
-/** Build the theme toggle button (swaps icon only, for now). */
+/** Build the theme toggle button: swaps icon and persists the theme preference. */
 function buildThemeButton(): HTMLButtonElement {
   const button = document.createElement('button')
-  button.innerHTML = moonIcon
+  // Modal defaults to dark → show the "switch to light" (sun) icon
+  button.innerHTML = sunIcon
   styleIconButton(button)
   button.style.left = '20px'
   button.style.top = '20px'
-  let dark = false
+  let dark = true
   button.addEventListener('click', () => {
     dark = !dark
     button.innerHTML = dark ? sunIcon : moonIcon
+    const theme: Theme = dark ? 'dark' : 'light'
+    applyModalTheme(theme)
+    sendToWorker({ type: 'setPreference', key: 'theme', value: theme })
   })
   return button
 }
@@ -107,12 +157,12 @@ function createModal(zIndex: number): void {
   modal.style.position = 'fixed'
   modal.style.inset = '0'
   modal.style.zIndex = String(zIndex)
-  modal.style.backgroundColor = 'rgba(0, 0, 0, 0.9)'
   modal.style.padding = '50px'
   modal.appendChild(createIframe())
   modal.appendChild(buildThemeButton())
   modal.appendChild(buildCloseButton())
   document.body.appendChild(modal)
+  applyModalTheme('dark')
 }
 
 /** Open the modal: create it, or re-show it if already present. */
@@ -128,8 +178,14 @@ function openModal(): void {
   }
 }
 
-if (document.readyState === 'complete') {
+/** Open the modal and load the stored theme. */
+function start(): void {
   openModal()
+  sendToWorker({ type: 'getPreference', key: 'theme' })
+}
+
+if (document.readyState === 'complete') {
+  start()
 } else {
-  window.addEventListener('load', openModal, { once: true })
+  window.addEventListener('load', start, { once: true })
 }

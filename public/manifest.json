@@ -23,7 +23,7 @@
     "service_worker": "service-worker.js",
     "type": "module"
   },
-  "permissions": ["scripting", "activeTab"],
+  "permissions": ["scripting", "activeTab", "storage"],
   "web_accessible_resources": [
     {
       "matches": ["<all_urls>"],

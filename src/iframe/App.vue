@@ -1,7 +1,21 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { inject, onMounted, ref } from 'vue'
+import { channelKey } from './plugins/messaging'
+
+const channel = inject(channelKey)
+const status = ref('channel: …')
+
+onMounted(() => {
+  if (!channel) return
+  channel.subscribe((message) => {
+    if (message.type === 'pong') status.value = 'channel: pong ✓'
+  })
+  channel.send({ type: 'ping' })
+})
+</script>
 
 <template>
   <div class="flex h-full items-center justify-center bg-white">
-    <p class="text-lg font-semibold text-gray-900">hello world</p>
+    <p class="text-lg font-semibold text-gray-900">{{ status }}</p>
   </div>
 </template>
