@@ -29,7 +29,7 @@ function handlePing(port: chrome.runtime.Port): void {
 }
 
 function handleGetTopMessage(port: chrome.runtime.Port): void {
-  port.postMessage({ type: 'topMessage', value: 'Hello World' })
+  port.postMessage({ type: 'topMessage', value: chrome.i18n.getMessage('topMessage') })
 }
 
 async function handleSetPreference(

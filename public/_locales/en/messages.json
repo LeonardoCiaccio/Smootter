@@ -1,0 +1,8 @@
+{
+  "appDescription": {
+    "message": "Tool factory in the browser: build custom tools, at zero cost per use."
+  },
+  "topMessage": {
+    "message": "Hello World"
+  }
+}
