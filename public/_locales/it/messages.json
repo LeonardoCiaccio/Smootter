@@ -22,5 +22,26 @@
   },
   "options": {
     "message": "Opzioni"
-  }
+  },
+  "wizardStepBasics": { "message": "Base" },
+  "wizardStepTiming": { "message": "Avvio" },
+  "wizardStepScope": { "message": "Ambito" },
+  "wizardStepChat": { "message": "Costruzione" },
+  "wizardStepBasicsTitle": { "message": "Dai un nome al tuo tool" },
+  "wizardStepBasicsSubtitle": {
+    "message": "Un nome breve e una descrizione. È quello che vedrai in seguito."
+  },
+  "wizardStepTimingTitle": { "message": "Avvio" },
+  "wizardStepTimingSubtitle": { "message": "Scegli quando questo tool deve partire." },
+  "wizardStepScopeTitle": { "message": "Ambito" },
+  "wizardStepScopeSubtitle": { "message": "Scegli dove questo tool deve funzionare." },
+  "wizardStepChatTitle": { "message": "Costruzione" },
+  "wizardStepChatSubtitle": { "message": "Chatta con il builder per darle vita." },
+  "wizardNameLabel": { "message": "Nome del tool" },
+  "wizardNamePlaceholder": { "message": "es. Scarica tutti i video" },
+  "wizardDescriptionLabel": { "message": "Descrizione breve" },
+  "wizardDescriptionPlaceholder": { "message": "Cosa deve fare questo tool?" },
+  "wizardBack": { "message": "Indietro" },
+  "wizardNext": { "message": "Avanti" },
+  "wizardPlaceholder": { "message": "In arrivo" }
 }

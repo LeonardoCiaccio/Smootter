@@ -22,5 +22,26 @@
   },
   "options": {
     "message": "Options"
-  }
+  },
+  "wizardStepBasics": { "message": "Base" },
+  "wizardStepTiming": { "message": "Démarrage" },
+  "wizardStepScope": { "message": "Portée" },
+  "wizardStepChat": { "message": "Construction" },
+  "wizardStepBasicsTitle": { "message": "Nommez votre outil" },
+  "wizardStepBasicsSubtitle": {
+    "message": "Un nom court et une description. C'est ce que vous verrez ensuite."
+  },
+  "wizardStepTimingTitle": { "message": "Démarrage" },
+  "wizardStepTimingSubtitle": { "message": "Choisissez quand cet outil doit démarrer." },
+  "wizardStepScopeTitle": { "message": "Portée" },
+  "wizardStepScopeSubtitle": { "message": "Choisissez où cet outil doit fonctionner." },
+  "wizardStepChatTitle": { "message": "Construction" },
+  "wizardStepChatSubtitle": { "message": "Discutez avec le builder pour lui donner vie." },
+  "wizardNameLabel": { "message": "Nom de l'outil" },
+  "wizardNamePlaceholder": { "message": "ex. Télécharger toutes les vidéos" },
+  "wizardDescriptionLabel": { "message": "Description courte" },
+  "wizardDescriptionPlaceholder": { "message": "Que doit faire cet outil ?" },
+  "wizardBack": { "message": "Retour" },
+  "wizardNext": { "message": "Suivant" },
+  "wizardPlaceholder": { "message": "Bientôt disponible" }
 }

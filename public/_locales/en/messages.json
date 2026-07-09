@@ -22,5 +22,26 @@
   },
   "options": {
     "message": "Options"
-  }
+  },
+  "wizardStepBasics": { "message": "Basics" },
+  "wizardStepTiming": { "message": "Timing" },
+  "wizardStepScope": { "message": "Scope" },
+  "wizardStepChat": { "message": "Build" },
+  "wizardStepBasicsTitle": { "message": "Name your tool" },
+  "wizardStepBasicsSubtitle": {
+    "message": "A short name and description. This is what you'll see later."
+  },
+  "wizardStepTimingTitle": { "message": "Timing" },
+  "wizardStepTimingSubtitle": { "message": "Choose when this tool should run." },
+  "wizardStepScopeTitle": { "message": "Scope" },
+  "wizardStepScopeSubtitle": { "message": "Choose where this tool should run." },
+  "wizardStepChatTitle": { "message": "Build" },
+  "wizardStepChatSubtitle": { "message": "Chat with the builder to bring it to life." },
+  "wizardNameLabel": { "message": "Tool name" },
+  "wizardNamePlaceholder": { "message": "e.g. Download all videos" },
+  "wizardDescriptionLabel": { "message": "Short description" },
+  "wizardDescriptionPlaceholder": { "message": "What should this tool do?" },
+  "wizardBack": { "message": "Back" },
+  "wizardNext": { "message": "Next" },
+  "wizardPlaceholder": { "message": "Coming soon" }
 }

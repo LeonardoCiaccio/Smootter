@@ -37,6 +37,23 @@ export const ui = {
     'text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100',
   breadcrumbSeparator: 'text-gray-300 dark:text-gray-600',
   breadcrumbCurrent: 'text-gray-900 dark:text-gray-100',
+  // Wizard viewport: fills the view, no centering (lets Wizard stretch to full height)
+  wizardViewport: 'flex flex-1 justify-center px-6 py-6',
+  // Wizard: fixed 3-row layout (header / body / dots) — content never reflows the shell
+  wizardWrapper: 'flex h-full w-full max-w-md flex-col items-center text-center',
+  wizardHeader: 'flex flex-col gap-1.5 pb-6',
+  wizardTitle: 'text-2xl font-bold text-gray-900 dark:text-gray-100',
+  wizardSubtitle: 'text-sm text-gray-500 dark:text-gray-400',
+  wizardBody: 'flex w-full flex-1 flex-col justify-center overflow-y-auto',
+  wizardStepBody: 'flex w-full flex-col gap-4 text-left',
+  wizardField: 'flex flex-col gap-1.5 text-left',
+  wizardFieldLabel: 'text-sm font-medium text-gray-700 dark:text-gray-300',
+  wizardCounter: 'self-end text-xs text-gray-400 dark:text-gray-500',
+  // Dots: inactive = small circle, active = elongated pill (smooth width transition)
+  wizardSteps: 'flex items-center justify-center gap-2 pt-6',
+  wizardStepDot:
+    'h-2 w-2 rounded-full bg-gray-300 transition-all duration-200 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600',
+  wizardStepDotActive: 'w-6 bg-gray-900 hover:bg-gray-900 dark:bg-gray-100 dark:hover:bg-gray-100',
 } as const
 
 export type UiVariant = keyof typeof ui
