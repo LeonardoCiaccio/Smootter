@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { inject, onMounted, ref } from 'vue'
 import { channelKey } from './plugins/messaging'
+import { ui } from '@/styles/ui'
 
 const channel = inject(channelKey)
 const status = ref('channel: …')
@@ -15,7 +16,13 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="flex h-full items-center justify-center bg-white dark:bg-gray-900">
-    <p class="text-lg font-semibold text-gray-900 dark:text-gray-100">{{ status }}</p>
+  <div :class="ui.layoutRoot">
+    <div :class="ui.layoutSide" />
+    <div :class="ui.layoutCenter">
+      <div :class="ui.pageContent">
+        <p :class="ui.statusText">{{ status }}</p>
+      </div>
+    </div>
+    <div :class="ui.layoutSide" />
   </div>
 </template>

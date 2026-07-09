@@ -11,6 +11,12 @@ export const ui = {
   card: 'rounded-tool border border-gray-200 bg-white p-4 shadow-sm',
   input:
     'w-full rounded-tool border border-gray-300 px-3 py-2 text-gray-900 focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand',
+  // 3-column boxed layout: empty side columns, app content in the center (max-w-7xl = 1280px)
+  layoutRoot: 'flex h-full w-full bg-white dark:bg-gray-900',
+  layoutSide: 'flex-1 h-full',
+  layoutCenter: 'w-full max-w-7xl h-full bg-gray-50 dark:bg-gray-800',
+  pageContent: 'flex h-full items-center justify-center',
+  statusText: 'text-lg font-semibold text-gray-900 dark:text-gray-100',
 } as const
 
 export type UiVariant = keyof typeof ui
