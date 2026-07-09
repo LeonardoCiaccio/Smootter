@@ -1,3 +1,14 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Named classes required by Vue's <Transition name="view">; no Tailwind
+   utility can target these lifecycle-specific selectors directly. */
+.view-enter-active,
+.view-leave-active {
+  @apply transition duration-150 ease-in-out;
+}
+.view-enter-from,
+.view-leave-to {
+  @apply opacity-0 translate-y-1;
+}

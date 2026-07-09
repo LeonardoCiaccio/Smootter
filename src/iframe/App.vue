@@ -6,7 +6,11 @@ import { ui } from '@/styles/ui'
   <div :class="ui.layoutRoot">
     <div :class="ui.layoutSide" />
     <div :class="ui.layoutCenter">
-      <router-view />
+      <router-view v-slot="{ Component }">
+        <Transition name="view" mode="out-in">
+          <component :is="Component" />
+        </Transition>
+      </router-view>
     </div>
     <div :class="ui.layoutSide" />
   </div>
