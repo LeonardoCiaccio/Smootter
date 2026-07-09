@@ -21,6 +21,14 @@ export const ui = {
   heroHeader:
     'bg-gradient-to-r from-violet-600 to-cyan-400 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl',
   heroSubheader: 'max-w-md text-base text-gray-600 dark:text-gray-400',
+  // Tools panel: empty state, a decently-sized dashed "add" card acting as a button
+  toolsPanel: 'mt-24 flex justify-center px-6',
+  toolsEmptyButton:
+    'group flex flex-col items-center gap-3 rounded-2xl border-2 border-dashed border-gray-300 px-10 py-8 text-gray-500 transition-colors hover:border-gray-500 hover:text-gray-500 dark:border-gray-700 dark:text-gray-400 dark:hover:border-gray-300 dark:hover:text-gray-300',
+  toolsEmptyIconWrap:
+    'flex h-12 w-12 items-center justify-center rounded-full bg-gray-100 text-gray-400 transition-colors group-hover:bg-gray-500/10 group-hover:text-gray-500 dark:bg-gray-800 dark:text-gray-500 dark:group-hover:bg-gray-300/10 dark:group-hover:text-gray-300',
+  toolsEmptyIcon: 'h-6 w-6',
+  toolsEmptyLabel: 'text-sm font-medium',
   // Non-home views: a fixed breadcrumb on top, content filling the rest.
   viewShell: 'flex h-full flex-col',
   viewContent: 'flex flex-1 items-center justify-center',

@@ -11,6 +11,9 @@
   "homeSubheader": {
     "message": "Pas de code. Pas d'abonnement. Dites simplement ce dont vous avez besoin."
   },
+  "createFirstTool": {
+    "message": "Créez votre premier outil"
+  },
   "home": {
     "message": "Accueil"
   },

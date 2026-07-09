@@ -11,6 +11,9 @@
   "homeSubheader": {
     "message": "Niente codice. Niente abbonamenti. Basta dire cosa ti serve."
   },
+  "createFirstTool": {
+    "message": "Crea il tuo primo tool"
+  },
   "home": {
     "message": "Home"
   },
