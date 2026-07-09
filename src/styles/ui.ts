@@ -10,7 +10,7 @@ export const ui = {
     'inline-flex items-center justify-center gap-2 rounded-tool bg-brand px-4 py-2 text-brand-fg transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-brand',
   card: 'rounded-tool border border-gray-200 bg-white p-4 shadow-sm',
   input:
-    'w-full rounded-tool border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',
+    'w-full resize-none rounded-tool border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',
   // 3-column boxed layout: empty side columns, app content in the center (max-w-7xl = 1280px)
   layoutRoot: 'flex h-full w-full bg-white dark:bg-gray-900',
   layoutSide: 'flex-1 h-full',
@@ -19,7 +19,7 @@ export const ui = {
   // Home hero: pushed toward the top, with breathing room below the outer toolbar
   heroWrapper: 'flex flex-col items-center gap-4 px-6 pt-16 text-center',
   heroHeader:
-    'bg-gradient-to-r from-violet-600 to-cyan-400 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl',
+    'bg-gradient-to-r from-violet-600 to-cyan-400 bg-clip-text pb-1 text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl',
   heroSubheader: 'max-w-md text-base text-gray-600 dark:text-gray-400',
   // Tools panel: empty state, plain icon + label (icon follows text color via currentColor)
   toolsPanel: 'mt-24 flex justify-center px-6',
@@ -40,7 +40,7 @@ export const ui = {
   wizardWrapper: 'flex h-[70%] w-full max-w-md flex-col items-center text-center',
   wizardHeader: 'flex flex-col gap-1.5 pb-6',
   wizardTitle:
-    'bg-gradient-to-r from-violet-600 to-cyan-400 bg-clip-text text-3xl font-extrabold tracking-tight text-transparent',
+    'bg-gradient-to-r from-cyan-500 to-emerald-400 bg-clip-text pb-1 text-4xl font-extrabold tracking-tight text-transparent',
   wizardSubtitle: 'text-sm text-gray-500 dark:text-gray-400',
   wizardBody: 'flex w-full flex-1 flex-col justify-center overflow-y-auto',
   wizardStepBody: 'flex w-full flex-col gap-4 text-left',
@@ -50,7 +50,7 @@ export const ui = {
   // Dots: inactive = small circle, active = elongated pill (smooth width transition)
   wizardSteps: 'flex items-center justify-center gap-2 pt-6',
   wizardStepDot:
-    'h-2 w-2 rounded-full bg-gray-300 transition-all duration-200 hover:bg-gray-400 dark:bg-gray-700 dark:hover:bg-gray-600',
+    'h-2 w-2 rounded-full bg-gray-300 transition-all duration-200 hover:bg-gray-400 dark:bg-gray-300 dark:hover:bg-gray-200',
   wizardStepDotActive: 'w-6 bg-gray-900 hover:bg-gray-900 dark:bg-gray-100 dark:hover:bg-gray-100',
 } as const
 

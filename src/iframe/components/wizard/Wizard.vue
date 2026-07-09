@@ -38,7 +38,7 @@ function goTo(index: number): void {
 <template>
   <div :class="ui.wizardWrapper">
     <div :class="ui.wizardHeader">
-      <h2 :class="ui.wizardTitle">{{ currentStep.title }}</h2>
+      <h1 :class="ui.wizardTitle">{{ currentStep.title }}</h1>
       <p :class="ui.wizardSubtitle">{{ currentStep.subtitle }}</p>
     </div>
 

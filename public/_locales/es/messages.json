@@ -38,9 +38,9 @@
   "wizardStepChatTitle": { "message": "Construcción" },
   "wizardStepChatSubtitle": { "message": "Chatea con el builder para darle vida." },
   "wizardNameLabel": { "message": "Nombre" },
-  "wizardNamePlaceholder": { "message": "ej. Descargar todos los vídeos" },
+  "wizardNamePlaceholder": { "message": "ej. Capturar todos los enlaces" },
   "wizardDescriptionLabel": { "message": "Descripción breve" },
-  "wizardDescriptionPlaceholder": { "message": "¿Qué debe hacer?" },
+  "wizardDescriptionPlaceholder": { "message": "ej. Extraer todos los enlaces de la página actual" },
   "wizardBack": { "message": "Atrás" },
   "wizardNext": { "message": "Siguiente" },
   "wizardPlaceholder": { "message": "Próximamente" }

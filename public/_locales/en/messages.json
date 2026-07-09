@@ -38,9 +38,9 @@
   "wizardStepChatTitle": { "message": "Build" },
   "wizardStepChatSubtitle": { "message": "Chat with the builder to bring it to life." },
   "wizardNameLabel": { "message": "Name" },
-  "wizardNamePlaceholder": { "message": "e.g. Download all videos" },
+  "wizardNamePlaceholder": { "message": "e.g. Grab all links" },
   "wizardDescriptionLabel": { "message": "Short description" },
-  "wizardDescriptionPlaceholder": { "message": "What should it do?" },
+  "wizardDescriptionPlaceholder": { "message": "e.g. Extract all links from the current page" },
   "wizardBack": { "message": "Back" },
   "wizardNext": { "message": "Next" },
   "wizardPlaceholder": { "message": "Coming soon" }
