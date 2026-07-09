@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "@heroicons/vue": "^2.2.0",
+    "@leonardo.ciaccio/grip": "^1.173.0",
     "vue": "^3.5.39"
   },
   "devDependencies": {
