@@ -22,15 +22,16 @@ const modalStyles: Record<
   Theme,
   { backdrop: string; icon: string; pillBg: string; pillBorder: string; pillShadow: string }
 > = {
+  // Matches the iframe's Tailwind background exactly (bg-white / dark:bg-gray-900)
   light: {
-    backdrop: 'rgba(255, 255, 255, 0.9)',
+    backdrop: '#ffffff',
     icon: '#000',
-    pillBg: 'rgba(255, 255, 255, 0.55)',
+    pillBg: 'rgba(0, 0, 0, 0.04)',
     pillBorder: 'rgba(0, 0, 0, 0.08)',
     pillShadow: '0 2px 10px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
   },
   dark: {
-    backdrop: 'rgba(0, 0, 0, 0.9)',
+    backdrop: '#111827',
     icon: '#fff',
     pillBg: 'rgba(255, 255, 255, 0.06)',
     pillBorder: 'rgba(255, 255, 255, 0.12)',
@@ -130,6 +131,8 @@ function applyTheme(theme: Theme): void {
     pill.style.borderColor = style.pillBorder
     pill.style.boxShadow = style.pillShadow
   }
+  const frame = modal.querySelector<HTMLElement>('[data-role="frame"]')
+  if (frame) frame.style.backgroundColor = style.backdrop
 }
 
 /** Set the centered top message text. */
@@ -147,7 +150,7 @@ function toggleTheme(): void {
 
 // ---- Build ----
 function getMaxZIndex(): number {
-  let max = 0
+  let max = 999999999
   for (const el of document.querySelectorAll('*')) {
     const value = Number.parseInt(getComputedStyle(el).zIndex, 10)
     if (Number.isFinite(value) && value > max) max = value
@@ -157,8 +160,8 @@ function getMaxZIndex(): number {
 
 function styleIconButton(button: HTMLButtonElement, size: number): void {
   button.dataset.tint = ''
-  button.style.position = 'absolute'
-  button.style.top = `${32 - size / 2}px` // vertically center against the 24px close button
+  button.style.display = 'flex'
+  button.style.flexShrink = '0'
   button.style.width = `${size}px`
   button.style.height = `${size}px`
   button.style.padding = '0'
@@ -170,8 +173,7 @@ function styleIconButton(button: HTMLButtonElement, size: number): void {
 function buildCloseButton(): HTMLButtonElement {
   const button = document.createElement('button')
   button.innerHTML = closeIcon
-  styleIconButton(button, 24)
-  button.style.right = '20px'
+  styleIconButton(button, 20)
   button.addEventListener('click', hide)
   return button
 }
@@ -181,10 +183,6 @@ function buildAppInfo(): HTMLDivElement {
   const manifest = chrome.runtime.getManifest()
   const container = document.createElement('div')
   container.dataset.tint = ''
-  container.style.position = 'absolute'
-  container.style.top = '20px'
-  container.style.left = '20px'
-  container.style.height = '24px'
   container.style.display = 'flex'
   container.style.alignItems = 'center'
   container.style.gap = '8px'
@@ -213,15 +211,12 @@ function buildAppInfo(): HTMLDivElement {
 function buildTopMessage(): HTMLDivElement {
   const pill = document.createElement('div')
   pill.dataset.role = 'topMessage'
-  pill.style.position = 'absolute'
-  pill.style.top = '16px'
-  pill.style.left = '50%'
-  pill.style.transform = 'translateX(-50%)'
-  pill.style.maxWidth = '50%'
-  pill.style.height = '32px'
   pill.style.display = 'flex'
   pill.style.alignItems = 'center'
   pill.style.gap = '8px'
+  pill.style.minWidth = '0'
+  pill.style.maxWidth = '320px'
+  pill.style.height = '32px'
   pill.style.padding = '0 18px'
   pill.style.borderRadius = '999px'
   pill.style.border = '1px solid transparent'
@@ -256,8 +251,7 @@ function buildTopMessage(): HTMLDivElement {
 function buildThemeButton(): HTMLButtonElement {
   const button = document.createElement('button')
   button.dataset.role = 'theme'
-  styleIconButton(button, 20)
-  button.style.right = '116px'
+  styleIconButton(button, 16)
   button.addEventListener('click', toggleTheme)
   return button
 }
@@ -265,27 +259,82 @@ function buildThemeButton(): HTMLButtonElement {
 function buildSettingsButton(): HTMLButtonElement {
   const button = document.createElement('button')
   button.innerHTML = settingsIcon
-  styleIconButton(button, 20)
-  button.style.right = '84px'
+  styleIconButton(button, 16)
   button.addEventListener('click', () => console.log('hello world'))
   return button
 }
 
+/** Right group: theme toggle, settings, close — in normal flow, evenly spaced. */
+function buildActions(): HTMLDivElement {
+  const actions = document.createElement('div')
+  actions.style.display = 'flex'
+  actions.style.alignItems = 'center'
+  actions.style.gap = '10px'
+
+  const close = buildCloseButton()
+  close.style.marginLeft = '10px' // extra breathing room before the close button
+
+  actions.append(buildThemeButton(), buildSettingsButton(), close)
+  return actions
+}
+
+/** Toolbar: app info (left) · top message (center) · actions (right). True centering via a 3-column grid. */
+function buildToolbar(): HTMLDivElement {
+  const toolbar = document.createElement('div')
+  toolbar.style.display = 'grid'
+  toolbar.style.gridTemplateColumns = '1fr auto 1fr'
+  toolbar.style.alignItems = 'center'
+  toolbar.style.columnGap = '16px'
+  toolbar.style.padding = '16px 20px'
+  toolbar.style.flexShrink = '0'
+
+  const left = buildAppInfo()
+  left.style.justifySelf = 'start'
+
+  const center = buildTopMessage()
+  center.style.justifySelf = 'center'
+
+  const right = buildActions()
+  right.style.justifySelf = 'end'
+
+  toolbar.append(left, center, right)
+  return toolbar
+}
+
+/** Footer: general info (copyright, version). */
+function buildFooter(): HTMLDivElement {
+  const manifest = chrome.runtime.getManifest()
+  const footer = document.createElement('div')
+  footer.dataset.tint = ''
+  footer.style.flexShrink = '0'
+  footer.style.padding = '10px 20px'
+  footer.style.textAlign = 'center'
+  footer.style.fontSize = '11px'
+  footer.style.opacity = '0.5'
+  footer.style.fontFamily = 'system-ui, sans-serif'
+  footer.textContent = `© ${new Date().getFullYear()} ${manifest.name} · v${manifest.version}`
+  return footer
+}
+
 function buildIframe(): HTMLIFrameElement {
   const iframe = document.createElement('iframe')
+  iframe.dataset.role = 'frame'
   iframe.src = iframeUrl
-  iframe.style.position = 'absolute'
-  iframe.style.top = '50%'
-  iframe.style.left = '50%'
-  iframe.style.transform = 'translate(-50%, -50%)'
-  iframe.style.width = '420px'
-  iframe.style.height = '600px'
-  iframe.style.maxWidth = '90%'
-  iframe.style.maxHeight = '90%'
+  iframe.style.display = 'block'
+  iframe.style.width = '100%'
+  iframe.style.height = '100%'
   iframe.style.border = 'none'
-  iframe.style.borderRadius = '12px'
-  iframe.style.background = '#fff'
   return iframe
+}
+
+/** Content: fills all remaining space between the toolbar and the footer. */
+function buildContent(): HTMLDivElement {
+  const content = document.createElement('div')
+  content.style.position = 'relative'
+  content.style.flex = '1'
+  content.style.minHeight = '0'
+  content.appendChild(buildIframe())
+  return content
 }
 
 function createModal(): void {
@@ -294,13 +343,11 @@ function createModal(): void {
   modal.style.position = 'fixed'
   modal.style.inset = '0'
   modal.style.zIndex = String(getMaxZIndex() + 10)
-  modal.style.padding = '50px'
-  modal.appendChild(buildIframe())
-  modal.appendChild(buildAppInfo())
-  modal.appendChild(buildTopMessage())
-  modal.appendChild(buildSettingsButton())
-  modal.appendChild(buildThemeButton())
-  modal.appendChild(buildCloseButton())
+  modal.style.display = 'flex'
+  modal.style.flexDirection = 'column'
+  modal.appendChild(buildToolbar())
+  modal.appendChild(buildContent())
+  modal.appendChild(buildFooter())
   document.body.appendChild(modal)
   applyTheme('dark')
   sendToWorker({ type: 'getPreference', key: 'theme' })
