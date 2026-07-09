@@ -7,9 +7,7 @@ const label = chrome.i18n.getMessage('createFirstTool')
 
 <template>
   <RouterLink to="/builder" :class="ui.toolsEmptyButton">
-    <span :class="ui.toolsEmptyIconWrap">
-      <PlusIcon :class="ui.toolsEmptyIcon" />
-    </span>
-    <span :class="ui.toolsEmptyLabel">{{ label }}</span>
+    <PlusIcon :class="ui.toolsEmptyIcon" />
+    <span>{{ label }}</span>
   </RouterLink>
 </template>
