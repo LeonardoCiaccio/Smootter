@@ -5,6 +5,12 @@
   "topMessage": {
     "message": "Du kannst jedes beliebige Tool bauen"
   },
+  "homeHeader": {
+    "message": "Dein Browser, deine Tools."
+  },
+  "homeSubheader": {
+    "message": "Kein Code. Kein Abo. Sag einfach, was du brauchst."
+  },
   "home": {
     "message": "Start"
   },

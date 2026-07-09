@@ -1,22 +1,13 @@
 <script setup lang="ts">
-import { inject, onMounted, ref } from 'vue'
-import { channelKey } from '../plugins/messaging'
 import { ui } from '@/styles/ui'
 
-const channel = inject(channelKey)
-const status = ref('channel: …')
-
-onMounted(() => {
-  if (!channel) return
-  channel.subscribe((message) => {
-    if (message.type === 'pong') status.value = 'channel: pong ✓'
-  })
-  channel.send({ type: 'ping' })
-})
+const headerText = chrome.i18n.getMessage('homeHeader')
+const subheaderText = chrome.i18n.getMessage('homeSubheader')
 </script>
 
 <template>
-  <div :class="ui.pageContent">
-    <p :class="ui.statusText">{{ status }}</p>
+  <div :class="ui.heroWrapper">
+    <h1 :class="ui.heroHeader">{{ headerText }}</h1>
+    <p :class="ui.heroSubheader">{{ subheaderText }}</p>
   </div>
 </template>

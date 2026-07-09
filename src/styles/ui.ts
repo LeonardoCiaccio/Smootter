@@ -14,9 +14,13 @@ export const ui = {
   // 3-column boxed layout: empty side columns, app content in the center (max-w-7xl = 1280px)
   layoutRoot: 'flex h-full w-full bg-white dark:bg-gray-900',
   layoutSide: 'flex-1 h-full',
-  layoutCenter: 'relative w-full max-w-7xl h-full overflow-hidden bg-gray-50 dark:bg-gray-800',
-  pageContent: 'flex h-full items-center justify-center',
+  layoutCenter: 'relative w-full max-w-7xl h-full overflow-hidden bg-white dark:bg-gray-900',
   statusText: 'text-lg font-semibold text-gray-900 dark:text-gray-100',
+  // Home hero: pushed toward the top, with breathing room below the outer toolbar
+  heroWrapper: 'flex flex-col items-center gap-4 px-6 pt-16 text-center',
+  heroHeader:
+    'bg-gradient-to-r from-violet-600 to-cyan-400 bg-clip-text text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl',
+  heroSubheader: 'max-w-md text-base text-gray-600 dark:text-gray-400',
   // Non-home views: a fixed breadcrumb on top, content filling the rest.
   viewShell: 'flex h-full flex-col',
   viewContent: 'flex flex-1 items-center justify-center',

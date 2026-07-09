@@ -5,6 +5,12 @@
   "topMessage": {
     "message": "Puedes construir cualquier herramienta que quieras"
   },
+  "homeHeader": {
+    "message": "Tu navegador, tus herramientas."
+  },
+  "homeSubheader": {
+    "message": "Sin código. Sin suscripciones. Solo dile lo que necesitas."
+  },
   "home": {
     "message": "Inicio"
   },
