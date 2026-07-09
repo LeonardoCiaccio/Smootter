@@ -34,6 +34,11 @@ async function handleChannelMessage(
     return
   }
 
+  if (message.type === 'getTopMessage') {
+    port.postMessage({ type: 'topMessage', value: 'Hello World' })
+    return
+  }
+
   if (message.type === 'setPreference') {
     let ok = true
     try {

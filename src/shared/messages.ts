@@ -28,6 +28,16 @@ export interface GetPreferenceRequest {
   key: keyof Preferences
 }
 
+export interface GetTopMessageRequest {
+  type: 'getTopMessage'
+}
+
+/** Reply to getTopMessage: the top message text. */
+export interface TopMessageResponse {
+  type: 'topMessage'
+  value: string
+}
+
 /** Reply to getPreference: value is undefined when not stored. */
 export interface PreferenceValue {
   type: 'preferenceValue'
@@ -43,7 +53,15 @@ export interface PreferenceSaved {
 }
 
 /** Messages sent from the UI to the background. */
-export type ChannelRequest = PingRequest | SetPreferenceRequest | GetPreferenceRequest
+export type ChannelRequest =
+  | PingRequest
+  | SetPreferenceRequest
+  | GetPreferenceRequest
+  | GetTopMessageRequest
 
 /** Messages sent from the background to the UI. */
-export type ChannelResponse = PongResponse | PreferenceValue | PreferenceSaved
+export type ChannelResponse =
+  | PongResponse
+  | PreferenceValue
+  | PreferenceSaved
+  | TopMessageResponse
