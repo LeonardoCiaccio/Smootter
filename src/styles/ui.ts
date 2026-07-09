@@ -34,10 +34,10 @@ export const ui = {
     'text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100',
   breadcrumbSeparator: 'text-gray-300 dark:text-gray-600',
   breadcrumbCurrent: 'text-gray-900 dark:text-gray-100',
-  // Wizard viewport: fills the view, no centering (lets Wizard stretch to full height)
-  wizardViewport: 'flex flex-1 justify-center px-6 py-6',
-  // Wizard: fixed 3-row layout (header / body / dots) — content never reflows the shell
-  wizardWrapper: 'flex h-full w-full max-w-md flex-col items-center text-center',
+  // Wizard viewport: centers the wizard both ways within the view
+  wizardViewport: 'flex flex-1 items-center justify-center px-6 py-6',
+  // Wizard: fixed 3-row layout (header / body / dots), 70% of the viewport height
+  wizardWrapper: 'flex h-[70%] w-full max-w-md flex-col items-center text-center',
   wizardHeader: 'flex flex-col gap-1.5 pb-6',
   wizardTitle: 'text-2xl font-bold text-gray-900 dark:text-gray-100',
   wizardSubtitle: 'text-sm text-gray-500 dark:text-gray-400',
