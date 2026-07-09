@@ -48,8 +48,7 @@ grip.register({
   name: 'getTopMessage',
   validate() {},
   business() {
-    //
-    return { type: 'topMessage', value: 'Hello World' }
+    return { type: 'topMessage', value: chrome.i18n.getMessage('topMessage') }
   },
 })
 grip.hook('getTopMessage', {

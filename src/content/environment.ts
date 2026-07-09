@@ -15,9 +15,27 @@ const iframeUrl = chrome.runtime.getURL('src/iframe/index.html')
 
 type Theme = 'light' | 'dark'
 
-const modalStyles: Record<Theme, { backdrop: string; icon: string }> = {
-  light: { backdrop: 'rgba(255, 255, 255, 0.9)', icon: '#000' },
-  dark: { backdrop: 'rgba(0, 0, 0, 0.9)', icon: '#fff' },
+// Calm accent for status indicators (kept distinct from the brand's alert-like orange)
+const accentColor = '#38bdf8'
+
+const modalStyles: Record<
+  Theme,
+  { backdrop: string; icon: string; pillBg: string; pillBorder: string; pillShadow: string }
+> = {
+  light: {
+    backdrop: 'rgba(255, 255, 255, 0.9)',
+    icon: '#000',
+    pillBg: 'rgba(255, 255, 255, 0.55)',
+    pillBorder: 'rgba(0, 0, 0, 0.08)',
+    pillShadow: '0 2px 10px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.6)',
+  },
+  dark: {
+    backdrop: 'rgba(0, 0, 0, 0.9)',
+    icon: '#fff',
+    pillBg: 'rgba(255, 255, 255, 0.06)',
+    pillBorder: 'rgba(255, 255, 255, 0.12)',
+    pillShadow: '0 4px 20px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.06)',
+  },
 }
 
 // Heroicons (24 outline)
@@ -106,11 +124,17 @@ function applyTheme(theme: Theme): void {
     .forEach((element) => (element.style.color = style.icon))
   const themeButton = modal.querySelector<HTMLButtonElement>('[data-role="theme"]')
   if (themeButton) themeButton.innerHTML = theme === 'dark' ? sunIcon : moonIcon
+  const pill = modal.querySelector<HTMLElement>('[data-role="topMessage"]')
+  if (pill) {
+    pill.style.backgroundColor = style.pillBg
+    pill.style.borderColor = style.pillBorder
+    pill.style.boxShadow = style.pillShadow
+  }
 }
 
 /** Set the centered top message text. */
 function setTopMessage(text: string): void {
-  const element = getModal()?.querySelector<HTMLElement>('[data-role="topMessage"]')
+  const element = getModal()?.querySelector<HTMLElement>('[data-role="topMessageText"]')
   if (element) element.textContent = text
 }
 
@@ -185,25 +209,48 @@ function buildAppInfo(): HTMLDivElement {
   return container
 }
 
-/** Centered top message, filled on demand; truncates with an ellipsis. */
-function buildTopMessage(): HTMLSpanElement {
-  const crumb = document.createElement('span')
-  crumb.dataset.role = 'topMessage'
-  crumb.dataset.tint = ''
-  crumb.style.position = 'absolute'
-  crumb.style.top = '20px'
-  crumb.style.left = '50%'
-  crumb.style.transform = 'translateX(-50%)'
-  crumb.style.maxWidth = '50%'
-  crumb.style.height = '24px'
-  crumb.style.lineHeight = '24px'
-  crumb.style.overflow = 'hidden'
-  crumb.style.whiteSpace = 'nowrap'
-  crumb.style.textOverflow = 'ellipsis'
-  crumb.style.textAlign = 'center'
-  crumb.style.fontSize = '14px'
-  crumb.style.fontFamily = 'system-ui, sans-serif'
-  return crumb
+/** Centered top message pill (glass, accent dot), filled on demand. */
+function buildTopMessage(): HTMLDivElement {
+  const pill = document.createElement('div')
+  pill.dataset.role = 'topMessage'
+  pill.style.position = 'absolute'
+  pill.style.top = '16px'
+  pill.style.left = '50%'
+  pill.style.transform = 'translateX(-50%)'
+  pill.style.maxWidth = '50%'
+  pill.style.height = '32px'
+  pill.style.display = 'flex'
+  pill.style.alignItems = 'center'
+  pill.style.gap = '8px'
+  pill.style.padding = '0 18px'
+  pill.style.borderRadius = '999px'
+  pill.style.border = '1px solid transparent'
+  pill.style.backdropFilter = 'blur(10px) saturate(160%)'
+  pill.style.transition = 'background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease'
+
+  const dot = document.createElement('span')
+  dot.style.display = 'block'
+  dot.style.width = '6px'
+  dot.style.height = '6px'
+  dot.style.borderRadius = '50%'
+  dot.style.flexShrink = '0'
+  dot.style.alignSelf = 'center'
+  dot.style.background = accentColor
+  dot.style.boxShadow = `0 0 6px ${accentColor}`
+
+  const text = document.createElement('span')
+  text.dataset.role = 'topMessageText'
+  text.dataset.tint = ''
+  text.style.overflow = 'hidden'
+  text.style.whiteSpace = 'nowrap'
+  text.style.textOverflow = 'ellipsis'
+  text.style.fontSize = '13px'
+  text.style.fontWeight = '500'
+  text.style.letterSpacing = '0.01em'
+  text.style.fontFamily = 'system-ui, sans-serif'
+
+  pill.append(dot, text)
+  return pill
 }
 
 function buildThemeButton(): HTMLButtonElement {
