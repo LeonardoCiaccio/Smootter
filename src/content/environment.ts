@@ -97,7 +97,7 @@ function isVisible(): boolean {
 
 function show(): void {
   const modal = getModal()
-  if (modal) modal.style.display = ''
+  if (modal) modal.style.display = 'flex' // matches the flex column set on creation
 }
 
 function hide(): void {
