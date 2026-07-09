@@ -5,6 +5,9 @@
   "topMessage": {
     "message": "Puoi costruire qualsiasi tool tu voglia"
   },
+  "home": {
+    "message": "Home"
+  },
   "builder": {
     "message": "Builder"
   },

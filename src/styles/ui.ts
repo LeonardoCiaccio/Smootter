@@ -20,9 +20,11 @@ export const ui = {
   // Non-home views: a fixed breadcrumb on top, content filling the rest.
   viewShell: 'flex h-full flex-col',
   viewContent: 'flex flex-1 items-center justify-center',
-  breadcrumb:
-    'inline-flex items-center gap-1.5 self-start px-6 pt-6 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100',
-  breadcrumbIcon: 'h-4 w-4',
+  breadcrumb: 'flex items-center gap-1.5 self-start px-6 pt-6 text-sm font-medium',
+  breadcrumbHome:
+    'text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100',
+  breadcrumbSeparator: 'text-gray-300 dark:text-gray-600',
+  breadcrumbCurrent: 'text-gray-900 dark:text-gray-100',
 } as const
 
 export type UiVariant = keyof typeof ui
