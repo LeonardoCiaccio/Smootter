@@ -6,14 +6,15 @@
  */
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import BuilderView from '../views/BuilderView.vue'
-import OptionsView from '../views/OptionsView.vue'
+import PlaceholderView from '../views/PlaceholderView.vue'
 
 export const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     { path: '/', component: HomeView },
-    { path: '/builder', component: BuilderView },
-    { path: '/options', component: OptionsView },
+    // Builder and Options share a placeholder until each gets real content.
+    // viewKey is passed as a prop and doubles as the chrome.i18n message key.
+    { path: '/builder', component: PlaceholderView, props: { viewKey: 'builder' } },
+    { path: '/options', component: PlaceholderView, props: { viewKey: 'options' } },
   ],
 })

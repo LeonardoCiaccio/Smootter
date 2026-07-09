@@ -114,25 +114,44 @@ function currentTheme(): Theme {
   return (getModal()?.dataset.theme as Theme | undefined) ?? 'dark'
 }
 
+/** Tint every [data-tint] element (icons, text) with the theme's icon color. */
+function paintTintedElements(modal: HTMLElement, style: (typeof modalStyles)['dark']): void {
+  modal
+    .querySelectorAll<HTMLElement>('[data-tint]')
+    .forEach((element) => (element.style.color = style.icon))
+}
+
+/** Swap the theme button's icon (moon in light, sun in dark). */
+function paintThemeButtonIcon(modal: HTMLElement, theme: Theme): void {
+  const themeButton = modal.querySelector<HTMLButtonElement>('[data-role="theme"]')
+  if (themeButton) themeButton.innerHTML = theme === 'dark' ? sunIcon : moonIcon
+}
+
+/** Recolor the glass pill (background, border, shadow). */
+function paintTopMessagePill(modal: HTMLElement, style: (typeof modalStyles)['dark']): void {
+  const pill = modal.querySelector<HTMLElement>('[data-role="topMessage"]')
+  if (!pill) return
+  pill.style.backgroundColor = style.pillBg
+  pill.style.borderColor = style.pillBorder
+  pill.style.boxShadow = style.pillShadow
+}
+
+/** Match the iframe's background to the app chrome (avoids a flash while it loads). */
+function paintFrameBackground(modal: HTMLElement, style: (typeof modalStyles)['dark']): void {
+  const frame = modal.querySelector<HTMLElement>('[data-role="frame"]')
+  if (frame) frame.style.backgroundColor = style.backdrop
+}
+
 function applyTheme(theme: Theme): void {
   const modal = getModal()
   if (!modal) return
   modal.dataset.theme = theme
   const style = modalStyles[theme]
   modal.style.backgroundColor = style.backdrop
-  modal
-    .querySelectorAll<HTMLElement>('[data-tint]')
-    .forEach((element) => (element.style.color = style.icon))
-  const themeButton = modal.querySelector<HTMLButtonElement>('[data-role="theme"]')
-  if (themeButton) themeButton.innerHTML = theme === 'dark' ? sunIcon : moonIcon
-  const pill = modal.querySelector<HTMLElement>('[data-role="topMessage"]')
-  if (pill) {
-    pill.style.backgroundColor = style.pillBg
-    pill.style.borderColor = style.pillBorder
-    pill.style.boxShadow = style.pillShadow
-  }
-  const frame = modal.querySelector<HTMLElement>('[data-role="frame"]')
-  if (frame) frame.style.backgroundColor = style.backdrop
+  paintTintedElements(modal, style)
+  paintThemeButtonIcon(modal, theme)
+  paintTopMessagePill(modal, style)
+  paintFrameBackground(modal, style)
 }
 
 /** Set the centered top message text. */

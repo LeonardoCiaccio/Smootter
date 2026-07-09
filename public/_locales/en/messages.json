@@ -4,5 +4,11 @@
   },
   "topMessage": {
     "message": "You can build any tool you want"
+  },
+  "builder": {
+    "message": "Builder"
+  },
+  "options": {
+    "message": "Options"
   }
 }
