@@ -260,7 +260,10 @@ function buildSettingsButton(): HTMLButtonElement {
   const button = document.createElement('button')
   button.innerHTML = settingsIcon
   styleIconButton(button, 16)
-  button.addEventListener('click', () => console.log('hello world'))
+  button.addEventListener('click', () => {
+    const frame = getModal()?.querySelector<HTMLIFrameElement>('[data-role="frame"]')
+    if (frame) frame.src = iframeUrl + '#/options'
+  })
   return button
 }
 
