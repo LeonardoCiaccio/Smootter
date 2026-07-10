@@ -118,5 +118,7 @@
   "llmGroupTitle": { "message": "LLM" },
   "toolsSearchPlaceholder": { "message": "Search tools..." },
   "toolsSearchClear": { "message": "Clear search" },
-  "toolsNoResults": { "message": "No tools match your search." }
+  "toolsNoResults": { "message": "No tools match your search." },
+  "creditsTitle": { "message": "Credits" },
+  "creditsDescription": { "message": "Open source libraries used to build Pippo." }
 }

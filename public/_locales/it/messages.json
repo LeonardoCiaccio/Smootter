@@ -116,5 +116,7 @@
   "llmGroupTitle": { "message": "LLM" },
   "toolsSearchPlaceholder": { "message": "Cerca tool..." },
   "toolsSearchClear": { "message": "Cancella ricerca" },
-  "toolsNoResults": { "message": "Nessun tool corrisponde alla ricerca." }
+  "toolsNoResults": { "message": "Nessun tool corrisponde alla ricerca." },
+  "creditsTitle": { "message": "Credits" },
+  "creditsDescription": { "message": "Librerie open source usate per costruire Pippo." }
 }

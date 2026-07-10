@@ -108,6 +108,11 @@ export const ui = {
   optionsSectionTitle: 'text-sm font-semibold text-gray-900 dark:text-gray-100',
   optionsSectionDescription: 'text-xs text-gray-500 dark:text-gray-400',
   optionsSectionActions: 'flex items-center justify-between gap-3',
+  // Divider between option sections (e.g. LLM → Credits).
+  optionsSeparator: 'my-2 h-px w-full max-w-md bg-gray-200 dark:bg-gray-800',
+  creditsList: 'flex flex-col divide-y divide-gray-100 dark:divide-gray-800',
+  creditsItem: 'flex items-center justify-between py-2 text-sm text-gray-700 dark:text-gray-300',
+  creditsVersion: 'text-xs text-gray-400 dark:text-gray-500',
   breadcrumb: 'flex items-center gap-1.5 self-start px-6 pt-6 text-sm font-medium',
   breadcrumbHome:
     'text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100',
