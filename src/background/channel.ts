@@ -17,6 +17,7 @@ import {
   type GenerateCodeRequest,
 } from '@/shared/messages'
 import { getPreference, setPreference, removePreference, type Preferences } from '@/shared/preferences'
+import { isLocalLlmEndpoint } from '@/shared/llmEndpoint'
 import { isUserScriptsEnabled } from './userScripts'
 import { runCodeTest } from './testRunner'
 import { testLlmConfig, generateCode } from './llmClient'
@@ -149,8 +150,10 @@ grip.hook('testCode', {
 grip.register({
   name: 'testLlmConfig',
   validate(args: TestLlmConfigRequest) {
-    if (!args.config?.endpoint || !args.config?.apiKey || !args.config?.model) {
-      throw new Error('endpoint, apiKey and model are required.')
+    // apiKey is only required for non-local endpoints — local runtimes (Ollama, LM Studio, ...) don't need one.
+    const keyRequired = !isLocalLlmEndpoint(args.config?.endpoint ?? '')
+    if (!args.config?.endpoint || !args.config?.model || (keyRequired && !args.config?.apiKey)) {
+      throw new Error('endpoint, model and (unless the endpoint is local) an API key are required.')
     }
   },
   async business(args: TestLlmConfigRequest) {

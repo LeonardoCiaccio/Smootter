@@ -55,14 +55,14 @@ async function callChatCompletions(
   messages: Array<{ role: string; content: string }>,
   tool: typeof WRITE_CODE_TOOL,
 ): Promise<{ ok: true; toolCall: ToolCall | undefined } | { ok: false; errorCode: LlmErrorCode; detail?: string }> {
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' }
+  if (config.apiKey.trim() !== '') headers.Authorization = `Bearer ${config.apiKey}`
+
   let response: Response
   try {
     response = await fetch(config.endpoint, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${config.apiKey}`,
-      },
+      headers,
       body: JSON.stringify({
         model: config.model,
         messages,

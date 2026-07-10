@@ -6,7 +6,11 @@
 
 const PREFIX = chrome.runtime.getManifest().short_name + '_pref_'
 
-/** Open provider: the user supplies their own OpenAI-compatible endpoint, key and model. */
+/**
+ * Open provider: the user supplies their own OpenAI-compatible endpoint and
+ * model. The key is optional — local runtimes (Ollama, LM Studio, ...)
+ * don't require one.
+ */
 export interface LlmConfig {
   endpoint: string
   apiKey: string

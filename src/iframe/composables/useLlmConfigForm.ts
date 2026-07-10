@@ -5,6 +5,7 @@
 import { inject, reactive, ref, watch } from 'vue'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { llmErrorText } from '@/shared/llmErrorText'
+import { isLocalLlmEndpoint } from '@/shared/llmEndpoint'
 import type { LlmConfig } from '@/shared/preferences'
 
 export function useLlmConfigForm() {
@@ -29,7 +30,9 @@ export function useLlmConfigForm() {
 
   async function test(): Promise<void> {
     if (!channel) return
-    if (!form.endpoint.trim() || !form.apiKey.trim() || !form.model.trim()) {
+    // apiKey is only required for non-local endpoints — local runtimes (Ollama, LM Studio, ...) don't need one.
+    const keyRequired = !isLocalLlmEndpoint(form.endpoint)
+    if (!form.endpoint.trim() || !form.model.trim() || (keyRequired && !form.apiKey.trim())) {
       verdict.value = 'error'
       errorMessage.value = chrome.i18n.getMessage('llmFieldsRequired')
       return

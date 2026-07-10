@@ -99,7 +99,7 @@
   "llmButtonLabel": { "message": "Générer avec l'IA" },
   "llmConfigTitle": { "message": "Connecter un modèle d'IA" },
   "llmEndpointLabel": { "message": "Endpoint" },
-  "llmApiKeyLabel": { "message": "Clé API" },
+  "llmApiKeyLabel": { "message": "Clé API (optionnelle — inutile pour les runtimes locaux comme Ollama)" },
   "llmModelLabel": { "message": "Modèle" },
   "llmFieldsRequired": { "message": "Remplissez tous les champs" },
   "llmTestOk": { "message": "Connexion réussie : le modèle prend en charge les tools." },

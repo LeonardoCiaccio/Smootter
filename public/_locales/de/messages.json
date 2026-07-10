@@ -99,7 +99,7 @@
   "llmButtonLabel": { "message": "Mit KI generieren" },
   "llmConfigTitle": { "message": "KI-Modell verbinden" },
   "llmEndpointLabel": { "message": "Endpoint" },
-  "llmApiKeyLabel": { "message": "API-Schlüssel" },
+  "llmApiKeyLabel": { "message": "API-Schlüssel (optional — nicht nötig bei lokalen Runtimes wie Ollama)" },
   "llmModelLabel": { "message": "Modell" },
   "llmFieldsRequired": { "message": "Fülle alle Felder aus" },
   "llmTestOk": { "message": "Verbindung erfolgreich: Das Modell unterstützt Tools." },
