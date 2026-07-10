@@ -46,8 +46,10 @@ export const ui = {
   heroHeader:
     'bg-gradient-to-r from-violet-600 to-cyan-400 bg-clip-text pb-1 text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl',
   heroSubheader: 'max-w-md text-base text-gray-600 dark:text-gray-400',
-  // Tools panel: empty state, plain icon + label (icon follows text color via currentColor).
+  // Tools panel: empty state, illustration + plain icon/label (icon follows text color via currentColor).
   toolsPanel: 'mt-16 flex flex-col items-center',
+  toolsEmptyWrapper: 'flex flex-col items-center gap-6',
+  toolsEmptyIllustration: 'h-72 w-72 opacity-90',
   toolsEmptyButton:
     'inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100',
   toolsEmptyIcon: 'h-5 w-5',
