@@ -91,12 +91,12 @@ export const ui = {
   breadcrumbSeparator: 'text-gray-300 dark:text-gray-600',
   breadcrumbCurrent: 'text-gray-900 dark:text-gray-100',
   // Wizard viewport: centers the wizard both ways within the view
-  wizardViewport: 'flex flex-1 items-center justify-center px-6 pb-6',
+  wizardViewport: 'flex flex-1 items-center justify-center px-6 pb-6 pt-6',
   // Wizard: fixed 3-row layout (header / body / dots), 78% of the viewport height.
   // Width is split base/modifier (never combine two max-w-* at once — same class wins on cascade order, not attribute order).
   wizardWrapperBase: 'flex h-[78%] w-full flex-col items-center text-center',
   wizardWrapperWidth: 'max-w-xl',
-  wizardWrapperWidthWide: 'max-w-4xl',
+  wizardWrapperWidthWide: 'max-w-none',
   wizardHeader: 'flex flex-col gap-1 pb-1',
   wizardTitle:
     'bg-gradient-to-r from-cyan-500 to-emerald-400 bg-clip-text pb-1 text-3xl font-extrabold tracking-tight text-transparent',
@@ -156,24 +156,28 @@ export const ui = {
     'flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-rose-500 shadow-sm ring-1 ring-gray-200 backdrop-blur transition-colors hover:bg-rose-50 dark:bg-gray-800/90 dark:ring-gray-700 dark:hover:bg-rose-950',
   codeEditorActionIcon: 'h-4 w-4',
   // Step 4: two columns — chat with the LLM on the left, code editor at full height on the right.
-  wizardChatGrid: 'grid h-full min-h-0 w-full flex-1 grid-cols-[1fr_2fr] gap-6',
+  // Fixed viewport-relative height: decoupled from the ancestor flex/grid
+  // chain entirely (percentage heights there kept silently resolving to
+  // "auto" through some link, letting content grow past its box no matter
+  // how many min-h-0/overflow-hidden safety nets were added up the chain).
+  wizardChatGrid: 'grid h-[64vh] w-full grid-cols-[1fr_2fr] gap-6 overflow-hidden',
   wizardChatColumn:
-    'flex h-full min-h-0 flex-col gap-3 rounded-tool border border-gray-200 p-4 text-left dark:border-gray-800',
+    'flex h-full min-h-0 flex-col gap-3 overflow-hidden rounded-tool border border-gray-200 p-4 text-left dark:border-gray-800',
   wizardChatHeader: 'flex flex-col gap-1 pb-1',
   wizardChatTitle: 'text-lg font-semibold text-gray-900 dark:text-gray-100',
   wizardChatSubtitle: 'text-xs text-gray-500 dark:text-gray-400',
   wizardChatMessages: 'flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pr-1 [scrollbar-gutter:stable]',
   wizardChatEmpty: 'flex flex-1 items-center justify-center px-4 text-center text-xs text-gray-400 dark:text-gray-500',
   wizardChatBubbleUser:
-    'max-w-[85%] self-end rounded-2xl rounded-br-sm bg-cyan-600 px-3.5 py-2 text-sm text-white',
+    'max-w-[85%] flex-shrink-0 break-words self-end rounded-2xl rounded-br-sm bg-cyan-600 px-3.5 py-2 text-sm text-white',
   wizardChatBubbleAssistant:
-    'max-w-[85%] self-start rounded-2xl rounded-bl-sm bg-gray-100 px-3.5 py-2 text-sm text-gray-800 dark:bg-gray-800 dark:text-gray-100',
+    'max-w-[85%] flex-shrink-0 break-words self-start rounded-2xl rounded-bl-sm bg-gray-100 px-3.5 py-2 text-sm text-gray-800 dark:bg-gray-800 dark:text-gray-100',
   wizardChatInputWrapper: 'relative w-full flex-shrink-0',
   wizardChatInput:
     'h-16 w-full resize-none rounded-tool border border-gray-300 bg-white py-2 pl-3 pr-12 text-sm text-gray-900 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',
   wizardChatSendButton:
     'absolute bottom-2.5 right-2.5 flex h-7 w-7 items-center justify-center rounded-full bg-cyan-600 text-white transition-colors hover:bg-cyan-500 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-cyan-500 dark:hover:bg-cyan-400',
-  wizardChatEditorColumn: 'relative h-full min-h-0 w-full text-left',
+  wizardChatEditorColumn: 'relative h-full min-h-0 w-full overflow-hidden text-left',
   // Tester step: message centered, Save centered below it once the test passes.
   wizardTesterBody: 'flex w-full flex-col items-center gap-5 text-center',
   testStatusWaiting: 'text-lg font-semibold text-gray-500 dark:text-gray-400',
