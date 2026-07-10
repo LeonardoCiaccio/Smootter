@@ -12,13 +12,12 @@ import {
   type SetPreferenceRequest,
   type GetPreferenceRequest,
   type TestCodeRequest,
-  type CleanupTestRequest,
   type TestLlmConfigRequest,
   type GenerateCodeRequest,
 } from '@/shared/messages'
 import { getPreference, setPreference, type Preferences } from '@/shared/preferences'
 import { isUserScriptsEnabled } from './userScripts'
-import { runCodeTest, cleanupTestArtifacts } from './testRunner'
+import { runCodeTest } from './testRunner'
 import { testLlmConfig, generateCode } from './llmClient'
 
 interface Context {
@@ -115,22 +114,12 @@ grip.register({
   async business(args: TestCodeRequest, context?: object) {
     const tabId = (context as Context | undefined)?.sender.tab?.id
     const result = await runCodeTest(args.code, tabId)
-    return { type: 'testCodeResult', ok: result.ok, error: result.error, testId: result.testId }
+    return { type: 'testCodeResult', ok: result.ok, error: result.error }
   },
 })
 grip.hook('testCode', {
   after({ result }, context: Context) {
     if (result.isSuccess) context.sendResponse(result.result)
-  },
-})
-
-grip.register({
-  name: 'cleanupTest',
-  validate(args: CleanupTestRequest) {
-    if (typeof args.testId !== 'string' || args.testId === '') throw new Error('testId is required.')
-  },
-  async business(args: CleanupTestRequest) {
-    await cleanupTestArtifacts(args.testId)
   },
 })
 

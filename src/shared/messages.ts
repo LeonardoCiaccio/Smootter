@@ -78,25 +78,14 @@ export interface TestCodeRequest {
 
 /**
  * Reply to testCode: whether the code ran without throwing, straight from
- * the chrome.userScripts.execute() call itself — not a guess. `testId`
- * identifies whatever DOM the run left on the real page, so it can later be
- * cleaned up via cleanupTest.
+ * the chrome.userScripts.execute() call itself — not a guess. Runs in a
+ * disposable, invisible iframe the worker removes right after, so there's
+ * nothing left to clean up on the wire.
  */
 export interface TestCodeResult {
   type: 'testCodeResult'
   ok: boolean
   error?: string
-  testId?: string
-}
-
-/**
- * Sent when leaving the tester step (back, or after a successful save):
- * removes any DOM a test run left on the real page (a popup, a banner, ...).
- * One-way, no reply expected.
- */
-export interface CleanupTestRequest {
-  type: 'cleanupTest'
-  testId: string
 }
 
 /** Sent by the LLM config popup's Test button: verifies the endpoint, key and model actually work. */
@@ -137,7 +126,6 @@ export type ChannelRequest =
   | CloseModalSignal
   | GetUserScriptsStatusRequest
   | TestCodeRequest
-  | CleanupTestRequest
   | TestLlmConfigRequest
   | GenerateCodeRequest
 
