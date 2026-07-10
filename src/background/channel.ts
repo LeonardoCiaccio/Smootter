@@ -105,7 +105,11 @@ grip.hook('closeModal', {
   after({ result }, context: Context) {
     if (!result.isSuccess) return
     context.sendResponse(result.result)
-    void chrome.runtime.sendMessage(result.result)
+    // environment.ts is a content script, not an extension page: it only
+    // receives messages targeted at its tab via chrome.tabs.sendMessage,
+    // never a plain chrome.runtime.sendMessage broadcast.
+    const tabId = context.sender.tab?.id
+    if (tabId !== undefined) void chrome.tabs.sendMessage(tabId, result.result)
   },
 })
 
