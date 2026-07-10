@@ -107,10 +107,16 @@ export interface TestLlmConfigResult {
   detail?: string
 }
 
-/** Sent by the wizard's prompt box: asks the configured LLM to generate the tool's code. */
+/**
+ * Sent by the wizard's prompt box: asks the configured LLM to generate the
+ * tool's code. `existingCode` (the editor's current content, may be empty)
+ * is passed as context — the user may be improving working code, not
+ * starting from scratch.
+ */
 export interface GenerateCodeRequest {
   type: 'generateCode'
   prompt: string
+  existingCode: string
 }
 
 /** Reply to generateCode. */

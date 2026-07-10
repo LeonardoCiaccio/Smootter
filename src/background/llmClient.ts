@@ -112,17 +112,47 @@ export async function testLlmConfig(config: LlmConfig): Promise<LlmTestResult> {
   return { ok: true }
 }
 
-/** Asks the model to generate a tool's code from a natural-language prompt. */
-export async function generateCode(config: LlmConfig, prompt: string): Promise<LlmGenerateResult> {
+/**
+ * Builds the system prompt for code generation from what's actually there:
+ * what the code is for and how it runs, the CSS rule this whole system
+ * depends on (injected into arbitrary third-party pages, so styling must be
+ * inline and forced, never a <style> tag or external stylesheet the host
+ * page could override), and — only when the editor actually has code — how
+ * to treat it as discardable context rather than something to preserve.
+ */
+function buildSystemPrompt(hasExistingCode: boolean): string {
+  const parts = [
+    'You are the code generator for Pippo, a browser extension that lets users build small automation tools without writing code themselves.',
+    'You write a single, self-contained JavaScript snippet. It gets injected directly into real, arbitrary web pages via chrome.userScripts (MAIN world) — no imports, no exports, no surrounding wrapper function, just plain statements.',
+  ]
+  if (hasExistingCode) {
+    parts.push(
+      "The user's message includes the code currently in the editor as existing context: they might be asking to improve, fix, or extend working code, not necessarily start over. If that existing code does not fit the new request, discard it and write fresh code instead of forcing it to fit.",
+    )
+  }
+  parts.push(
+    "If the request doesn't say anything about styling, apply any CSS inline on the elements themselves (e.g. element.style.cssText, always with 'important'), never via a <style> tag or an external stylesheet — the code runs on pages you don't control, and the page's own CSS could otherwise override or conflict with it.",
+    'Always answer by calling the write_code tool with the final code.',
+  )
+  return parts.join(' ')
+}
+
+function buildUserMessage(prompt: string, existingCode: string): string {
+  if (existingCode.trim() === '') return prompt
+  return `Existing code in the editor (context — discard it if it doesn't fit the request below):\n\`\`\`js\n${existingCode}\n\`\`\`\n\nRequest: ${prompt}`
+}
+
+/** Asks the model to generate a tool's code from a natural-language prompt, given the editor's current code as context. */
+export async function generateCode(
+  config: LlmConfig,
+  prompt: string,
+  existingCode: string,
+): Promise<LlmGenerateResult> {
   const result = await callChatCompletions(
     config,
     [
-      {
-        role: 'system',
-        content:
-          'You write small JavaScript snippets that run directly on a webpage (no imports, no wrapper function). Always answer by calling the write_code tool.',
-      },
-      { role: 'user', content: prompt },
+      { role: 'system', content: buildSystemPrompt(existingCode.trim() !== '') },
+      { role: 'user', content: buildUserMessage(prompt, existingCode) },
     ],
     WRITE_CODE_TOOL,
   )

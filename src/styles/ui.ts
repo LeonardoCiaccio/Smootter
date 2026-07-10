@@ -152,6 +152,8 @@ export const ui = {
     'flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-gray-500 shadow-sm ring-1 ring-gray-200 backdrop-blur transition-colors hover:bg-white hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-gray-800/90 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200',
   codeEditorActionButtonDanger:
     'flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-rose-500 shadow-sm ring-1 ring-gray-200 backdrop-blur transition-colors hover:bg-rose-50 dark:bg-gray-800/90 dark:ring-gray-700 dark:hover:bg-rose-950',
+  codeEditorActionButtonAi:
+    'flex h-8 w-8 items-center justify-center rounded-full bg-cyan-600 text-white shadow-sm transition-colors hover:bg-cyan-500 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-cyan-500 dark:hover:bg-cyan-400',
   codeEditorActionIcon: 'h-4 w-4',
   // Tester step: message centered, Save centered below it once the test passes.
   wizardTesterBody: 'flex w-full flex-col items-center gap-5 text-center',

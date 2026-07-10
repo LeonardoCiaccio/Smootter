@@ -77,7 +77,7 @@ const aiLabel = chrome.i18n.getMessage('llmButtonLabel')
         </button>
         <button
           type="button"
-          :class="ui.codeEditorActionButton"
+          :class="ui.codeEditorActionButtonAi"
           :title="aiLabel"
           @click="onAiClick"
         >
@@ -93,6 +93,7 @@ const aiLabel = chrome.i18n.getMessage('llmButtonLabel')
     />
     <GeneratePromptModal
       v-if="showPromptModal"
+      :existing-code="data.code"
       @close="showPromptModal = false"
       @generated="onGenerated"
     />

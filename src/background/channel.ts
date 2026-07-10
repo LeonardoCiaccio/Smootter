@@ -172,7 +172,7 @@ grip.register({
     if (!config) {
       return { type: 'generateCodeResult', ok: false, errorCode: 'unknown', detail: 'No LLM configured.' }
     }
-    const result = await generateCode(config, args.prompt)
+    const result = await generateCode(config, args.prompt, args.existingCode)
     return {
       type: 'generateCodeResult',
       ok: result.ok,

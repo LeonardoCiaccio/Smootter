@@ -6,6 +6,7 @@ import { useToast } from '../../plugins/toast'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { llmErrorText } from '@/shared/llmErrorText'
 
+const props = defineProps<{ existingCode: string }>()
 const emit = defineEmits<{ close: []; generated: [code: string] }>()
 const toast = useToast()
 const channel = inject(channelKey)
@@ -21,7 +22,11 @@ async function generate(): Promise<void> {
   }
 
   generating.value = true
-  const response = await channel.send({ type: 'generateCode', prompt: prompt.value })
+  const response = await channel.send({
+    type: 'generateCode',
+    prompt: prompt.value,
+    existingCode: props.existingCode,
+  })
   generating.value = false
 
   if (response.type !== 'generateCodeResult' || !response.ok) {
