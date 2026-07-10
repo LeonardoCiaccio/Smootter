@@ -63,5 +63,8 @@
   "wizardScopeTargetsPlaceholder": { "message": "Uno por línea, ej.\nexample.com\nexample.com/ruta" },
   "wizardBasicsRequiredError": {
     "message": "Completa tanto el nombre como la descripción antes de continuar."
+  },
+  "wizardScopeRequiredError": {
+    "message": "Introduce al menos un dominio o página antes de continuar."
   }
 }

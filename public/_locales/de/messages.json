@@ -65,5 +65,8 @@
   "wizardScopeTargetsPlaceholder": { "message": "Einer pro Zeile, z. B.\nexample.com\nexample.com/pfad" },
   "wizardBasicsRequiredError": {
     "message": "Gib sowohl den Namen als auch die Beschreibung ein, bevor du fortfährst."
+  },
+  "wizardScopeRequiredError": {
+    "message": "Gib mindestens eine Domain oder Seite ein, bevor du fortfährst."
   }
 }

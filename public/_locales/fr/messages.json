@@ -65,5 +65,8 @@
   "wizardScopeTargetsPlaceholder": { "message": "Un par ligne, ex.\nexample.com\nexample.com/chemin" },
   "wizardBasicsRequiredError": {
     "message": "Renseignez le nom et la description avant de continuer."
+  },
+  "wizardScopeRequiredError": {
+    "message": "Indiquez au moins un domaine ou une page avant de continuer."
   }
 }

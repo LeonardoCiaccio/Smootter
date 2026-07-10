@@ -61,5 +61,8 @@
   "wizardScopeDomainTitle": { "message": "Dominio o pagina specifica" },
   "wizardScopeDomainDescription": { "message": "Funziona solo dove lo autorizzi." },
   "wizardScopeTargetsPlaceholder": { "message": "Uno per riga, es.\nexample.com\nexample.com/percorso" },
-  "wizardBasicsRequiredError": { "message": "Compila sia il nome che la descrizione per continuare." }
+  "wizardBasicsRequiredError": { "message": "Compila sia il nome che la descrizione per continuare." },
+  "wizardScopeRequiredError": {
+    "message": "Inserisci almeno un dominio o una pagina per continuare."
+  }
 }

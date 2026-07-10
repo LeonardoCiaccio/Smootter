@@ -63,5 +63,8 @@
   "wizardScopeTargetsPlaceholder": { "message": "One per line, e.g.\nexample.com\nexample.com/path" },
   "wizardBasicsRequiredError": {
     "message": "Fill in both the name and the description before continuing."
+  },
+  "wizardScopeRequiredError": {
+    "message": "Enter at least one domain or page before continuing."
   }
 }

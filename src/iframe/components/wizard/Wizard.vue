@@ -32,14 +32,27 @@ const data = reactive(new WizardData())
 const currentIndex = ref(0)
 const currentStep = computed(() => stepMeta[currentIndex.value])
 
-const isBasicsComplete = computed(() => data.name.trim() !== '' && data.description.trim() !== '')
+/** Returns the i18n key of the error blocking this step, or null if it's complete. */
+function validateBasics(): string | null {
+  const complete = data.name.trim() !== '' && data.description.trim() !== ''
+  return complete ? null : 'wizardBasicsRequiredError'
+}
+
+function validateScope(): string | null {
+  if (data.scope !== 'domain') return null
+  return data.scopeTargets.trim() !== '' ? null : 'wizardScopeRequiredError'
+}
+
+// One validator per slide; steps without a requirement always pass.
+const stepValidators: Array<() => string | null> = [validateBasics, () => null, validateScope, () => null]
 
 const toast = useToast()
 
-/** The user can jump to any step at will, to revisit and edit freely. */
+/** The user can jump to any step at will, unless the current one is incomplete. */
 function goTo(index: number): void {
-  if (currentIndex.value === 0 && index !== 0 && !isBasicsComplete.value) {
-    toast.error(chrome.i18n.getMessage('wizardBasicsRequiredError'))
+  const errorKey = stepValidators[currentIndex.value]()
+  if (index !== currentIndex.value && errorKey) {
+    toast.error(chrome.i18n.getMessage(errorKey))
     return
   }
   currentIndex.value = index
