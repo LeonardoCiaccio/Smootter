@@ -54,6 +54,16 @@ watch(theme, () => {
   view?.dispatch({ effects: themeCompartment.reconfigure(editorTheme()) })
 })
 
+// Pushes external changes (e.g. AI-generated code) into the editor. Guarded
+// by the value check so it never fires from the editor's own emit.
+watch(
+  () => props.modelValue,
+  (value) => {
+    if (!view || value === view.state.doc.toString()) return
+    view.dispatch({ changes: { from: 0, to: view.state.doc.length, insert: value } })
+  },
+)
+
 onBeforeUnmount(() => view?.destroy())
 </script>
 

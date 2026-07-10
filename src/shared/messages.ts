@@ -3,7 +3,10 @@
  * No logic here, only types. Messages travel over chrome.runtime.sendMessage
  * / onMessage — stateless, no port names needed.
  */
-import type { Preferences } from './preferences'
+import type { Preferences, LlmConfig } from './preferences'
+
+/** Machine-readable outcome of an LLM call; the UI owns translating it. */
+export type LlmErrorCode = 'network' | 'timeout' | 'http' | 'noToolSupport' | 'unknown'
 
 export interface PingRequest {
   type: 'ping'
@@ -13,16 +16,14 @@ export interface PongResponse {
   type: 'pong'
 }
 
-export interface SetPreferenceRequest {
-  type: 'setPreference'
-  key: keyof Preferences
-  value: Preferences[keyof Preferences]
-}
+/** Distributes over each preference key so narrowing `key` also narrows `value`. */
+export type SetPreferenceRequest = {
+  [K in keyof Preferences]: { type: 'setPreference'; key: K; value: Preferences[K] }
+}[keyof Preferences]
 
-export interface GetPreferenceRequest {
-  type: 'getPreference'
-  key: keyof Preferences
-}
+export type GetPreferenceRequest = {
+  [K in keyof Preferences]: { type: 'getPreference'; key: K }
+}[keyof Preferences]
 
 export interface GetTopMessageRequest {
   type: 'getTopMessage'
@@ -54,18 +55,14 @@ export interface UserScriptsStatusResponse {
 }
 
 /** Reply to getPreference: value is undefined when not stored. */
-export interface PreferenceValue {
-  type: 'preferenceValue'
-  key: keyof Preferences
-  value?: Preferences[keyof Preferences]
-}
+export type PreferenceValue = {
+  [K in keyof Preferences]: { type: 'preferenceValue'; key: K; value?: Preferences[K] }
+}[keyof Preferences]
 
 /** Reply to setPreference: acknowledges the write. */
-export interface PreferenceSaved {
-  type: 'preferenceSaved'
-  key: keyof Preferences
-  ok: boolean
-}
+export type PreferenceSaved = {
+  [K in keyof Preferences]: { type: 'preferenceSaved'; key: K; ok: boolean }
+}[keyof Preferences]
 
 /**
  * Sent by the wizard to test a tool's code for real. The worker runs it via
@@ -81,12 +78,54 @@ export interface TestCodeRequest {
 
 /**
  * Reply to testCode: whether the code ran without throwing, straight from
- * the chrome.userScripts.execute() call itself — not a guess.
+ * the chrome.userScripts.execute() call itself — not a guess. `testId`
+ * identifies whatever DOM the run left on the real page, so it can later be
+ * cleaned up via cleanupTest.
  */
 export interface TestCodeResult {
   type: 'testCodeResult'
   ok: boolean
   error?: string
+  testId?: string
+}
+
+/**
+ * Sent when leaving the tester step (back, or after a successful save):
+ * removes any DOM a test run left on the real page (a popup, a banner, ...).
+ * One-way, no reply expected.
+ */
+export interface CleanupTestRequest {
+  type: 'cleanupTest'
+  testId: string
+}
+
+/** Sent by the LLM config popup's Test button: verifies the endpoint, key and model actually work. */
+export interface TestLlmConfigRequest {
+  type: 'testLlmConfig'
+  config: LlmConfig
+}
+
+/** Reply to testLlmConfig. */
+export interface TestLlmConfigResult {
+  type: 'testLlmConfigResult'
+  ok: boolean
+  errorCode?: LlmErrorCode
+  detail?: string
+}
+
+/** Sent by the wizard's prompt box: asks the configured LLM to generate the tool's code. */
+export interface GenerateCodeRequest {
+  type: 'generateCode'
+  prompt: string
+}
+
+/** Reply to generateCode. */
+export interface GenerateCodeResult {
+  type: 'generateCodeResult'
+  ok: boolean
+  code?: string
+  errorCode?: LlmErrorCode
+  detail?: string
 }
 
 /** Messages sent from the UI to the background. */
@@ -98,6 +137,9 @@ export type ChannelRequest =
   | CloseModalSignal
   | GetUserScriptsStatusRequest
   | TestCodeRequest
+  | CleanupTestRequest
+  | TestLlmConfigRequest
+  | GenerateCodeRequest
 
 /** Messages sent from the background to the UI. */
 export type ChannelResponse =
@@ -108,3 +150,5 @@ export type ChannelResponse =
   | CloseModalSignal
   | UserScriptsStatusResponse
   | TestCodeResult
+  | TestLlmConfigResult
+  | GenerateCodeResult

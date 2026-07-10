@@ -12,10 +12,14 @@ import {
   type SetPreferenceRequest,
   type GetPreferenceRequest,
   type TestCodeRequest,
+  type CleanupTestRequest,
+  type TestLlmConfigRequest,
+  type GenerateCodeRequest,
 } from '@/shared/messages'
 import { getPreference, setPreference, type Preferences } from '@/shared/preferences'
 import { isUserScriptsEnabled } from './userScripts'
-import { runCodeTest } from './testRunner'
+import { runCodeTest, cleanupTestArtifacts } from './testRunner'
+import { testLlmConfig, generateCode } from './llmClient'
 
 interface Context {
   sender: chrome.runtime.MessageSender
@@ -111,10 +115,66 @@ grip.register({
   async business(args: TestCodeRequest, context?: object) {
     const tabId = (context as Context | undefined)?.sender.tab?.id
     const result = await runCodeTest(args.code, tabId)
-    return { type: 'testCodeResult', ok: result.ok, error: result.error }
+    return { type: 'testCodeResult', ok: result.ok, error: result.error, testId: result.testId }
   },
 })
 grip.hook('testCode', {
+  after({ result }, context: Context) {
+    if (result.isSuccess) context.sendResponse(result.result)
+  },
+})
+
+grip.register({
+  name: 'cleanupTest',
+  validate(args: CleanupTestRequest) {
+    if (typeof args.testId !== 'string' || args.testId === '') throw new Error('testId is required.')
+  },
+  async business(args: CleanupTestRequest) {
+    await cleanupTestArtifacts(args.testId)
+  },
+})
+
+grip.register({
+  name: 'testLlmConfig',
+  validate(args: TestLlmConfigRequest) {
+    if (!args.config?.endpoint || !args.config?.apiKey || !args.config?.model) {
+      throw new Error('endpoint, apiKey and model are required.')
+    }
+  },
+  async business(args: TestLlmConfigRequest) {
+    const result = await testLlmConfig(args.config)
+    return { type: 'testLlmConfigResult', ok: result.ok, errorCode: result.errorCode, detail: result.detail }
+  },
+})
+grip.hook('testLlmConfig', {
+  after({ result }, context: Context) {
+    if (result.isSuccess) context.sendResponse(result.result)
+  },
+})
+
+grip.register({
+  name: 'generateCode',
+  validate(args: GenerateCodeRequest) {
+    if (typeof args.prompt !== 'string' || args.prompt.trim() === '') {
+      throw new Error('prompt is required.')
+    }
+  },
+  async business(args: GenerateCodeRequest) {
+    const config = await getPreference('llmConfig')
+    if (!config) {
+      return { type: 'generateCodeResult', ok: false, errorCode: 'unknown', detail: 'No LLM configured.' }
+    }
+    const result = await generateCode(config, args.prompt)
+    return {
+      type: 'generateCodeResult',
+      ok: result.ok,
+      code: result.code,
+      errorCode: result.errorCode,
+      detail: result.detail,
+    }
+  },
+})
+grip.hook('generateCode', {
   after({ result }, context: Context) {
     if (result.isSuccess) context.sendResponse(result.result)
   },

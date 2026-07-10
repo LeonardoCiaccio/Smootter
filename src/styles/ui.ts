@@ -130,12 +130,27 @@ export const ui = {
   bannerDescription: 'text-xs text-gray-600 dark:text-gray-400',
   // Code editor (CodeMirror mounts here; its own theme mirrors these colors)
   codeEditor: 'h-full min-h-[16rem] w-full overflow-hidden rounded-xl border border-gray-200 text-sm dark:border-gray-800',
-  wizardCodeActions: 'flex w-full items-center justify-end gap-3',
+  // Wraps the code editor so the floating action buttons (clear, AI) can overlay its bottom-right corner.
+  codeEditorWrapper: 'relative min-h-0 w-full flex-1',
+  codeEditorActions: 'absolute bottom-3 right-3 z-10 flex items-center gap-1.5',
+  codeEditorActionButton:
+    'flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-gray-500 shadow-sm ring-1 ring-gray-200 backdrop-blur transition-colors hover:bg-white hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-gray-800/90 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200',
+  codeEditorActionButtonDanger:
+    'flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-rose-500 shadow-sm ring-1 ring-gray-200 backdrop-blur transition-colors hover:bg-rose-50 dark:bg-gray-800/90 dark:ring-gray-700 dark:hover:bg-rose-950',
+  codeEditorActionIcon: 'h-4 w-4',
   // Tester step: message centered, Save centered below it once the test passes.
   wizardTesterBody: 'flex w-full flex-col items-center gap-5 text-center',
   testStatusWaiting: 'text-lg font-semibold text-gray-500 dark:text-gray-400',
   testStatusOk: 'text-lg font-semibold text-emerald-600 dark:text-emerald-400',
   testStatusError: 'text-lg font-semibold text-rose-600 dark:text-rose-400',
+  // Generic modal: dim overlay + centered panel, reused by the LLM config popup.
+  modalOverlay: 'fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-6',
+  modalPanel: 'flex w-full max-w-md flex-col gap-5 rounded-tool bg-white p-6 text-left shadow-xl dark:bg-gray-900',
+  modalHeader: 'flex items-center justify-between',
+  modalTitle: 'text-lg font-semibold text-gray-900 dark:text-gray-100',
+  modalActions: 'flex items-center justify-end gap-3',
+  modalStatusOk: 'break-words text-sm font-medium text-emerald-600 dark:text-emerald-400',
+  modalStatusError: 'break-words text-sm font-medium text-rose-600 dark:text-rose-400',
 } as const
 
 export type UiVariant = keyof typeof ui

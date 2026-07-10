@@ -40,7 +40,7 @@ export function useTheme() {
 /** Fetch the stored theme once, falling back to the browser's if none is stored yet. */
 async function loadInitialTheme(client: ChannelClient): Promise<void> {
   const response = await client.send({ type: 'getPreference', key: 'theme' })
-  if (response.type !== 'preferenceValue') return
+  if (response.type !== 'preferenceValue' || response.key !== 'theme') return
   if (hasResolvedInitialTheme) return // the user already toggled while this was in flight
 
   if (response.value) {
@@ -63,8 +63,9 @@ export const theme = {
     // Broadcasts only: reacts if the theme changes elsewhere (another tab).
     channel.subscribe((message) => {
       if (message.type !== 'preferenceValue' || message.key !== 'theme') return
-      if (!hasResolvedInitialTheme || !message.value) return
-      applyTheme(message.value)
+      const value = message.value
+      if (!hasResolvedInitialTheme || !value) return
+      applyTheme(value)
     })
 
     void loadInitialTheme(channel)

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, onMounted, ref } from 'vue'
+import { computed, inject, onBeforeUnmount, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { ui } from '@/styles/ui'
 import { useToast } from '../../plugins/toast'
@@ -14,6 +14,9 @@ const channel = inject(channelKey)
 
 const verdict = ref<'running' | 'ok' | 'error'>('running')
 const errorDetails = ref('')
+// Whatever DOM the last test run left on the real page (a popup, a banner,
+// ...) — removed when this step is left, one way or another (back, or save).
+let lastTestId: string | undefined
 
 const statusClass = computed(() => {
   if (verdict.value === 'error') return ui.testStatusError
@@ -36,6 +39,7 @@ async function runTest(): Promise<void> {
   const response = await channel.send({ type: 'testCode', code: data.value.code })
   if (response.type !== 'testCodeResult') return
 
+  lastTestId = response.testId
   if (response.ok) {
     verdict.value = 'ok'
     data.value.codeTested = true
@@ -46,6 +50,10 @@ async function runTest(): Promise<void> {
 }
 
 onMounted(runTest)
+
+onBeforeUnmount(() => {
+  if (lastTestId) channel?.send({ type: 'cleanupTest', testId: lastTestId })
+})
 
 async function save(): Promise<void> {
   const tool: StoredTool = {

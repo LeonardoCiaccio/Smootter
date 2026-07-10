@@ -6,8 +6,16 @@
 
 const PREFIX = chrome.runtime.getManifest().short_name + '_pref_'
 
+/** Open provider: the user supplies their own OpenAI-compatible endpoint, key and model. */
+export interface LlmConfig {
+  endpoint: string
+  apiKey: string
+  model: string
+}
+
 export interface Preferences {
   theme: 'light' | 'dark'
+  llmConfig: LlmConfig
 }
 
 /** Read a stored preference, or undefined if not set. */
