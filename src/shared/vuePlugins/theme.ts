@@ -37,28 +37,36 @@ export function useTheme() {
   }
 }
 
+/** Fetch the stored theme once, falling back to the browser's if none is stored yet. */
+async function loadInitialTheme(client: ChannelClient): Promise<void> {
+  const response = await client.send({ type: 'getPreference', key: 'theme' })
+  if (response.type !== 'preferenceValue') return
+  if (hasResolvedInitialTheme) return // the user already toggled while this was in flight
+
+  if (response.value) {
+    applyTheme(response.value)
+    hasResolvedInitialTheme = true
+    return
+  }
+
+  hasResolvedInitialTheme = true
+  const detected = detectBrowserTheme()
+  applyTheme(detected)
+  client.send({ type: 'setPreference', key: 'theme', value: detected })
+}
+
 export const theme = {
   install(app: App): void {
     channel = app.runWithContext(() => inject(channelKey))
     if (!channel) return
 
+    // Broadcasts only: reacts if the theme changes elsewhere (another tab).
     channel.subscribe((message) => {
       if (message.type !== 'preferenceValue' || message.key !== 'theme') return
-
-      if (message.value) {
-        applyTheme(message.value)
-        hasResolvedInitialTheme = true
-        return
-      }
-
-      // No stored theme yet: fall back to the browser theme and persist it.
-      if (hasResolvedInitialTheme) return
-      hasResolvedInitialTheme = true
-      const detected = detectBrowserTheme()
-      applyTheme(detected)
-      channel?.send({ type: 'setPreference', key: 'theme', value: detected })
+      if (!hasResolvedInitialTheme || !message.value) return
+      applyTheme(message.value)
     })
 
-    channel.send({ type: 'getPreference', key: 'theme' })
+    void loadInitialTheme(channel)
   },
 }

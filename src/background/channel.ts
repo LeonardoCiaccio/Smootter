@@ -1,13 +1,13 @@
 /**
  * channel — owns the private UI ⇄ background channel.
- * Tracks connected ports and routes incoming messages through a GRIP pipeline:
- * business stays pure domain logic; each function's `after` hook owns
- * delivering the wire response (and any side effect, e.g. broadcasting).
+ * Stateless: every request arrives as a one-off chrome.runtime.sendMessage
+ * (no persistent Port to go stale when the service worker idles out).
+ * Routes incoming messages through a GRIP pipeline: business stays pure
+ * domain logic; each function's `after` hook owns delivering the wire
+ * response (sendResponse) and any side effect (e.g. broadcasting).
  */
 import { Grip } from '@leonardo.ciaccio/grip'
 import {
-  PORT_NAME,
-  RUNTIME_PORT_NAME,
   type ChannelRequest,
   type SetPreferenceRequest,
   type GetPreferenceRequest,
@@ -17,18 +17,14 @@ import { getPreference, setPreference, type Preferences } from '@/shared/prefere
 import { isUserScriptsEnabled } from './userScripts'
 import { runCodeTest } from './testRunner'
 
-// All connected channel ports (UI + environment)
-const ports = new Set<chrome.runtime.Port>()
-
 interface Context {
-  port: chrome.runtime.Port
+  sender: chrome.runtime.MessageSender
+  sendResponse: (response: unknown) => void
 }
 
-/** Push a preference value to every connected port. */
+/** Push a preference value to every extension context currently listening. */
 function broadcastPreference<K extends keyof Preferences>(key: K, value: Preferences[K]): void {
-  for (const port of ports) {
-    port.postMessage({ type: 'preferenceValue', key, value })
-  }
+  void chrome.runtime.sendMessage({ type: 'preferenceValue', key, value })
 }
 
 // ---- GRIP pipeline: one registered function per message type ----
@@ -43,7 +39,7 @@ grip.register({
 })
 grip.hook('ping', {
   after({ result }, context: Context) {
-    if (result.isSuccess) context.port.postMessage(result.result)
+    if (result.isSuccess) context.sendResponse(result.result)
   },
 })
 
@@ -56,7 +52,7 @@ grip.register({
 })
 grip.hook('getTopMessage', {
   after({ result }, context: Context) {
-    if (result.isSuccess) context.port.postMessage(result.result)
+    if (result.isSuccess) context.sendResponse(result.result)
   },
 })
 
@@ -72,7 +68,7 @@ grip.register({
 })
 grip.hook('getPreference', {
   after({ result }, context: Context) {
-    if (result.isSuccess) context.port.postMessage(result.result)
+    if (result.isSuccess) context.sendResponse(result.result)
   },
 })
 
@@ -84,9 +80,10 @@ grip.register({
   },
 })
 grip.hook('closeModal', {
-  after({ result }) {
+  after({ result }, context: Context) {
     if (!result.isSuccess) return
-    for (const port of ports) port.postMessage(result.result)
+    context.sendResponse(result.result)
+    void chrome.runtime.sendMessage(result.result)
   },
 })
 
@@ -100,7 +97,7 @@ grip.register({
 })
 grip.hook('getUserScriptsStatus', {
   after({ result }, context: Context) {
-    if (result.isSuccess) context.port.postMessage(result.result)
+    if (result.isSuccess) context.sendResponse(result.result)
   },
 })
 
@@ -112,14 +109,14 @@ grip.register({
     }
   },
   async business(args: TestCodeRequest, context?: object) {
-    const tabId = (context as Context | undefined)?.port.sender?.tab?.id
+    const tabId = (context as Context | undefined)?.sender.tab?.id
     const result = await runCodeTest(args.code, tabId)
     return { type: 'testCodeResult', ok: result.ok, error: result.error }
   },
 })
 grip.hook('testCode', {
   after({ result }, context: Context) {
-    if (result.isSuccess) context.port.postMessage(result.result)
+    if (result.isSuccess) context.sendResponse(result.result)
   },
 })
 
@@ -135,25 +132,19 @@ grip.register({
 grip.hook('setPreference', {
   after({ args, result }, context: Context) {
     const message = args as SetPreferenceRequest
-    context.port.postMessage({ type: 'preferenceSaved', key: message.key, ok: result.isSuccess })
+    context.sendResponse({ type: 'preferenceSaved', key: message.key, ok: result.isSuccess })
     if (result.isSuccess) broadcastPreference(message.key, message.value)
   },
 })
 
-/** Accept a known channel connection, track it, and wire its message handler. */
-function handleConnection(port: chrome.runtime.Port): void {
-  const knownPorts: string[] = [PORT_NAME, RUNTIME_PORT_NAME]
-  if (!knownPorts.includes(port.name)) return
-  ports.add(port)
-  port.onDisconnect.addListener(() => ports.delete(port))
-  port.onMessage.addListener((message: ChannelRequest) => {
+/** Start listening for one-off channel requests. */
+export function registerChannel(): void {
+  chrome.runtime.onMessage.addListener((message: ChannelRequest, sender, sendResponse) => {
     // Unregistered message.type is a developer bug: GRIP throws intentionally,
     // surfacing as an unhandled rejection in the worker console. Do not catch it.
-    void grip.fire(message.type, message, { port })
+    void grip.fire(message.type, message, { sender, sendResponse })
+    // Every handler above replies via sendResponse in its `after` hook, which
+    // may run after this listener returns — keep the channel open for it.
+    return true
   })
-}
-
-/** Start listening for channel connections. */
-export function registerChannel(): void {
-  chrome.runtime.onConnect.addListener(handleConnection)
 }

@@ -13,12 +13,10 @@ const logoUrl = chrome.runtime.getURL('icons/icon-32.png')
 const channel = inject(channelKey)
 const topMessage = ref('')
 
-onMounted(() => {
+onMounted(async () => {
   if (!channel) return
-  channel.subscribe((message) => {
-    if (message.type === 'topMessage') topMessage.value = message.value
-  })
-  channel.send({ type: 'getTopMessage' })
+  const response = await channel.send({ type: 'getTopMessage' })
+  if (response.type === 'topMessage') topMessage.value = response.value
 })
 
 const { theme, toggle } = useTheme()

@@ -27,24 +27,22 @@ const statusText = computed(() => {
 })
 
 /** Runs the tool's code for real, governed by the background worker. */
-function runTest(): void {
+async function runTest(): Promise<void> {
   if (!channel) return
 
   verdict.value = 'running'
   data.value.codeTested = false
 
-  const unsubscribe = channel.subscribe((message) => {
-    if (message.type !== 'testCodeResult') return
-    unsubscribe()
-    if (message.ok) {
-      verdict.value = 'ok'
-      data.value.codeTested = true
-    } else {
-      verdict.value = 'error'
-      errorDetails.value = message.error ?? ''
-    }
-  })
-  channel.send({ type: 'testCode', code: data.value.code })
+  const response = await channel.send({ type: 'testCode', code: data.value.code })
+  if (response.type !== 'testCodeResult') return
+
+  if (response.ok) {
+    verdict.value = 'ok'
+    data.value.codeTested = true
+  } else {
+    verdict.value = 'error'
+    errorDetails.value = response.error ?? ''
+  }
 }
 
 onMounted(runTest)

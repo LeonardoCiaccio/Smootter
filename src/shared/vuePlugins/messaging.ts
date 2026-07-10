@@ -1,40 +1,39 @@
 /**
- * messaging — Vue plugin exposing a private channel to the background.
- * Opens a persistent Port on install and provides an injectable client.
- * Shared by every extension page (SaaS iframe, test page, ...) — each
- * connects under its own port name so the worker can tell them apart.
+ * messaging — Vue plugin exposing a stateless channel to the background.
+ * Uses one-off chrome.runtime.sendMessage calls (each wakes the service
+ * worker fresh) instead of a long-lived Port: MV3 kills idle service
+ * workers, which silently drops persistent ports — "Attempting to use a
+ * disconnected port object" — with no such failure mode for one-off calls.
+ * Shared by every extension page.
  */
 import type { App, InjectionKey } from 'vue'
 import type { ChannelRequest, ChannelResponse } from '@/shared/messages'
 
 export interface ChannelClient {
-  send: (message: ChannelRequest) => void
+  /** One-off request; resolves with the background's direct reply. */
+  send: (message: ChannelRequest) => Promise<ChannelResponse>
+  /** Listens for messages the background broadcasts (not tied to a request). */
   subscribe: (handler: (message: ChannelResponse) => void) => () => void
 }
 
 export const channelKey: InjectionKey<ChannelClient> = Symbol('pippo-channel')
 
-/** Build the client over a persistent runtime Port. */
-function createClient(portName: string): ChannelClient {
-  const port = chrome.runtime.connect({ name: portName })
-
-  const send = (message: ChannelRequest): void => {
-    port.postMessage(message)
+function createClient(): ChannelClient {
+  const send = (message: ChannelRequest): Promise<ChannelResponse> => {
+    return chrome.runtime.sendMessage(message)
   }
 
   const subscribe = (handler: (message: ChannelResponse) => void): (() => void) => {
-    port.onMessage.addListener(handler)
-    return () => port.onMessage.removeListener(handler)
+    const listener = (message: ChannelResponse): void => handler(message)
+    chrome.runtime.onMessage.addListener(listener)
+    return () => chrome.runtime.onMessage.removeListener(listener)
   }
 
   return { send, subscribe }
 }
 
-/** Build the plugin for a given port name. */
-export function createMessagingPlugin(portName: string) {
-  return {
-    install(app: App): void {
-      app.provide(channelKey, createClient(portName))
-    },
-  }
+export const messaging = {
+  install(app: App): void {
+    app.provide(channelKey, createClient())
+  },
 }

@@ -12,8 +12,6 @@
 import type { ChannelResponse } from '@/shared/messages'
 
 const modalId = chrome.runtime.getManifest().short_name + '_environment_modal'
-// Mirrors RUNTIME_PORT_NAME in messages.ts (kept local: no runtime import)
-const portName = chrome.runtime.getManifest().short_name + '_runtime'
 const iframeUrl = chrome.runtime.getURL('src/iframe/index.html')
 
 // ---- Presence: is the modal in the DOM? ----
@@ -62,14 +60,13 @@ function hide(): void {
   unlockHostScroll()
 }
 
-// ---- Channel: listen for the iframe's close request ----
+// ---- Channel: listen for the iframe's close request (broadcast from the worker) ----
 function handleWorkerMessage(message: ChannelResponse): void {
   if (message.type === 'closeModal') hide()
 }
 
 function connectChannel(): void {
-  const port = chrome.runtime.connect({ name: portName })
-  port.onMessage.addListener(handleWorkerMessage)
+  chrome.runtime.onMessage.addListener(handleWorkerMessage)
 }
 
 // ---- Build ----

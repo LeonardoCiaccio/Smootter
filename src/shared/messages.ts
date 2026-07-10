@@ -1,12 +1,8 @@
 /**
  * Shared message contracts for the UI ⇄ background channel.
- * No logic here, only types and the port name.
+ * No logic here, only types. Messages travel over chrome.runtime.sendMessage
+ * / onMessage — stateless, no port names needed.
  */
-
-// Persistent port names, derived from the manifest short_name
-export const PORT_NAME = chrome.runtime.getManifest().short_name + '_channel' // UI (iframe)
-export const RUNTIME_PORT_NAME = chrome.runtime.getManifest().short_name + '_runtime' // environment
-
 import type { Preferences } from './preferences'
 
 export interface PingRequest {

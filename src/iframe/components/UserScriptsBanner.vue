@@ -8,12 +8,10 @@ const channel = inject(channelKey)
 // Assume enabled until the worker replies, to avoid a flash on the happy path.
 const enabled = ref(true)
 
-onMounted(() => {
+onMounted(async () => {
   if (!channel) return
-  channel.subscribe((message) => {
-    if (message.type === 'userScriptsStatus') enabled.value = message.enabled
-  })
-  channel.send({ type: 'getUserScriptsStatus' })
+  const response = await channel.send({ type: 'getUserScriptsStatus' })
+  if (response.type === 'userScriptsStatus') enabled.value = response.enabled
 })
 
 const title = chrome.i18n.getMessage('userScriptsDisabledTitle')
