@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, inject, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import confetti from 'canvas-confetti'
 import { SparklesIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { useToast } from '../../plugins/toast'
@@ -54,6 +55,7 @@ async function runTest(): Promise<void> {
   if (response.ok) {
     verdict.value = 'ok'
     data.value.codeTested = true
+    confetti({ particleCount: 120, spread: 80, origin: { y: 0.6 } })
   } else {
     verdict.value = 'error'
     errorDetails.value = response.error ?? ''

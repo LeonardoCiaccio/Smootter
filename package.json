@@ -22,12 +22,14 @@
     "@heroicons/vue": "^2.2.0",
     "@leonardo.ciaccio/grip": "^1.173.0",
     "acorn": "^8.17.0",
+    "canvas-confetti": "^1.9.4",
     "codemirror": "^6.0.2",
     "vue": "^3.5.39",
     "vue-router": "^5.1.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
+    "@types/canvas-confetti": "^1.9.0",
     "@types/chrome": "^0.2.2",
     "@vitejs/plugin-vue": "^6.0.7",
     "autoprefixer": "^10.5.2",
