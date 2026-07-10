@@ -182,8 +182,12 @@ function goPrev(): void {
   if (currentIndex.value > 0) goTo(currentIndex.value - 1)
 }
 
+// The tester step (index 4) has no dot and isn't reachable via the arrows —
+// only the Test button inside the chat step's editor advances into it.
+const dotSteps = computed(() => stepMeta.slice(0, 4))
+
 function goNext(): void {
-  if (currentIndex.value < stepMeta.length - 1) goTo(currentIndex.value + 1)
+  if (currentIndex.value < dotSteps.value.length - 1) goTo(currentIndex.value + 1)
 }
 </script>
 
@@ -215,7 +219,7 @@ function goNext(): void {
 
       <div :class="ui.wizardStepDots">
         <button
-          v-for="(step, index) in stepMeta"
+          v-for="(step, index) in dotSteps"
           :key="step.label"
           type="button"
           :class="[ui.wizardStepDot, index === currentIndex && ui.wizardStepDotActive]"
@@ -227,7 +231,7 @@ function goNext(): void {
       <button
         type="button"
         :class="ui.wizardStepArrow"
-        :disabled="currentIndex === stepMeta.length - 1"
+        :disabled="currentIndex >= dotSteps.length - 1"
         :aria-label="nextLabel"
         @click="goNext"
       >
