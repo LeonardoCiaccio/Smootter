@@ -109,10 +109,15 @@ export const ui = {
   wizardFieldLabel: 'text-sm font-medium text-gray-700 dark:text-gray-300',
   wizardCounter: 'self-end text-xs text-gray-400 dark:text-gray-500',
   // Dots: inactive = small circle, active = elongated pill (smooth width transition)
-  wizardSteps: 'flex items-center justify-center gap-2 pt-6',
+  wizardSteps: 'flex items-center justify-center gap-3 pt-6',
+  wizardStepDots: 'flex items-center justify-center gap-2',
   wizardStepDot:
     'h-2 w-2 rounded-full bg-gray-300 transition-all duration-200 hover:bg-gray-400 dark:bg-gray-300 dark:hover:bg-gray-200',
   wizardStepDotActive: 'w-6 bg-gray-900 hover:bg-gray-900 dark:bg-gray-100 dark:hover:bg-gray-100',
+  // Prev/next helpers flanking the dots.
+  wizardStepArrow:
+    'flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent dark:hover:bg-gray-800 dark:hover:text-gray-200',
+  wizardStepArrowIcon: 'h-4 w-4',
   // Wizard option cards: reused by any step with a selectable-card list (whole card is the click target)
   wizardOptionList: 'flex w-full flex-col gap-3',
   wizardOption:

@@ -2,6 +2,7 @@
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { parse } from 'acorn'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { WizardData } from './WizardData'
 import WizardStepBasics from './WizardStepBasics.vue'
@@ -32,6 +33,9 @@ const stepMeta: StepMeta[] = stepMessageKeys.map((keys) => ({
   title: chrome.i18n.getMessage(keys.title),
   subtitle: chrome.i18n.getMessage(keys.subtitle),
 }))
+
+const backLabel = chrome.i18n.getMessage('wizardBack')
+const nextLabel = chrome.i18n.getMessage('wizardNext')
 
 const data = reactive(new WizardData())
 const currentIndex = ref(0)
@@ -135,6 +139,14 @@ function goTo(index: number): void {
   }
   currentIndex.value = index
 }
+
+function goPrev(): void {
+  if (currentIndex.value > 0) goTo(currentIndex.value - 1)
+}
+
+function goNext(): void {
+  if (currentIndex.value < stepMeta.length - 1) goTo(currentIndex.value + 1)
+}
 </script>
 
 <template>
@@ -154,13 +166,35 @@ function goTo(index: number): void {
 
     <div :class="ui.wizardSteps">
       <button
-        v-for="(step, index) in stepMeta"
-        :key="step.label"
         type="button"
-        :class="[ui.wizardStepDot, index === currentIndex && ui.wizardStepDotActive]"
-        :aria-label="step.label"
-        @click="goTo(index)"
-      />
+        :class="ui.wizardStepArrow"
+        :disabled="currentIndex === 0"
+        :aria-label="backLabel"
+        @click="goPrev"
+      >
+        <ChevronLeftIcon :class="ui.wizardStepArrowIcon" />
+      </button>
+
+      <div :class="ui.wizardStepDots">
+        <button
+          v-for="(step, index) in stepMeta"
+          :key="step.label"
+          type="button"
+          :class="[ui.wizardStepDot, index === currentIndex && ui.wizardStepDotActive]"
+          :aria-label="step.label"
+          @click="goTo(index)"
+        />
+      </div>
+
+      <button
+        type="button"
+        :class="ui.wizardStepArrow"
+        :disabled="currentIndex === stepMeta.length - 1"
+        :aria-label="nextLabel"
+        @click="goNext"
+      >
+        <ChevronRightIcon :class="ui.wizardStepArrowIcon" />
+      </button>
     </div>
   </div>
 </template>
