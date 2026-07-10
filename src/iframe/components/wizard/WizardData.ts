@@ -6,11 +6,10 @@
 
 /**
  * When the tool runs:
- * - manual: on demand, no page needed (e.g. summarize a document)
  * - pageStart: as the page starts loading (Chrome's document_start)
  * - pageIdle: once the page has fully loaded (Chrome's document_idle)
  */
-export type WizardTrigger = 'manual' | 'pageStart' | 'pageIdle'
+export type WizardTrigger = 'pageStart' | 'pageIdle'
 
 /**
  * Where the tool runs:
@@ -20,9 +19,16 @@ export type WizardTrigger = 'manual' | 'pageStart' | 'pageIdle'
 export type WizardScope = 'everywhere' | 'domain'
 
 export class WizardData {
+  // Set when editing a saved tool (loaded from the DB) — Save then updates
+  // that same record (same id and original createdAt) instead of creating a new one.
+  id: string | null = null
+  createdAt: number | null = null
   name = ''
   description = ''
-  trigger: WizardTrigger | null = 'manual'
+  trigger: WizardTrigger | null = 'pageStart'
   scope: WizardScope = 'everywhere'
   scopeTargets = ''
+  code = ''
+  // Reset to false whenever code changes; Save is gated on this being true.
+  codeTested = false
 }

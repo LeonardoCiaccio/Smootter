@@ -9,7 +9,7 @@
     "message": "Your browser, your tools."
   },
   "homeSubheader": {
-    "message": "No code. No subscriptions. Just tell it what you need."
+    "message": "No subscriptions. Just write what you need."
   },
   "createFirstTool": {
     "message": "Create your first tool"
@@ -36,7 +36,7 @@
   "wizardStepScopeTitle": { "message": "Scope" },
   "wizardStepScopeSubtitle": { "message": "Choose where it should run." },
   "wizardStepChatTitle": { "message": "Build" },
-  "wizardStepChatSubtitle": { "message": "Chat with the builder to bring it to life." },
+  "wizardStepChatSubtitle": { "message": "Write or paste the code, then test it before you save." },
   "wizardNameLabel": { "message": "Name" },
   "wizardNamePlaceholder": { "message": "e.g. Grab all links" },
   "wizardDescriptionLabel": { "message": "Short description" },
@@ -44,10 +44,6 @@
   "wizardBack": { "message": "Back" },
   "wizardNext": { "message": "Next" },
   "wizardPlaceholder": { "message": "Coming soon" },
-  "wizardTriggerManualTitle": { "message": "On demand" },
-  "wizardTriggerManualDescription": {
-    "message": "Runs only when you click it. No page needed, e.g. summarize a document."
-  },
   "wizardTriggerStartTitle": { "message": "As the page loads" },
   "wizardTriggerStartDescription": {
     "message": "Starts right away, before the page finishes loading."
@@ -67,8 +63,22 @@
   "wizardScopeRequiredError": {
     "message": "Enter at least one domain or page before continuing."
   },
+  "wizardScopeInvalidUrl": { "message": "Invalid domain or page" },
   "userScriptsDisabledTitle": { "message": "Enable tool execution" },
   "userScriptsDisabledDescription": {
     "message": "Open chrome://extensions, find this extension, and turn on \"Allow User Scripts\" to let your tools run."
-  }
+  },
+  "wizardTest": { "message": "Test" },
+  "wizardSave": { "message": "Save" },
+  "wizardTestPassed": { "message": "Test passed: the code ran without errors." },
+  "wizardRuntimeError": { "message": "Runtime error" },
+  "wizardCodeEmpty": { "message": "Write some code first" },
+  "wizardCodeInvalid": { "message": "Syntax error" },
+  "wizardToolSaved": { "message": "Tool saved" },
+  "toolEdit": { "message": "Edit" },
+  "toolDelete": { "message": "Delete" },
+  "toolDeleteConfirm": { "message": "Click again to delete" },
+  "toolDeleted": { "message": "Tool deleted" },
+  "testPageWaiting": { "message": "This is a test page. Check the console for any errors." },
+  "testPageCodeCorrect": { "message": "Code correct" }
 }

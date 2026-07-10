@@ -9,7 +9,7 @@
     "message": "Tu navegador, tus herramientas."
   },
   "homeSubheader": {
-    "message": "Sin código. Sin suscripciones. Solo dile lo que necesitas."
+    "message": "Sin suscripciones. Solo escribe lo que necesitas."
   },
   "createFirstTool": {
     "message": "Crea tu primera herramienta"
@@ -36,7 +36,7 @@
   "wizardStepScopeTitle": { "message": "Ámbito" },
   "wizardStepScopeSubtitle": { "message": "Elige dónde debe funcionar." },
   "wizardStepChatTitle": { "message": "Construcción" },
-  "wizardStepChatSubtitle": { "message": "Chatea con el builder para darle vida." },
+  "wizardStepChatSubtitle": { "message": "Escribe o pega el código, luego pruébalo antes de guardar." },
   "wizardNameLabel": { "message": "Nombre" },
   "wizardNamePlaceholder": { "message": "ej. Capturar todos los enlaces" },
   "wizardDescriptionLabel": { "message": "Descripción breve" },
@@ -44,10 +44,6 @@
   "wizardBack": { "message": "Atrás" },
   "wizardNext": { "message": "Siguiente" },
   "wizardPlaceholder": { "message": "Próximamente" },
-  "wizardTriggerManualTitle": { "message": "Bajo demanda" },
-  "wizardTriggerManualDescription": {
-    "message": "Se ejecuta solo cuando haces clic. No necesita una página, por ejemplo para resumir un documento."
-  },
   "wizardTriggerStartTitle": { "message": "Al cargar la página" },
   "wizardTriggerStartDescription": {
     "message": "Empieza enseguida, antes de que la página termine de cargar."
@@ -67,8 +63,22 @@
   "wizardScopeRequiredError": {
     "message": "Introduce al menos un dominio o página antes de continuar."
   },
+  "wizardScopeInvalidUrl": { "message": "Dominio o página no válido" },
   "userScriptsDisabledTitle": { "message": "Activa la ejecución de herramientas" },
   "userScriptsDisabledDescription": {
     "message": "Abre chrome://extensions, busca esta extensión y activa \"Permitir scripts de usuario\" para que tus herramientas funcionen."
-  }
+  },
+  "wizardTest": { "message": "Probar" },
+  "wizardSave": { "message": "Guardar" },
+  "wizardTestPassed": { "message": "Prueba superada: el código se ejecuta sin errores." },
+  "wizardRuntimeError": { "message": "Error en tiempo de ejecución" },
+  "wizardCodeEmpty": { "message": "Escribe algo de código primero" },
+  "wizardCodeInvalid": { "message": "Error de sintaxis" },
+  "wizardToolSaved": { "message": "Herramienta guardada" },
+  "toolEdit": { "message": "Editar" },
+  "toolDelete": { "message": "Eliminar" },
+  "toolDeleteConfirm": { "message": "Haz clic de nuevo para eliminar" },
+  "toolDeleted": { "message": "Herramienta eliminada" },
+  "testPageWaiting": { "message": "Esta es una página de prueba. Revisa la consola por si hay errores." },
+  "testPageCodeCorrect": { "message": "Código correcto" }
 }

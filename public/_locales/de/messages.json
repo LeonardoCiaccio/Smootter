@@ -9,7 +9,7 @@
     "message": "Dein Browser, deine Tools."
   },
   "homeSubheader": {
-    "message": "Kein Code. Kein Abo. Sag einfach, was du brauchst."
+    "message": "Ohne Abo. Schreib einfach, was du brauchst."
   },
   "createFirstTool": {
     "message": "Erstelle dein erstes Tool"
@@ -36,7 +36,9 @@
   "wizardStepScopeTitle": { "message": "Bereich" },
   "wizardStepScopeSubtitle": { "message": "Wähle, wo es laufen soll." },
   "wizardStepChatTitle": { "message": "Erstellung" },
-  "wizardStepChatSubtitle": { "message": "Chatte mit dem Builder, um es zum Leben zu erwecken." },
+  "wizardStepChatSubtitle": {
+    "message": "Schreibe oder füge den Code ein und teste ihn, bevor du speicherst."
+  },
   "wizardNameLabel": { "message": "Name" },
   "wizardNamePlaceholder": { "message": "z. B. Alle Links erfassen" },
   "wizardDescriptionLabel": { "message": "Kurzbeschreibung" },
@@ -44,10 +46,6 @@
   "wizardBack": { "message": "Zurück" },
   "wizardNext": { "message": "Weiter" },
   "wizardPlaceholder": { "message": "Demnächst verfügbar" },
-  "wizardTriggerManualTitle": { "message": "Auf Abruf" },
-  "wizardTriggerManualDescription": {
-    "message": "Läuft nur, wenn du klickst. Keine Seite nötig, z. B. um ein Dokument zusammenzufassen."
-  },
   "wizardTriggerStartTitle": { "message": "Beim Laden der Seite" },
   "wizardTriggerStartDescription": {
     "message": "Startet sofort, bevor die Seite fertig geladen ist."
@@ -69,8 +67,22 @@
   "wizardScopeRequiredError": {
     "message": "Gib mindestens eine Domain oder Seite ein, bevor du fortfährst."
   },
+  "wizardScopeInvalidUrl": { "message": "Ungültige Domain oder Seite" },
   "userScriptsDisabledTitle": { "message": "Tool-Ausführung aktivieren" },
   "userScriptsDisabledDescription": {
     "message": "Öffne chrome://extensions, suche diese Erweiterung und aktiviere „Benutzerskripte zulassen“, damit deine Tools funktionieren."
-  }
+  },
+  "wizardTest": { "message": "Testen" },
+  "wizardSave": { "message": "Speichern" },
+  "wizardTestPassed": { "message": "Test bestanden: Der Code läuft ohne Fehler." },
+  "wizardRuntimeError": { "message": "Laufzeitfehler" },
+  "wizardCodeEmpty": { "message": "Schreibe zuerst etwas Code" },
+  "wizardCodeInvalid": { "message": "Syntaxfehler" },
+  "wizardToolSaved": { "message": "Tool gespeichert" },
+  "toolEdit": { "message": "Bearbeiten" },
+  "toolDelete": { "message": "Löschen" },
+  "toolDeleteConfirm": { "message": "Erneut klicken zum Löschen" },
+  "toolDeleted": { "message": "Tool gelöscht" },
+  "testPageWaiting": { "message": "Dies ist eine Testseite. Prüfe die Konsole auf Fehler." },
+  "testPageCodeCorrect": { "message": "Code korrekt" }
 }

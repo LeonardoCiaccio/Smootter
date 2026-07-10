@@ -2,8 +2,8 @@
 import { computed, inject, onMounted, ref } from 'vue'
 import { Cog6ToothIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
-import { channelKey } from '../plugins/messaging'
-import { useTheme } from '../plugins/theme'
+import { channelKey } from '@/shared/vuePlugins/messaging'
+import { useTheme } from '@/shared/vuePlugins/theme'
 
 const manifest = chrome.runtime.getManifest()
 const appName = manifest.name

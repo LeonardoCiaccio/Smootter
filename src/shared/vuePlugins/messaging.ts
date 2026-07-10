@@ -1,9 +1,11 @@
 /**
- * messaging — Vue plugin exposing the private channel to the background.
+ * messaging — Vue plugin exposing a private channel to the background.
  * Opens a persistent Port on install and provides an injectable client.
+ * Shared by every extension page (SaaS iframe, test page, ...) — each
+ * connects under its own port name so the worker can tell them apart.
  */
 import type { App, InjectionKey } from 'vue'
-import { PORT_NAME, type ChannelRequest, type ChannelResponse } from '@/shared/messages'
+import type { ChannelRequest, ChannelResponse } from '@/shared/messages'
 
 export interface ChannelClient {
   send: (message: ChannelRequest) => void
@@ -13,8 +15,8 @@ export interface ChannelClient {
 export const channelKey: InjectionKey<ChannelClient> = Symbol('pippo-channel')
 
 /** Build the client over a persistent runtime Port. */
-function createClient(): ChannelClient {
-  const port = chrome.runtime.connect({ name: PORT_NAME })
+function createClient(portName: string): ChannelClient {
+  const port = chrome.runtime.connect({ name: portName })
 
   const send = (message: ChannelRequest): void => {
     port.postMessage(message)
@@ -28,8 +30,11 @@ function createClient(): ChannelClient {
   return { send, subscribe }
 }
 
-export const messaging = {
-  install(app: App): void {
-    app.provide(channelKey, createClient())
-  },
+/** Build the plugin for a given port name. */
+export function createMessagingPlugin(portName: string) {
+  return {
+    install(app: App): void {
+      app.provide(channelKey, createClient(portName))
+    },
+  }
 }

@@ -5,14 +5,8 @@ export default {
   content: ['./src/**/*.{vue,ts}', './src/**/*.html'],
   theme: {
     extend: {
-      colors: {
-        brand: {
-          DEFAULT: '#e25822',
-          fg: '#ffffff',
-        },
-      },
       borderRadius: {
-        tool: '0.5rem',
+        tool: '0.375rem',
       },
     },
   },

@@ -6,8 +6,10 @@
 // Persistent port names, derived from the manifest short_name
 export const PORT_NAME = chrome.runtime.getManifest().short_name + '_channel' // UI (iframe)
 export const RUNTIME_PORT_NAME = chrome.runtime.getManifest().short_name + '_runtime' // environment
+export const TEST_PAGE_PORT_NAME = chrome.runtime.getManifest().short_name + '_testpage' // code test page
 
 import type { Preferences } from './preferences'
+import type { ToolTrigger } from './toolsDb'
 
 export interface PingRequest {
   type: 'ping'
@@ -71,6 +73,36 @@ export interface PreferenceSaved {
   ok: boolean
 }
 
+/**
+ * Sent by the wizard to test a tool's code for real. The worker registers
+ * it via chrome.userScripts (never eval) on a dedicated test page, timed by
+ * `trigger`, and waits for that page's own supervisor to report back.
+ */
+export interface TestCodeRequest {
+  type: 'testCode'
+  code: string
+  trigger: ToolTrigger
+}
+
+/** Reply to testCode: whether the code ran without throwing. */
+export interface TestCodeResult {
+  type: 'testCodeResult'
+  ok: boolean
+  error?: string
+}
+
+/**
+ * Sent by the test page's own supervisor (window 'error' listener) once it
+ * has a verdict for the given request. One-way: the worker resolves the
+ * matching pending testCode call, no reply expected.
+ */
+export interface ReportTestResultRequest {
+  type: 'reportTestResult'
+  requestId: string
+  ok: boolean
+  error?: string
+}
+
 /** Messages sent from the UI to the background. */
 export type ChannelRequest =
   | PingRequest
@@ -79,6 +111,8 @@ export type ChannelRequest =
   | GetTopMessageRequest
   | CloseModalSignal
   | GetUserScriptsStatusRequest
+  | TestCodeRequest
+  | ReportTestResultRequest
 
 /** Messages sent from the background to the UI. */
 export type ChannelResponse =
@@ -88,3 +122,4 @@ export type ChannelResponse =
   | TopMessageResponse
   | CloseModalSignal
   | UserScriptsStatusResponse
+  | TestCodeResult

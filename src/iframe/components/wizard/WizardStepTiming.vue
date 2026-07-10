@@ -12,11 +12,6 @@ interface TriggerOptionKeys {
 
 const optionKeys: TriggerOptionKeys[] = [
   {
-    value: 'manual',
-    titleKey: 'wizardTriggerManualTitle',
-    descriptionKey: 'wizardTriggerManualDescription',
-  },
-  {
     value: 'pageStart',
     titleKey: 'wizardTriggerStartTitle',
     descriptionKey: 'wizardTriggerStartDescription',

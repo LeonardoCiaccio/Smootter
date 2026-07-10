@@ -4,12 +4,9 @@
  * structured records (name, config, generated code) that need real
  * indexing/querying as the library grows, so they get a real database.
  * Available in every context (service worker, extension pages).
- *
- * Not wired into the wizard yet — the "build" step that produces `code`
- * doesn't exist. This module is the storage layer, ready for it.
  */
 
-export type ToolTrigger = 'manual' | 'pageStart' | 'pageIdle'
+export type ToolTrigger = 'pageStart' | 'pageIdle'
 export type ToolScope = 'everywhere' | 'domain'
 
 export interface StoredTool {
@@ -21,6 +18,7 @@ export interface StoredTool {
   scopeTargets: string
   code: string
   createdAt: number
+  updatedAt: number
 }
 
 const DB_NAME = chrome.runtime.getManifest().short_name + '_tools'
@@ -49,6 +47,17 @@ export async function saveTool(tool: StoredTool): Promise<void> {
     transaction.objectStore(STORE_NAME).put(tool)
     transaction.oncomplete = () => resolve()
     transaction.onerror = () => reject(transaction.error)
+  })
+}
+
+/** A single tool by id, or undefined if not found. */
+export async function getTool(id: string): Promise<StoredTool | undefined> {
+  const db = await openDb()
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE_NAME, 'readonly')
+    const request = transaction.objectStore(STORE_NAME).get(id)
+    request.onsuccess = () => resolve(request.result as StoredTool | undefined)
+    request.onerror = () => reject(request.error)
   })
 }
 

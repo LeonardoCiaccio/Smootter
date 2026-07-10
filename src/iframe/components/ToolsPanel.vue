@@ -1,20 +1,27 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { ui } from '@/styles/ui'
 import ToolsEmptyState from './ToolsEmptyState.vue'
+import ToolCard from './ToolCard.vue'
+import { getAllTools, type StoredTool } from '@/shared/toolsDb'
 
-interface Tool {
-  id: string
+const tools = ref<StoredTool[]>([])
+const hasTools = computed(() => tools.value.length > 0)
+
+onMounted(async () => {
+  tools.value = await getAllTools()
+})
+
+function onDeleted(id: string): void {
+  tools.value = tools.value.filter((tool) => tool.id !== id)
 }
-
-const props = withDefaults(defineProps<{ tools?: Tool[] }>(), { tools: () => [] })
-
-const hasTools = computed(() => props.tools.length > 0)
 </script>
 
 <template>
   <div :class="ui.toolsPanel">
     <ToolsEmptyState v-if="!hasTools" />
-    <!-- else: list view, added once tools are wired to a real data source -->
+    <div v-else :class="ui.toolsList">
+      <ToolCard v-for="tool in tools" :key="tool.id" :tool="tool" @deleted="onDeleted" />
+    </div>
   </div>
 </template>

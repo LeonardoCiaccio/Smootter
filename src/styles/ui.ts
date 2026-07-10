@@ -5,9 +5,11 @@
  */
 export const ui = {
   toolButton:
-    'inline-flex items-center justify-center rounded-tool p-2 text-gray-700 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-brand',
+    'inline-flex items-center justify-center rounded-tool p-2 text-gray-700 transition-colors hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-cyan-500',
   primaryButton:
-    'inline-flex items-center justify-center gap-2 rounded-tool bg-brand px-4 py-2 text-brand-fg transition-colors hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-brand',
+    'inline-flex items-center justify-center gap-2 rounded-tool bg-cyan-600 px-3.5 py-1.5 text-sm font-medium text-white transition-colors hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-cyan-600',
+  secondaryButton:
+    'inline-flex items-center justify-center gap-2 rounded-tool border border-gray-300 px-3.5 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800',
   card: 'rounded-tool border border-gray-200 bg-white p-4 shadow-sm',
   input:
     'w-full resize-none rounded-tool border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',
@@ -46,6 +48,20 @@ export const ui = {
   toolsEmptyButton:
     'inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100',
   toolsEmptyIcon: 'h-5 w-5',
+  // Saved tools: 4-column grid, one card per tool (whole card is the click target)
+  toolsList: 'grid w-full grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4',
+  toolCard:
+    'group relative flex h-32 w-full flex-col gap-1 rounded-tool border border-gray-200 p-4 text-left transition-colors hover:border-cyan-500 dark:border-gray-800 dark:hover:border-cyan-400',
+  toolCardTitle: 'truncate pr-14 text-sm font-semibold text-gray-900 dark:text-gray-100',
+  toolCardDescription: 'line-clamp-2 flex-1 text-xs text-gray-500 dark:text-gray-400',
+  toolCardMeta: 'text-[11px] text-gray-400 dark:text-gray-500',
+  toolCardActions:
+    'absolute right-3 top-3 flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100',
+  toolCardActionButton:
+    'flex h-6 w-6 items-center justify-center rounded-tool text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200',
+  toolCardDeleteConfirm:
+    'flex h-6 w-6 items-center justify-center rounded-tool text-rose-500 transition-colors hover:bg-rose-50 dark:hover:bg-rose-950',
+  toolCardIcon: 'h-3.5 w-3.5',
   // Non-home views: a fixed breadcrumb on top, content filling the rest.
   viewShell: 'flex h-full flex-col',
   viewContent: 'flex flex-1 items-center justify-center',
@@ -57,12 +73,13 @@ export const ui = {
   // Wizard viewport: centers the wizard both ways within the view
   wizardViewport: 'flex flex-1 items-center justify-center px-6 py-6',
   // Wizard: fixed 3-row layout (header / body / dots), 70% of the viewport height
-  wizardWrapper: 'flex h-[70%] w-full max-w-md flex-col items-center text-center',
+  wizardWrapper: 'flex h-[70%] w-full max-w-lg flex-col items-center text-center',
   wizardHeader: 'flex flex-col gap-1.5 pb-6',
   wizardTitle:
     'bg-gradient-to-r from-cyan-500 to-emerald-400 bg-clip-text pb-1 text-4xl font-extrabold tracking-tight text-transparent',
   wizardSubtitle: 'text-sm text-gray-500 dark:text-gray-400',
-  wizardBody: 'flex w-full flex-1 flex-col justify-center overflow-y-auto',
+  wizardBody:
+    'flex w-full flex-1 flex-col justify-center overflow-y-auto pr-1 [scrollbar-gutter:stable]',
   wizardStepBody: 'flex w-full flex-col gap-4 text-left',
   wizardField: 'flex flex-col gap-1.5 text-left',
   wizardFieldLabel: 'text-sm font-medium text-gray-700 dark:text-gray-300',
@@ -94,16 +111,24 @@ export const ui = {
   toastSuccess:
     'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-200',
   toastWarning:
-    'border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200',
+    'border-violet-200 bg-violet-50 text-violet-800 dark:border-violet-800 dark:bg-violet-950 dark:text-violet-200',
   toastError:
     'border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-800 dark:bg-rose-950 dark:text-rose-200',
   // Capability banner (e.g. "Allow User Scripts" not enabled yet)
   banner:
-    'mx-6 mt-8 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-left dark:border-amber-900 dark:bg-amber-950',
-  bannerIcon: 'h-5 w-5 flex-shrink-0 text-amber-600 dark:text-amber-400',
+    'mx-6 mt-8 flex items-start gap-3 rounded-2xl border border-gray-200 bg-gray-50 p-4 text-left dark:border-gray-800 dark:bg-gray-800/50',
+  bannerIcon: 'h-5 w-5 flex-shrink-0 text-cyan-600 dark:text-cyan-400',
   bannerText: 'flex flex-col gap-0.5',
-  bannerTitle: 'text-sm font-semibold text-amber-900 dark:text-amber-200',
-  bannerDescription: 'text-xs text-amber-700 dark:text-amber-300',
+  bannerTitle: 'text-sm font-semibold text-gray-900 dark:text-gray-100',
+  bannerDescription: 'text-xs text-gray-600 dark:text-gray-400',
+  // Code editor (CodeMirror mounts here; its own theme mirrors these colors)
+  codeEditor: 'h-80 w-full overflow-hidden rounded-xl border border-gray-200 text-sm dark:border-gray-800',
+  wizardCodeActions: 'flex w-full items-center justify-end gap-3',
+  // Test page: centered status text, waiting/ok/error variants
+  testPageWrapper: 'flex h-full w-full items-center justify-center bg-white px-6 text-center dark:bg-gray-900',
+  testPageStatusWaiting: 'text-lg font-semibold text-gray-500 dark:text-gray-400',
+  testPageStatusOk: 'text-lg font-semibold text-emerald-600 dark:text-emerald-400',
+  testPageStatusError: 'text-lg font-semibold text-rose-600 dark:text-rose-400',
 } as const
 
 export type UiVariant = keyof typeof ui

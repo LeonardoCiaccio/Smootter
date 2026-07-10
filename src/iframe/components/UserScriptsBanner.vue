@@ -2,7 +2,7 @@
 import { inject, onMounted, ref } from 'vue'
 import { ExclamationTriangleIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
-import { channelKey } from '../plugins/messaging'
+import { channelKey } from '@/shared/vuePlugins/messaging'
 
 const channel = inject(channelKey)
 // Assume enabled until the worker replies, to avoid a flash on the happy path.

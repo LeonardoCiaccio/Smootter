@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { computed, reactive, ref } from 'vue'
+import { computed, onMounted, reactive, ref } from 'vue'
+import { useRoute } from 'vue-router'
 import { ui } from '@/styles/ui'
 import { WizardData } from './WizardData'
 import WizardStepBasics from './WizardStepBasics.vue'
 import WizardStepTiming from './WizardStepTiming.vue'
 import WizardStepScope from './WizardStepScope.vue'
-import WizardStepPlaceholder from './WizardStepPlaceholder.vue'
+import WizardStepChat from './WizardStepChat.vue'
 import { useToast } from '../../plugins/toast'
+import { getTool } from '@/shared/toolsDb'
 
 interface StepMeta {
   label: string
@@ -32,15 +34,53 @@ const data = reactive(new WizardData())
 const currentIndex = ref(0)
 const currentStep = computed(() => stepMeta[currentIndex.value])
 
-/** Returns the i18n key of the error blocking this step, or null if it's complete. */
+// Domain or domain/path, with an optional http(s):// scheme and an optional
+// "*." wildcard subdomain prefix.
+const DOMAIN_PATTERN =
+  /^(https?:\/\/)?(\*\.)?[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)+(?:\/\S*)?$/
+
+const route = useRoute()
+
+/** If opened via "edit a saved tool", load its data into the wizard. */
+onMounted(async () => {
+  const editId = route.query.edit
+  if (typeof editId !== 'string') return
+
+  const tool = await getTool(editId)
+  if (!tool) return
+
+  data.id = tool.id
+  data.createdAt = tool.createdAt
+  data.name = tool.name
+  data.description = tool.description
+  data.trigger = tool.trigger
+  data.scope = tool.scope
+  data.scopeTargets = tool.scopeTargets
+  data.code = tool.code
+  // The code was valid when it was saved; only a further edit invalidates it.
+  data.codeTested = true
+})
+
+/** Returns the error message blocking this step, or null if it's complete. */
 function validateBasics(): string | null {
   const complete = data.name.trim() !== '' && data.description.trim() !== ''
-  return complete ? null : 'wizardBasicsRequiredError'
+  return complete ? null : chrome.i18n.getMessage('wizardBasicsRequiredError')
 }
 
 function validateScope(): string | null {
   if (data.scope !== 'domain') return null
-  return data.scopeTargets.trim() !== '' ? null : 'wizardScopeRequiredError'
+
+  const lines = data.scopeTargets
+    .split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line !== '')
+
+  if (lines.length === 0) return chrome.i18n.getMessage('wizardScopeRequiredError')
+
+  const invalidLine = lines.find((line) => !DOMAIN_PATTERN.test(line))
+  if (invalidLine) return `${chrome.i18n.getMessage('wizardScopeInvalidUrl')}: ${invalidLine}`
+
+  return null
 }
 
 // One validator per slide; steps without a requirement always pass.
@@ -50,9 +90,9 @@ const toast = useToast()
 
 /** The user can jump to any step at will, unless the current one is incomplete. */
 function goTo(index: number): void {
-  const errorKey = stepValidators[currentIndex.value]()
-  if (index !== currentIndex.value && errorKey) {
-    toast.error(chrome.i18n.getMessage(errorKey))
+  const error = stepValidators[currentIndex.value]()
+  if (index !== currentIndex.value && error) {
+    toast.error(error)
     return
   }
   currentIndex.value = index
@@ -70,7 +110,7 @@ function goTo(index: number): void {
       <WizardStepBasics v-if="currentIndex === 0" v-model:data="data" />
       <WizardStepTiming v-else-if="currentIndex === 1" v-model:data="data" />
       <WizardStepScope v-else-if="currentIndex === 2" v-model:data="data" />
-      <WizardStepPlaceholder v-else />
+      <WizardStepChat v-else v-model:data="data" />
     </div>
 
     <div :class="ui.wizardSteps">
