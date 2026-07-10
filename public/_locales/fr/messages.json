@@ -14,6 +14,9 @@
   "createFirstTool": {
     "message": "Créez votre premier outil"
   },
+  "addTool": {
+    "message": "Ajouter un outil"
+  },
   "home": {
     "message": "Accueil"
   },

@@ -62,6 +62,11 @@ export const ui = {
   toolCardDeleteConfirm:
     'flex h-6 w-6 items-center justify-center rounded-tool text-rose-500 transition-colors hover:bg-rose-50 dark:hover:bg-rose-950',
   toolCardIcon: 'h-3.5 w-3.5',
+  // First card in the grid (only shown once tools exist): opens the wizard to add a new tool.
+  addToolCard:
+    'flex h-32 w-full flex-col items-center justify-center gap-1.5 rounded-tool border border-dashed border-gray-300 text-gray-400 transition-colors hover:border-cyan-500 hover:text-cyan-600 dark:border-gray-700 dark:text-gray-500 dark:hover:border-cyan-400 dark:hover:text-cyan-400',
+  addToolCardIcon: 'h-6 w-6',
+  addToolCardLabel: 'text-xs font-medium',
   // Non-home views: a fixed breadcrumb on top, content filling the rest.
   viewShell: 'flex h-full flex-col',
   viewContent: 'flex flex-1 items-center justify-center',

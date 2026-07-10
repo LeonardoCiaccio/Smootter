@@ -2,6 +2,7 @@
 import { computed, onMounted, ref } from 'vue'
 import { ui } from '@/styles/ui'
 import ToolsEmptyState from './ToolsEmptyState.vue'
+import AddToolCard from './AddToolCard.vue'
 import ToolCard from './ToolCard.vue'
 import { getAllTools, type StoredTool } from '@/shared/toolsDb'
 
@@ -21,6 +22,7 @@ function onDeleted(id: string): void {
   <div :class="ui.toolsPanel">
     <ToolsEmptyState v-if="!hasTools" />
     <div v-else :class="ui.toolsList">
+      <AddToolCard />
       <ToolCard v-for="tool in tools" :key="tool.id" :tool="tool" @deleted="onDeleted" />
     </div>
   </div>
