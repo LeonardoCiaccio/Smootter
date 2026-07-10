@@ -43,5 +43,17 @@
   "wizardDescriptionPlaceholder": { "message": "z. B. Alle Links von der aktuellen Seite extrahieren" },
   "wizardBack": { "message": "Zurück" },
   "wizardNext": { "message": "Weiter" },
-  "wizardPlaceholder": { "message": "Demnächst verfügbar" }
+  "wizardPlaceholder": { "message": "Demnächst verfügbar" },
+  "wizardTriggerManualTitle": { "message": "Auf Abruf" },
+  "wizardTriggerManualDescription": {
+    "message": "Läuft nur, wenn du klickst. Keine Seite nötig, z. B. um ein Dokument zusammenzufassen."
+  },
+  "wizardTriggerStartTitle": { "message": "Beim Laden der Seite" },
+  "wizardTriggerStartDescription": {
+    "message": "Startet sofort, bevor die Seite fertig geladen ist."
+  },
+  "wizardTriggerIdleTitle": { "message": "Wenn die Seite bereit ist" },
+  "wizardTriggerIdleDescription": {
+    "message": "Wartet, bis die Seite vollständig geladen ist, z. B. um ihren Inhalt zu lesen."
+  }
 }

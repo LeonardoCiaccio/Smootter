@@ -43,5 +43,17 @@
   "wizardDescriptionPlaceholder": { "message": "e.g. Extract all links from the current page" },
   "wizardBack": { "message": "Back" },
   "wizardNext": { "message": "Next" },
-  "wizardPlaceholder": { "message": "Coming soon" }
+  "wizardPlaceholder": { "message": "Coming soon" },
+  "wizardTriggerManualTitle": { "message": "On demand" },
+  "wizardTriggerManualDescription": {
+    "message": "Runs only when you click it. No page needed, e.g. summarize a document."
+  },
+  "wizardTriggerStartTitle": { "message": "As the page loads" },
+  "wizardTriggerStartDescription": {
+    "message": "Starts right away, before the page finishes loading."
+  },
+  "wizardTriggerIdleTitle": { "message": "Once the page is ready" },
+  "wizardTriggerIdleDescription": {
+    "message": "Waits until the page has fully loaded, e.g. to read its content."
+  }
 }

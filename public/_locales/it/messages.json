@@ -43,5 +43,17 @@
   "wizardDescriptionPlaceholder": { "message": "es. Preleva tutti i link dalla pagina corrente" },
   "wizardBack": { "message": "Indietro" },
   "wizardNext": { "message": "Avanti" },
-  "wizardPlaceholder": { "message": "In arrivo" }
+  "wizardPlaceholder": { "message": "In arrivo" },
+  "wizardTriggerManualTitle": { "message": "Su richiesta" },
+  "wizardTriggerManualDescription": {
+    "message": "Parte solo quando lo clicchi. Non serve una pagina, tipo riassumere un documento."
+  },
+  "wizardTriggerStartTitle": { "message": "Al caricamento" },
+  "wizardTriggerStartDescription": {
+    "message": "Parte subito, prima che la pagina finisca di caricare."
+  },
+  "wizardTriggerIdleTitle": { "message": "A caricamento avvenuto" },
+  "wizardTriggerIdleDescription": {
+    "message": "Aspetta che la pagina sia pronta, tipo per leggerne il contenuto."
+  }
 }

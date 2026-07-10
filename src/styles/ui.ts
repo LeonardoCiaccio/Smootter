@@ -52,6 +52,19 @@ export const ui = {
   wizardStepDot:
     'h-2 w-2 rounded-full bg-gray-300 transition-all duration-200 hover:bg-gray-400 dark:bg-gray-300 dark:hover:bg-gray-200',
   wizardStepDotActive: 'w-6 bg-gray-900 hover:bg-gray-900 dark:bg-gray-100 dark:hover:bg-gray-100',
+  // Wizard trigger step: 3 selectable cards (whole card is the click target)
+  wizardTriggerList: 'flex w-full flex-col gap-3',
+  wizardTriggerOption:
+    'flex w-full items-start gap-3 rounded-2xl border border-gray-200 p-4 text-left transition-colors hover:border-gray-300 dark:border-gray-800 dark:hover:border-gray-700',
+  wizardTriggerOptionSelected:
+    'border-cyan-500 hover:border-cyan-500 dark:border-cyan-400 dark:hover:border-cyan-400',
+  wizardTriggerRadio:
+    'mt-0.5 flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border-2 border-gray-300 dark:border-gray-600',
+  wizardTriggerRadioSelected: 'border-cyan-500 dark:border-cyan-400',
+  wizardTriggerRadioDot: 'h-2 w-2 rounded-full bg-cyan-500 dark:bg-cyan-400',
+  wizardTriggerText: 'flex flex-col gap-0.5',
+  wizardTriggerTitle: 'text-sm font-semibold text-gray-900 dark:text-gray-100',
+  wizardTriggerDescription: 'text-xs text-gray-500 dark:text-gray-400',
 } as const
 
 export type UiVariant = keyof typeof ui

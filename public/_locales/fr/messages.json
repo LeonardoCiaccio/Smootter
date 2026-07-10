@@ -43,5 +43,17 @@
   "wizardDescriptionPlaceholder": { "message": "ex. Extraire tous les liens de la page actuelle" },
   "wizardBack": { "message": "Retour" },
   "wizardNext": { "message": "Suivant" },
-  "wizardPlaceholder": { "message": "Bientôt disponible" }
+  "wizardPlaceholder": { "message": "Bientôt disponible" },
+  "wizardTriggerManualTitle": { "message": "À la demande" },
+  "wizardTriggerManualDescription": {
+    "message": "S'exécute uniquement lorsque vous cliquez dessus. Pas besoin de page, par exemple pour résumer un document."
+  },
+  "wizardTriggerStartTitle": { "message": "Au chargement de la page" },
+  "wizardTriggerStartDescription": {
+    "message": "Démarre immédiatement, avant que la page ait fini de charger."
+  },
+  "wizardTriggerIdleTitle": { "message": "Une fois la page prête" },
+  "wizardTriggerIdleDescription": {
+    "message": "Attend que la page soit entièrement chargée, par exemple pour en lire le contenu."
+  }
 }
