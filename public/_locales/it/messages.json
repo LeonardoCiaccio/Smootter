@@ -55,5 +55,10 @@
   "wizardTriggerIdleTitle": { "message": "A caricamento avvenuto" },
   "wizardTriggerIdleDescription": {
     "message": "Aspetta che la pagina sia pronta, tipo per leggerne il contenuto."
-  }
+  },
+  "wizardScopeEverywhereTitle": { "message": "Ovunque" },
+  "wizardScopeEverywhereDescription": { "message": "Funziona su qualsiasi sito visiti." },
+  "wizardScopeDomainTitle": { "message": "Dominio o pagina specifica" },
+  "wizardScopeDomainDescription": { "message": "Funziona solo dove lo autorizzi." },
+  "wizardScopeTargetsPlaceholder": { "message": "es. example.com, example.com/percorso" }
 }

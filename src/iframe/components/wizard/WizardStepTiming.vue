@@ -41,30 +41,27 @@ function select(value: WizardTrigger): void {
 
 <template>
   <div :class="ui.wizardStepBody">
-    <div role="radiogroup" :class="ui.wizardTriggerList">
+    <div role="radiogroup" :class="ui.wizardOptionList">
       <button
         v-for="option in options"
         :key="option.value"
         type="button"
         role="radio"
         :aria-checked="data.trigger === option.value"
-        :class="[
-          ui.wizardTriggerOption,
-          data.trigger === option.value && ui.wizardTriggerOptionSelected,
-        ]"
+        :class="[ui.wizardOption, data.trigger === option.value && ui.wizardOptionSelected]"
         @click="select(option.value)"
       >
         <span
           :class="[
-            ui.wizardTriggerRadio,
-            data.trigger === option.value && ui.wizardTriggerRadioSelected,
+            ui.wizardOptionRadio,
+            data.trigger === option.value && ui.wizardOptionRadioSelected,
           ]"
         >
-          <span v-if="data.trigger === option.value" :class="ui.wizardTriggerRadioDot" />
+          <span v-if="data.trigger === option.value" :class="ui.wizardOptionRadioDot" />
         </span>
-        <span :class="ui.wizardTriggerText">
-          <span :class="ui.wizardTriggerTitle">{{ option.title }}</span>
-          <span :class="ui.wizardTriggerDescription">{{ option.description }}</span>
+        <span :class="ui.wizardOptionText">
+          <span :class="ui.wizardOptionTitle">{{ option.title }}</span>
+          <span :class="ui.wizardOptionDescription">{{ option.description }}</span>
         </span>
       </button>
     </div>

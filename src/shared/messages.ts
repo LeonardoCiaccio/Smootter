@@ -32,6 +32,15 @@ export interface GetTopMessageRequest {
   type: 'getTopMessage'
 }
 
+/**
+ * Close signal. The iframe can't reach the host page's DOM to hide the
+ * modal itself, so it sends this to the worker, which broadcasts it to
+ * every connected port — environment.ts is listening and hides on receipt.
+ */
+export interface CloseModalSignal {
+  type: 'closeModal'
+}
+
 /** Reply to getTopMessage: the top message text. */
 export interface TopMessageResponse {
   type: 'topMessage'
@@ -58,6 +67,7 @@ export type ChannelRequest =
   | SetPreferenceRequest
   | GetPreferenceRequest
   | GetTopMessageRequest
+  | CloseModalSignal
 
 /** Messages sent from the background to the UI. */
 export type ChannelResponse =
@@ -65,3 +75,4 @@ export type ChannelResponse =
   | PreferenceValue
   | PreferenceSaved
   | TopMessageResponse
+  | CloseModalSignal

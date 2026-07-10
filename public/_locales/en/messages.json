@@ -55,5 +55,10 @@
   "wizardTriggerIdleTitle": { "message": "Once the page is ready" },
   "wizardTriggerIdleDescription": {
     "message": "Waits until the page has fully loaded, e.g. to read its content."
-  }
+  },
+  "wizardScopeEverywhereTitle": { "message": "Everywhere" },
+  "wizardScopeEverywhereDescription": { "message": "Runs on any site you visit." },
+  "wizardScopeDomainTitle": { "message": "Specific domain or page" },
+  "wizardScopeDomainDescription": { "message": "Runs only where you allow it." },
+  "wizardScopeTargetsPlaceholder": { "message": "e.g. example.com, example.com/path" }
 }

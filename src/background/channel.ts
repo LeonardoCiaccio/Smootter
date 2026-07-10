@@ -74,6 +74,20 @@ grip.hook('getPreference', {
 })
 
 grip.register({
+  name: 'closeModal',
+  validate() {},
+  business() {
+    return { type: 'closeModal' }
+  },
+})
+grip.hook('closeModal', {
+  after({ result }) {
+    if (!result.isSuccess) return
+    for (const port of ports) port.postMessage(result.result)
+  },
+})
+
+grip.register({
   name: 'setPreference',
   validate(args: SetPreferenceRequest) {
     if (typeof args.key !== 'string') throw new Error('key is required.')

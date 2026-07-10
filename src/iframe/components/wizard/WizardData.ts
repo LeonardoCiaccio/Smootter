@@ -1,7 +1,7 @@
 /**
  * Data collected across the wizard steps.
- * Only the fields used by built steps exist; future steps (scope) add their
- * own fields here once implemented.
+ * Only the fields used by built steps exist; future steps add their own
+ * fields here once implemented.
  */
 
 /**
@@ -12,8 +12,17 @@
  */
 export type WizardTrigger = 'manual' | 'pageStart' | 'pageIdle'
 
+/**
+ * Where the tool runs:
+ * - everywhere: any site
+ * - domain: only the domains/pages listed in scopeTargets
+ */
+export type WizardScope = 'everywhere' | 'domain'
+
 export class WizardData {
   name = ''
   description = ''
   trigger: WizardTrigger | null = 'manual'
+  scope: WizardScope = 'everywhere'
+  scopeTargets = ''
 }

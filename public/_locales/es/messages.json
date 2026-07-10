@@ -55,5 +55,10 @@
   "wizardTriggerIdleTitle": { "message": "Cuando la página está lista" },
   "wizardTriggerIdleDescription": {
     "message": "Espera a que la página haya cargado del todo, por ejemplo para leer su contenido."
-  }
+  },
+  "wizardScopeEverywhereTitle": { "message": "En todas partes" },
+  "wizardScopeEverywhereDescription": { "message": "Funciona en cualquier sitio que visites." },
+  "wizardScopeDomainTitle": { "message": "Dominio o página específica" },
+  "wizardScopeDomainDescription": { "message": "Funciona solo donde lo autorices." },
+  "wizardScopeTargetsPlaceholder": { "message": "ej. example.com, example.com/ruta" }
 }

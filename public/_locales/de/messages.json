@@ -55,5 +55,12 @@
   "wizardTriggerIdleTitle": { "message": "Wenn die Seite bereit ist" },
   "wizardTriggerIdleDescription": {
     "message": "Wartet, bis die Seite vollständig geladen ist, z. B. um ihren Inhalt zu lesen."
-  }
+  },
+  "wizardScopeEverywhereTitle": { "message": "Überall" },
+  "wizardScopeEverywhereDescription": {
+    "message": "Funktioniert auf jeder Seite, die du besuchst."
+  },
+  "wizardScopeDomainTitle": { "message": "Bestimmte Domain oder Seite" },
+  "wizardScopeDomainDescription": { "message": "Funktioniert nur dort, wo du es erlaubst." },
+  "wizardScopeTargetsPlaceholder": { "message": "z. B. example.com, example.com/pfad" }
 }

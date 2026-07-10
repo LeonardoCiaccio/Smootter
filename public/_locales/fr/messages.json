@@ -55,5 +55,12 @@
   "wizardTriggerIdleTitle": { "message": "Une fois la page prête" },
   "wizardTriggerIdleDescription": {
     "message": "Attend que la page soit entièrement chargée, par exemple pour en lire le contenu."
-  }
+  },
+  "wizardScopeEverywhereTitle": { "message": "Partout" },
+  "wizardScopeEverywhereDescription": {
+    "message": "Fonctionne sur n'importe quel site que vous visitez."
+  },
+  "wizardScopeDomainTitle": { "message": "Domaine ou page spécifique" },
+  "wizardScopeDomainDescription": { "message": "Fonctionne uniquement là où vous l'autorisez." },
+  "wizardScopeTargetsPlaceholder": { "message": "ex. example.com, example.com/chemin" }
 }

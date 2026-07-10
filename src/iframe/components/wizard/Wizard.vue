@@ -4,6 +4,7 @@ import { ui } from '@/styles/ui'
 import { WizardData } from './WizardData'
 import WizardStepBasics from './WizardStepBasics.vue'
 import WizardStepTiming from './WizardStepTiming.vue'
+import WizardStepScope from './WizardStepScope.vue'
 import WizardStepPlaceholder from './WizardStepPlaceholder.vue'
 
 interface StepMeta {
@@ -46,6 +47,7 @@ function goTo(index: number): void {
     <div :class="ui.wizardBody">
       <WizardStepBasics v-if="currentIndex === 0" v-model:data="data" />
       <WizardStepTiming v-else-if="currentIndex === 1" v-model:data="data" />
+      <WizardStepScope v-else-if="currentIndex === 2" v-model:data="data" />
       <WizardStepPlaceholder v-else />
     </div>
 

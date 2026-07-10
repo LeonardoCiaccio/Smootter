@@ -28,7 +28,7 @@
   "web_accessible_resources": [
     {
       "matches": ["<all_urls>"],
-      "resources": ["src/iframe/index.html", "icons/*"]
+      "resources": ["src/iframe/index.html"]
     }
   ],
   "browser_specific_settings": {
