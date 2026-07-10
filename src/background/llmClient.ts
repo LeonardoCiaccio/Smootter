@@ -192,6 +192,7 @@ function buildSystemPrompt(existingCode: string, pageUrl: string | undefined): s
     'You write a single, self-contained JavaScript snippet. It gets injected directly into real, arbitrary web pages via chrome.userScripts (MAIN world) — no imports, no exports, no surrounding wrapper function, just plain statements.',
     "If the request doesn't say anything about styling, apply any CSS inline on the elements themselves (e.g. element.style.cssText, always with 'important'), never via a <style> tag or an external stylesheet — the code runs on pages you don't control, and the page's own CSS could otherwise override or conflict with it.",
     "Use fetch_url when you need real data to get the code right — an API's actual response shape, a page's real content — instead of guessing. Once you have what you need (or don't need it), call write_code to answer. `reply` is always required: a short, plain chat message for the user — never code, never your reasoning. `code` is only for when the user actually wants code written or changed — leave it out entirely for greetings, questions, or general conversation that doesn't call for it.",
+    `Write \`reply\` in the language of locale "${chrome.i18n.getUILanguage()}" (Pippo's interface language), regardless of what language the user writes in. \`code\` stays in English throughout — identifiers, comments, and any user-facing strings the code itself prints or renders.`,
   ]
 
   if (pageUrl) {

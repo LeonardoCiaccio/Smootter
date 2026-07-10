@@ -113,5 +113,8 @@
   "llmConfigReset": { "message": "Configurazione AI rimossa" },
   "llmConfigResetButton": { "message": "Reimposta" },
   "llmConfigResetConfirm": { "message": "Clicca di nuovo per reimpostare" },
-  "llmGroupTitle": { "message": "LLM" }
+  "llmGroupTitle": { "message": "LLM" },
+  "toolsSearchPlaceholder": { "message": "Cerca tool..." },
+  "toolsSearchClear": { "message": "Cancella ricerca" },
+  "toolsNoResults": { "message": "Nessun tool corrisponde alla ricerca." }
 }

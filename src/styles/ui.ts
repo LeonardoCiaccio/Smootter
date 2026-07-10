@@ -40,16 +40,29 @@ export const ui = {
   // Footer: general info (copyright, version)
   footer: 'flex-shrink-0 px-5 py-2.5 text-center text-[11px] text-gray-400 dark:text-gray-500',
   statusText: 'text-lg font-semibold text-gray-900 dark:text-gray-100',
+  homeShell: 'flex flex-col',
   // Home hero: pushed toward the top (the toolbar above is a normal in-flow element now)
   heroWrapper: 'flex flex-col items-center gap-4 px-6 pt-20 text-center',
   heroHeader:
     'bg-gradient-to-r from-violet-600 to-cyan-400 bg-clip-text pb-1 text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl',
   heroSubheader: 'max-w-md text-base text-gray-600 dark:text-gray-400',
-  // Tools panel: empty state, plain icon + label (icon follows text color via currentColor)
-  toolsPanel: 'mt-24 flex justify-center px-6',
+  // Tools panel: empty state, plain icon + label (icon follows text color via currentColor).
+  toolsPanel: 'mt-16 flex flex-col items-center',
   toolsEmptyButton:
     'inline-flex items-center gap-2 text-sm font-medium text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100',
   toolsEmptyIcon: 'h-5 w-5',
+  // Search (only shown past a tool count threshold): sits above the scroll area, never scrolls away with it.
+  toolsSearchWrapper: 'relative mb-6 w-full max-w-sm flex-shrink-0',
+  toolsSearchInput:
+    'w-full rounded-full border border-gray-300 bg-white py-2 pl-9 pr-8 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',
+  toolsSearchIcon: 'pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-gray-500',
+  toolsSearchClear:
+    'absolute right-2.5 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200',
+  toolsSearchClearIcon: 'h-3.5 w-3.5',
+  toolsNoResults: 'w-full py-10 text-center text-sm text-gray-400 dark:text-gray-500',
+  // Fixed vh height + its own scroll — a percentage-height chain up through the app shell
+  // doesn't reliably contain this content, so it's sized independently instead (like the wizard chat grid).
+  toolsScrollArea: 'flex max-h-[58vh] w-full justify-center overflow-y-auto px-6 pb-10 [scrollbar-gutter:stable]',
   // Saved tools: 4-column grid, one card per tool (whole card is the click target)
   toolsList: 'grid w-full grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4',
   toolCard:

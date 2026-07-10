@@ -30,19 +30,25 @@ function isVisible(): boolean {
 }
 
 // ---- Host page scroll lock: hidden while the modal is visible ----
-let previousHostOverflow = ''
+// Some pages scroll via <html>, others via <body> — lock both, or the
+// unlocked one keeps showing its scrollbar behind the fixed-position modal.
+let previousHtmlOverflow = ''
+let previousBodyOverflow = ''
 let isHostScrollLocked = false
 
 function lockHostScroll(): void {
   if (isHostScrollLocked) return
-  previousHostOverflow = document.documentElement.style.overflow
+  previousHtmlOverflow = document.documentElement.style.overflow
+  previousBodyOverflow = document.body.style.overflow
   document.documentElement.style.overflow = 'hidden'
+  document.body.style.overflow = 'hidden'
   isHostScrollLocked = true
 }
 
 function unlockHostScroll(): void {
   if (!isHostScrollLocked) return
-  document.documentElement.style.overflow = previousHostOverflow
+  document.documentElement.style.overflow = previousHtmlOverflow
+  document.body.style.overflow = previousBodyOverflow
   isHostScrollLocked = false
 }
 

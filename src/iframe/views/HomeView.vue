@@ -8,10 +8,12 @@ const subheaderText = chrome.i18n.getMessage('homeSubheader')
 </script>
 
 <template>
-  <div :class="ui.heroWrapper">
-    <h1 :class="ui.heroHeader">{{ headerText }}</h1>
-    <p :class="ui.heroSubheader">{{ subheaderText }}</p>
+  <div :class="ui.homeShell">
+    <div :class="ui.heroWrapper">
+      <h1 :class="ui.heroHeader">{{ headerText }}</h1>
+      <p :class="ui.heroSubheader">{{ subheaderText }}</p>
+    </div>
+    <UserScriptsBanner />
+    <ToolsPanel />
   </div>
-  <UserScriptsBanner />
-  <ToolsPanel />
 </template>

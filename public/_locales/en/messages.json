@@ -115,5 +115,8 @@
   "llmConfigReset": { "message": "AI configuration removed" },
   "llmConfigResetButton": { "message": "Reset" },
   "llmConfigResetConfirm": { "message": "Click again to reset" },
-  "llmGroupTitle": { "message": "LLM" }
+  "llmGroupTitle": { "message": "LLM" },
+  "toolsSearchPlaceholder": { "message": "Search tools..." },
+  "toolsSearchClear": { "message": "Clear search" },
+  "toolsNoResults": { "message": "No tools match your search." }
 }

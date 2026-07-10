@@ -115,5 +115,8 @@
   "llmConfigReset": { "message": "Configuración de IA eliminada" },
   "llmConfigResetButton": { "message": "Restablecer" },
   "llmConfigResetConfirm": { "message": "Haz clic de nuevo para restablecer" },
-  "llmGroupTitle": { "message": "LLM" }
+  "llmGroupTitle": { "message": "LLM" },
+  "toolsSearchPlaceholder": { "message": "Buscar herramientas..." },
+  "toolsSearchClear": { "message": "Borrar búsqueda" },
+  "toolsNoResults": { "message": "Ninguna herramienta coincide con la búsqueda." }
 }

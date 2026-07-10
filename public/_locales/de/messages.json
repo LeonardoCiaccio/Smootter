@@ -121,5 +121,8 @@
   "llmConfigReset": { "message": "KI-Konfiguration entfernt" },
   "llmConfigResetButton": { "message": "Zurücksetzen" },
   "llmConfigResetConfirm": { "message": "Erneut klicken zum Zurücksetzen" },
-  "llmGroupTitle": { "message": "LLM" }
+  "llmGroupTitle": { "message": "LLM" },
+  "toolsSearchPlaceholder": { "message": "Tools durchsuchen..." },
+  "toolsSearchClear": { "message": "Suche löschen" },
+  "toolsNoResults": { "message": "Keine Tools entsprechen der Suche." }
 }
