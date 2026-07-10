@@ -88,5 +88,7 @@
   "toolEdit": { "message": "Modifier" },
   "toolDelete": { "message": "Supprimer" },
   "toolDeleteConfirm": { "message": "Cliquez à nouveau pour supprimer" },
-  "toolDeleted": { "message": "Outil supprimé" }
+  "toolDeleted": { "message": "Outil supprimé" },
+  "toolCardCreated": { "message": "Créé" },
+  "toolCardUpdated": { "message": "Modifié" }
 }

@@ -14,7 +14,11 @@ const editLabel = chrome.i18n.getMessage('toolEdit')
 const deleteLabel = chrome.i18n.getMessage('toolDelete')
 const deleteConfirmLabel = chrome.i18n.getMessage('toolDeleteConfirm')
 
-const updatedAtLabel = new Date(props.tool.updatedAt).toLocaleDateString()
+const createdLabel = chrome.i18n.getMessage('toolCardCreated')
+const updatedLabel = chrome.i18n.getMessage('toolCardUpdated')
+const createdAtDate = new Date(props.tool.createdAt).toLocaleDateString()
+const updatedAtDate = new Date(props.tool.updatedAt).toLocaleDateString()
+const metaText = `${createdLabel} ${createdAtDate} · ${updatedLabel} ${updatedAtDate}`
 
 // Delete needs two clicks: the first arms it (auto-disarms after a few
 // seconds), the second actually deletes.
@@ -39,7 +43,7 @@ async function onDeleteClick(): Promise<void> {
   <div :class="ui.toolCard">
     <span :class="ui.toolCardTitle" :title="tool.name">{{ tool.name }}</span>
     <span :class="ui.toolCardDescription" :title="tool.description">{{ tool.description }}</span>
-    <span :class="ui.toolCardMeta">{{ updatedAtLabel }}</span>
+    <span :class="ui.toolCardMeta" :title="metaText">{{ metaText }}</span>
 
     <div :class="ui.toolCardActions">
       <RouterLink

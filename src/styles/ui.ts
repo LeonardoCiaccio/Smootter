@@ -54,7 +54,7 @@ export const ui = {
     'group relative flex h-32 w-full flex-col gap-1 rounded-tool border border-gray-200 p-4 text-left transition-colors hover:border-cyan-500 dark:border-gray-800 dark:hover:border-cyan-400',
   toolCardTitle: 'truncate pr-14 text-sm font-semibold text-gray-900 dark:text-gray-100',
   toolCardDescription: 'line-clamp-2 flex-1 text-xs text-gray-500 dark:text-gray-400',
-  toolCardMeta: 'text-[11px] text-gray-400 dark:text-gray-500',
+  toolCardMeta: 'truncate text-[11px] text-gray-400 dark:text-gray-500',
   toolCardActions:
     'absolute right-3 top-3 flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100',
   toolCardActionButton:
