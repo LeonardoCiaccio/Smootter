@@ -79,9 +79,9 @@ export const ui = {
   // Non-home views: a fixed breadcrumb on top, content filling the rest.
   viewShell: 'flex h-full flex-col',
   viewContent: 'flex flex-1 items-center justify-center',
-  // Options: no sidebar (too few settings), left-aligned title, sections stacked below.
-  optionsContent: 'flex-1 overflow-y-auto px-8 py-6 text-left',
-  optionsSection: 'mt-8 flex max-w-md flex-col gap-4 border-t border-gray-200 pt-6 dark:border-gray-800',
+  // Options: no sidebar (too few settings), sections centered in the page, fields left-aligned within.
+  optionsContent: 'flex flex-1 flex-col items-center overflow-y-auto px-8 py-6',
+  optionsSection: 'mt-8 flex w-full max-w-md flex-col gap-4 text-left',
   optionsSectionTitle: 'text-sm font-semibold text-gray-900 dark:text-gray-100',
   optionsSectionDescription: 'text-xs text-gray-500 dark:text-gray-400',
   optionsSectionActions: 'flex items-center justify-between gap-3',
@@ -91,10 +91,10 @@ export const ui = {
   breadcrumbSeparator: 'text-gray-300 dark:text-gray-600',
   breadcrumbCurrent: 'text-gray-900 dark:text-gray-100',
   // Wizard viewport: centers the wizard both ways within the view
-  wizardViewport: 'flex flex-1 items-center justify-center px-6 py-6',
-  // Wizard: fixed 3-row layout (header / body / dots), 70% of the viewport height
-  wizardWrapper: 'flex h-[70%] w-full max-w-lg flex-col items-center text-center',
-  wizardHeader: 'flex flex-col gap-1.5 pb-6',
+  wizardViewport: 'flex flex-1 items-center justify-center px-6 pb-6 pt-2',
+  // Wizard: fixed 3-row layout (header / body / dots), 78% of the viewport height
+  wizardWrapper: 'flex h-[78%] w-full max-w-xl flex-col items-center text-center',
+  wizardHeader: 'flex flex-col gap-1.5 pb-3',
   wizardTitle:
     'bg-gradient-to-r from-cyan-500 to-emerald-400 bg-clip-text pb-1 text-4xl font-extrabold tracking-tight text-transparent',
   wizardSubtitle: 'text-sm text-gray-500 dark:text-gray-400',

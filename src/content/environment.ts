@@ -71,7 +71,7 @@ function connectChannel(): void {
 
 // ---- Build ----
 function getMaxZIndex(): number {
-  let max = 0
+  let max = 999999999
   for (const el of document.querySelectorAll('*')) {
     const value = Number.parseInt(getComputedStyle(el).zIndex, 10)
     if (Number.isFinite(value) && value > max) max = value
