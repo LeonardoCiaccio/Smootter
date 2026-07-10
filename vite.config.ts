@@ -19,7 +19,6 @@ export default defineConfig({
         'service-worker': entry('./src/background/service-worker.ts'),
         environment: entry('./src/content/environment.ts'),
         iframe: entry('./src/iframe/index.html'),
-        testpage: entry('./src/testpage/index.html'),
       },
       output: {
         format: 'es',

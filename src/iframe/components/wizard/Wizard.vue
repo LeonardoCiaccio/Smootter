@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref } from 'vue'
 import { useRoute } from 'vue-router'
+import { parse } from 'acorn'
 import { ui } from '@/styles/ui'
 import { WizardData } from './WizardData'
 import WizardStepBasics from './WizardStepBasics.vue'
 import WizardStepTiming from './WizardStepTiming.vue'
 import WizardStepScope from './WizardStepScope.vue'
 import WizardStepChat from './WizardStepChat.vue'
+import WizardStepTester from './WizardStepTester.vue'
 import { useToast } from '../../plugins/toast'
 import { getTool } from '@/shared/toolsDb'
 
@@ -22,6 +24,7 @@ const stepMessageKeys = [
   { label: 'wizardStepTiming', title: 'wizardStepTimingTitle', subtitle: 'wizardStepTimingSubtitle' },
   { label: 'wizardStepScope', title: 'wizardStepScopeTitle', subtitle: 'wizardStepScopeSubtitle' },
   { label: 'wizardStepChat', title: 'wizardStepChatTitle', subtitle: 'wizardStepChatSubtitle' },
+  { label: 'wizardStepTester', title: 'wizardStepTesterTitle', subtitle: 'wizardStepTesterSubtitle' },
 ]
 
 const stepMeta: StepMeta[] = stepMessageKeys.map((keys) => ({
@@ -83,17 +86,50 @@ function validateScope(): string | null {
   return null
 }
 
+/**
+ * The tester step needs real, syntactically valid code to run. Syntax check
+ * only (Acorn, a pure parser — never eval, never executes the code); the
+ * tester step then runs it for real.
+ */
+function validateChat(): string | null {
+  if (data.code.trim() === '') return chrome.i18n.getMessage('wizardCodeEmpty')
+  try {
+    parse(data.code, { ecmaVersion: 'latest', sourceType: 'script' })
+  } catch (error) {
+    const details = error instanceof Error ? error.message : String(error)
+    return `${chrome.i18n.getMessage('wizardCodeInvalid')}: ${details}`
+  }
+  return null
+}
+
 // One validator per slide; steps without a requirement always pass.
-const stepValidators: Array<() => string | null> = [validateBasics, () => null, validateScope, () => null]
+const stepValidators: Array<() => string | null> = [
+  validateBasics,
+  () => null,
+  validateScope,
+  validateChat,
+  () => null,
+]
 
 const toast = useToast()
 
-/** The user can jump to any step at will, unless the current one is incomplete. */
+/**
+ * Going back is always allowed. Going forward requires every step strictly
+ * before the target to be complete (not just the current one — otherwise
+ * e.g. jumping from step 1 straight to the tester would skip the code step).
+ */
 function goTo(index: number): void {
-  const error = stepValidators[currentIndex.value]()
-  if (index !== currentIndex.value && error) {
-    toast.error(error)
+  if (index <= currentIndex.value) {
+    currentIndex.value = index
     return
+  }
+
+  for (let i = 0; i < index; i++) {
+    const error = stepValidators[i]()
+    if (error) {
+      toast.error(error)
+      return
+    }
   }
   currentIndex.value = index
 }
@@ -110,7 +146,8 @@ function goTo(index: number): void {
       <WizardStepBasics v-if="currentIndex === 0" v-model:data="data" />
       <WizardStepTiming v-else-if="currentIndex === 1" v-model:data="data" />
       <WizardStepScope v-else-if="currentIndex === 2" v-model:data="data" />
-      <WizardStepChat v-else v-model:data="data" />
+      <WizardStepChat v-else-if="currentIndex === 3" v-model:data="data" />
+      <WizardStepTester v-else v-model:data="data" />
     </div>
 
     <div :class="ui.wizardSteps">

@@ -27,6 +27,7 @@
   "wizardStepTiming": { "message": "Démarrage" },
   "wizardStepScope": { "message": "Portée" },
   "wizardStepChat": { "message": "Construction" },
+  "wizardStepTester": { "message": "Test" },
   "wizardStepBasicsTitle": { "message": "Donnez-lui un nom" },
   "wizardStepBasicsSubtitle": {
     "message": "Un nom court et une description. C'est ce que vous verrez ensuite."
@@ -37,7 +38,11 @@
   "wizardStepScopeSubtitle": { "message": "Choisissez où il doit fonctionner." },
   "wizardStepChatTitle": { "message": "Construction" },
   "wizardStepChatSubtitle": {
-    "message": "Écrivez ou collez le code, puis testez-le avant d'enregistrer."
+    "message": "Écrivez ou collez le code. Nous le testerons à l'étape suivante."
+  },
+  "wizardStepTesterTitle": { "message": "Lancer le test" },
+  "wizardStepTesterSubtitle": {
+    "message": "Nous exécutons vraiment votre code et vous disons s'il fonctionne."
   },
   "wizardNameLabel": { "message": "Nom" },
   "wizardNamePlaceholder": { "message": "ex. Capturer tous les liens" },
@@ -73,6 +78,7 @@
     "message": "Ouvrez chrome://extensions, trouvez cette extension et activez « Autoriser les scripts utilisateur » pour que vos outils fonctionnent."
   },
   "wizardTest": { "message": "Tester" },
+  "wizardTesterRunning": { "message": "Test de votre code en cours..." },
   "wizardSave": { "message": "Enregistrer" },
   "wizardTestPassed": { "message": "Test réussi : le code s'exécute sans erreur." },
   "wizardRuntimeError": { "message": "Erreur d'exécution" },
@@ -82,7 +88,5 @@
   "toolEdit": { "message": "Modifier" },
   "toolDelete": { "message": "Supprimer" },
   "toolDeleteConfirm": { "message": "Cliquez à nouveau pour supprimer" },
-  "toolDeleted": { "message": "Outil supprimé" },
-  "testPageWaiting": { "message": "Ceci est une page de test. Vérifiez la console pour d'éventuelles erreurs." },
-  "testPageCodeCorrect": { "message": "Code correct" }
+  "toolDeleted": { "message": "Outil supprimé" }
 }

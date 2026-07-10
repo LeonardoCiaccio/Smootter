@@ -27,6 +27,7 @@
   "wizardStepTiming": { "message": "Start" },
   "wizardStepScope": { "message": "Bereich" },
   "wizardStepChat": { "message": "Erstellung" },
+  "wizardStepTester": { "message": "Test" },
   "wizardStepBasicsTitle": { "message": "Gib ihm einen Namen" },
   "wizardStepBasicsSubtitle": {
     "message": "Ein kurzer Name und eine Beschreibung. Das siehst du später."
@@ -37,7 +38,11 @@
   "wizardStepScopeSubtitle": { "message": "Wähle, wo es laufen soll." },
   "wizardStepChatTitle": { "message": "Erstellung" },
   "wizardStepChatSubtitle": {
-    "message": "Schreibe oder füge den Code ein und teste ihn, bevor du speicherst."
+    "message": "Schreibe oder füge den Code ein. Wir testen ihn im nächsten Schritt."
+  },
+  "wizardStepTesterTitle": { "message": "Test starten" },
+  "wizardStepTesterSubtitle": {
+    "message": "Wir führen deinen Code wirklich aus und sagen dir, ob er funktioniert."
   },
   "wizardNameLabel": { "message": "Name" },
   "wizardNamePlaceholder": { "message": "z. B. Alle Links erfassen" },
@@ -73,6 +78,7 @@
     "message": "Öffne chrome://extensions, suche diese Erweiterung und aktiviere „Benutzerskripte zulassen“, damit deine Tools funktionieren."
   },
   "wizardTest": { "message": "Testen" },
+  "wizardTesterRunning": { "message": "Dein Code wird getestet..." },
   "wizardSave": { "message": "Speichern" },
   "wizardTestPassed": { "message": "Test bestanden: Der Code läuft ohne Fehler." },
   "wizardRuntimeError": { "message": "Laufzeitfehler" },
@@ -82,7 +88,5 @@
   "toolEdit": { "message": "Bearbeiten" },
   "toolDelete": { "message": "Löschen" },
   "toolDeleteConfirm": { "message": "Erneut klicken zum Löschen" },
-  "toolDeleted": { "message": "Tool gelöscht" },
-  "testPageWaiting": { "message": "Dies ist eine Testseite. Prüfe die Konsole auf Fehler." },
-  "testPageCodeCorrect": { "message": "Code korrekt" }
+  "toolDeleted": { "message": "Tool gelöscht" }
 }

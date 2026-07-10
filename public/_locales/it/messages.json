@@ -27,6 +27,7 @@
   "wizardStepTiming": { "message": "Avvio" },
   "wizardStepScope": { "message": "Ambito" },
   "wizardStepChat": { "message": "Costruzione" },
+  "wizardStepTester": { "message": "Test" },
   "wizardStepBasicsTitle": { "message": "Dagli un nome" },
   "wizardStepBasicsSubtitle": {
     "message": "Un nome breve e una descrizione. È quello che vedrai in seguito."
@@ -36,7 +37,9 @@
   "wizardStepScopeTitle": { "message": "Ambito" },
   "wizardStepScopeSubtitle": { "message": "Scegli dove deve funzionare." },
   "wizardStepChatTitle": { "message": "Costruzione" },
-  "wizardStepChatSubtitle": { "message": "Scrivi o incolla il codice, poi testalo prima di salvare." },
+  "wizardStepChatSubtitle": { "message": "Scrivi o incolla il codice. Lo testeremo al passo successivo." },
+  "wizardStepTesterTitle": { "message": "Esegui il test" },
+  "wizardStepTesterSubtitle": { "message": "Eseguiamo davvero il tuo codice e ti diciamo se funziona." },
   "wizardNameLabel": { "message": "Nome" },
   "wizardNamePlaceholder": { "message": "es. Cattura tutti i link" },
   "wizardDescriptionLabel": { "message": "Descrizione breve" },
@@ -67,6 +70,7 @@
     "message": "Apri chrome://extensions, trova questa estensione e attiva \"Consenti script utente\" per far funzionare i tuoi tool."
   },
   "wizardTest": { "message": "Testa" },
+  "wizardTesterRunning": { "message": "Test del codice in corso..." },
   "wizardSave": { "message": "Salva" },
   "wizardTestPassed": { "message": "Test superato: il codice gira senza errori." },
   "wizardRuntimeError": { "message": "Errore di esecuzione" },
@@ -76,7 +80,5 @@
   "toolEdit": { "message": "Modifica" },
   "toolDelete": { "message": "Elimina" },
   "toolDeleteConfirm": { "message": "Clicca di nuovo per eliminare" },
-  "toolDeleted": { "message": "Tool eliminato" },
-  "testPageWaiting": { "message": "Questa è una pagina di prova. Controlla la console per eventuali errori." },
-  "testPageCodeCorrect": { "message": "Codice corretto" }
+  "toolDeleted": { "message": "Tool eliminato" }
 }

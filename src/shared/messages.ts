@@ -6,10 +6,8 @@
 // Persistent port names, derived from the manifest short_name
 export const PORT_NAME = chrome.runtime.getManifest().short_name + '_channel' // UI (iframe)
 export const RUNTIME_PORT_NAME = chrome.runtime.getManifest().short_name + '_runtime' // environment
-export const TEST_PAGE_PORT_NAME = chrome.runtime.getManifest().short_name + '_testpage' // code test page
 
 import type { Preferences } from './preferences'
-import type { ToolTrigger } from './toolsDb'
 
 export interface PingRequest {
   type: 'ping'
@@ -74,31 +72,23 @@ export interface PreferenceSaved {
 }
 
 /**
- * Sent by the wizard to test a tool's code for real. The worker registers
- * it via chrome.userScripts (never eval) on a dedicated test page, timed by
- * `trigger`, and waits for that page's own supervisor to report back.
+ * Sent by the wizard to test a tool's code for real. The worker runs it via
+ * chrome.userScripts.execute() (never eval) — a direct, one-shot, controlled
+ * execution on the real webpage tab the wizard is already open on. Never
+ * tied to a page-load trigger (document_start/idle): those only matter once
+ * the tool actually runs for the end user, not during test.
  */
 export interface TestCodeRequest {
   type: 'testCode'
   code: string
-  trigger: ToolTrigger
-}
-
-/** Reply to testCode: whether the code ran without throwing. */
-export interface TestCodeResult {
-  type: 'testCodeResult'
-  ok: boolean
-  error?: string
 }
 
 /**
- * Sent by the test page's own supervisor (window 'error' listener) once it
- * has a verdict for the given request. One-way: the worker resolves the
- * matching pending testCode call, no reply expected.
+ * Reply to testCode: whether the code ran without throwing, straight from
+ * the chrome.userScripts.execute() call itself — not a guess.
  */
-export interface ReportTestResultRequest {
-  type: 'reportTestResult'
-  requestId: string
+export interface TestCodeResult {
+  type: 'testCodeResult'
   ok: boolean
   error?: string
 }
@@ -112,7 +102,6 @@ export type ChannelRequest =
   | CloseModalSignal
   | GetUserScriptsStatusRequest
   | TestCodeRequest
-  | ReportTestResultRequest
 
 /** Messages sent from the background to the UI. */
 export type ChannelResponse =

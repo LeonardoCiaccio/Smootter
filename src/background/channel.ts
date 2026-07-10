@@ -8,16 +8,14 @@ import { Grip } from '@leonardo.ciaccio/grip'
 import {
   PORT_NAME,
   RUNTIME_PORT_NAME,
-  TEST_PAGE_PORT_NAME,
   type ChannelRequest,
   type SetPreferenceRequest,
   type GetPreferenceRequest,
   type TestCodeRequest,
-  type ReportTestResultRequest,
 } from '@/shared/messages'
 import { getPreference, setPreference, type Preferences } from '@/shared/preferences'
 import { isUserScriptsEnabled } from './userScripts'
-import { runCodeTest, resolveTestResult } from './testRunner'
+import { runCodeTest } from './testRunner'
 
 // All connected channel ports (UI + environment)
 const ports = new Set<chrome.runtime.Port>()
@@ -113,24 +111,15 @@ grip.register({
       throw new Error('code is required.')
     }
   },
-  async business(args: TestCodeRequest) {
-    const result = await runCodeTest(args.code, args.trigger)
+  async business(args: TestCodeRequest, context?: object) {
+    const tabId = (context as Context | undefined)?.port.sender?.tab?.id
+    const result = await runCodeTest(args.code, tabId)
     return { type: 'testCodeResult', ok: result.ok, error: result.error }
   },
 })
 grip.hook('testCode', {
   after({ result }, context: Context) {
     if (result.isSuccess) context.port.postMessage(result.result)
-  },
-})
-
-grip.register({
-  name: 'reportTestResult',
-  validate(args: ReportTestResultRequest) {
-    if (typeof args.requestId !== 'string') throw new Error('requestId is required.')
-  },
-  business(args: ReportTestResultRequest) {
-    resolveTestResult(args.requestId, { ok: args.ok, error: args.error })
   },
 })
 
@@ -153,7 +142,7 @@ grip.hook('setPreference', {
 
 /** Accept a known channel connection, track it, and wire its message handler. */
 function handleConnection(port: chrome.runtime.Port): void {
-  const knownPorts: string[] = [PORT_NAME, RUNTIME_PORT_NAME, TEST_PAGE_PORT_NAME]
+  const knownPorts: string[] = [PORT_NAME, RUNTIME_PORT_NAME]
   if (!knownPorts.includes(port.name)) return
   ports.add(port)
   port.onDisconnect.addListener(() => ports.delete(port))

@@ -79,8 +79,10 @@ export const ui = {
     'bg-gradient-to-r from-cyan-500 to-emerald-400 bg-clip-text pb-1 text-4xl font-extrabold tracking-tight text-transparent',
   wizardSubtitle: 'text-sm text-gray-500 dark:text-gray-400',
   wizardBody:
-    'flex w-full flex-1 flex-col justify-center overflow-y-auto pr-1 [scrollbar-gutter:stable]',
+    'flex w-full min-h-0 flex-1 flex-col justify-center overflow-y-auto pr-1 [scrollbar-gutter:stable]',
   wizardStepBody: 'flex w-full flex-col gap-4 text-left',
+  // Fills the body instead of being centered — for steps whose content should occupy all available space (e.g. the code editor).
+  wizardStepBodyFill: 'flex h-full min-h-0 w-full flex-col gap-4 text-left',
   wizardField: 'flex flex-col gap-1.5 text-left',
   wizardFieldLabel: 'text-sm font-medium text-gray-700 dark:text-gray-300',
   wizardCounter: 'self-end text-xs text-gray-400 dark:text-gray-500',
@@ -122,13 +124,13 @@ export const ui = {
   bannerTitle: 'text-sm font-semibold text-gray-900 dark:text-gray-100',
   bannerDescription: 'text-xs text-gray-600 dark:text-gray-400',
   // Code editor (CodeMirror mounts here; its own theme mirrors these colors)
-  codeEditor: 'h-80 w-full overflow-hidden rounded-xl border border-gray-200 text-sm dark:border-gray-800',
+  codeEditor: 'h-full min-h-[16rem] w-full overflow-hidden rounded-xl border border-gray-200 text-sm dark:border-gray-800',
   wizardCodeActions: 'flex w-full items-center justify-end gap-3',
-  // Test page: centered status text, waiting/ok/error variants
-  testPageWrapper: 'flex h-full w-full items-center justify-center bg-white px-6 text-center dark:bg-gray-900',
-  testPageStatusWaiting: 'text-lg font-semibold text-gray-500 dark:text-gray-400',
-  testPageStatusOk: 'text-lg font-semibold text-emerald-600 dark:text-emerald-400',
-  testPageStatusError: 'text-lg font-semibold text-rose-600 dark:text-rose-400',
+  // Tester step: message centered, Save centered below it once the test passes.
+  wizardTesterBody: 'flex w-full flex-col items-center gap-5 text-center',
+  testStatusWaiting: 'text-lg font-semibold text-gray-500 dark:text-gray-400',
+  testStatusOk: 'text-lg font-semibold text-emerald-600 dark:text-emerald-400',
+  testStatusError: 'text-lg font-semibold text-rose-600 dark:text-rose-400',
 } as const
 
 export type UiVariant = keyof typeof ui

@@ -27,6 +27,7 @@
   "wizardStepTiming": { "message": "Timing" },
   "wizardStepScope": { "message": "Scope" },
   "wizardStepChat": { "message": "Build" },
+  "wizardStepTester": { "message": "Test" },
   "wizardStepBasicsTitle": { "message": "Give it a name" },
   "wizardStepBasicsSubtitle": {
     "message": "A short name and description. This is what you'll see later."
@@ -36,7 +37,9 @@
   "wizardStepScopeTitle": { "message": "Scope" },
   "wizardStepScopeSubtitle": { "message": "Choose where it should run." },
   "wizardStepChatTitle": { "message": "Build" },
-  "wizardStepChatSubtitle": { "message": "Write or paste the code, then test it before you save." },
+  "wizardStepChatSubtitle": { "message": "Write or paste the code. We'll test it on the next step." },
+  "wizardStepTesterTitle": { "message": "Run the test" },
+  "wizardStepTesterSubtitle": { "message": "We'll run your code for real and tell you if it works." },
   "wizardNameLabel": { "message": "Name" },
   "wizardNamePlaceholder": { "message": "e.g. Grab all links" },
   "wizardDescriptionLabel": { "message": "Short description" },
@@ -69,6 +72,7 @@
     "message": "Open chrome://extensions, find this extension, and turn on \"Allow User Scripts\" to let your tools run."
   },
   "wizardTest": { "message": "Test" },
+  "wizardTesterRunning": { "message": "Testing your code..." },
   "wizardSave": { "message": "Save" },
   "wizardTestPassed": { "message": "Test passed: the code ran without errors." },
   "wizardRuntimeError": { "message": "Runtime error" },
@@ -78,7 +82,5 @@
   "toolEdit": { "message": "Edit" },
   "toolDelete": { "message": "Delete" },
   "toolDeleteConfirm": { "message": "Click again to delete" },
-  "toolDeleted": { "message": "Tool deleted" },
-  "testPageWaiting": { "message": "This is a test page. Check the console for any errors." },
-  "testPageCodeCorrect": { "message": "Code correct" }
+  "toolDeleted": { "message": "Tool deleted" }
 }

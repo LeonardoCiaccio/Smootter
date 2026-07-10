@@ -27,6 +27,7 @@
   "wizardStepTiming": { "message": "Inicio" },
   "wizardStepScope": { "message": "Ámbito" },
   "wizardStepChat": { "message": "Construcción" },
+  "wizardStepTester": { "message": "Prueba" },
   "wizardStepBasicsTitle": { "message": "Ponle un nombre" },
   "wizardStepBasicsSubtitle": {
     "message": "Un nombre breve y una descripción. Es lo que verás después."
@@ -36,7 +37,9 @@
   "wizardStepScopeTitle": { "message": "Ámbito" },
   "wizardStepScopeSubtitle": { "message": "Elige dónde debe funcionar." },
   "wizardStepChatTitle": { "message": "Construcción" },
-  "wizardStepChatSubtitle": { "message": "Escribe o pega el código, luego pruébalo antes de guardar." },
+  "wizardStepChatSubtitle": { "message": "Escribe o pega el código. Lo probaremos en el siguiente paso." },
+  "wizardStepTesterTitle": { "message": "Ejecuta la prueba" },
+  "wizardStepTesterSubtitle": { "message": "Ejecutamos tu código de verdad y te decimos si funciona." },
   "wizardNameLabel": { "message": "Nombre" },
   "wizardNamePlaceholder": { "message": "ej. Capturar todos los enlaces" },
   "wizardDescriptionLabel": { "message": "Descripción breve" },
@@ -69,6 +72,7 @@
     "message": "Abre chrome://extensions, busca esta extensión y activa \"Permitir scripts de usuario\" para que tus herramientas funcionen."
   },
   "wizardTest": { "message": "Probar" },
+  "wizardTesterRunning": { "message": "Probando tu código..." },
   "wizardSave": { "message": "Guardar" },
   "wizardTestPassed": { "message": "Prueba superada: el código se ejecuta sin errores." },
   "wizardRuntimeError": { "message": "Error en tiempo de ejecución" },
@@ -78,7 +82,5 @@
   "toolEdit": { "message": "Editar" },
   "toolDelete": { "message": "Eliminar" },
   "toolDeleteConfirm": { "message": "Haz clic de nuevo para eliminar" },
-  "toolDeleted": { "message": "Herramienta eliminada" },
-  "testPageWaiting": { "message": "Esta es una página de prueba. Revisa la consola por si hay errores." },
-  "testPageCodeCorrect": { "message": "Código correcto" }
+  "toolDeleted": { "message": "Herramienta eliminada" }
 }

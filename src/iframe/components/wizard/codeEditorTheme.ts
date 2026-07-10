@@ -7,7 +7,7 @@ import { EditorView } from '@codemirror/view'
 
 export const lightEditorTheme = EditorView.theme(
   {
-    '&': { backgroundColor: '#ffffff', color: '#111827' }, // white / gray-900
+    '&': { height: '100%', backgroundColor: '#ffffff', color: '#111827' }, // white / gray-900
     '.cm-content': { caretColor: '#0891b2' }, // cyan-600
     '.cm-gutters': { backgroundColor: '#f9fafb', color: '#9ca3af', border: 'none' }, // gray-50 / gray-400
     '.cm-activeLine': { backgroundColor: '#f3f4f6' }, // gray-100
@@ -21,7 +21,7 @@ export const lightEditorTheme = EditorView.theme(
 
 export const darkEditorTheme = EditorView.theme(
   {
-    '&': { backgroundColor: '#1f2937', color: '#f3f4f6' }, // gray-800 / gray-100
+    '&': { height: '100%', backgroundColor: '#1f2937', color: '#f3f4f6' }, // gray-800 / gray-100
     '.cm-content': { caretColor: '#22d3ee' }, // cyan-400
     '.cm-gutters': { backgroundColor: '#111827', color: '#6b7280', border: 'none' }, // gray-900 / gray-500
     '.cm-activeLine': { backgroundColor: '#111827' },

@@ -1,63 +1,56 @@
 /**
- * testRunner — orchestrates a real, isolated test run of a tool's code.
- * Never calls eval/Function ourselves: the code is registered via
- * chrome.userScripts (the one Chrome-sanctioned API for this), timed by the
- * tool's own trigger, on a dedicated bundled test page. That page's own
- * script supervises execution (a plain `window` error listener) and reports
- * back — we only relay the verdict.
+ * testRunner — runs a tool's code for real, in a controlled way.
+ * Never calls eval/Function ourselves: the code runs via
+ * chrome.userScripts.execute() (the one Chrome-sanctioned API for this), a
+ * direct one-shot call targeting the real webpage tab the wizard is already
+ * open on (chrome.userScripts cannot target our own chrome-extension://
+ * pages — and running untrusted tool code inside our privileged UI would be
+ * unsafe anyway).
+ *
+ * chrome.userScripts.execute() does NOT reject when the injected code
+ * throws (it only rejects on injection-level failures, e.g. bad target) —
+ * a runtime error inside the code is otherwise silently swallowed. So the
+ * code is wrapped in a real try/catch before being handed to the sanctioned
+ * API, and the outcome is read back as the injection's completion value:
+ * the actual, governed source of truth for whether it threw.
  */
-import type { ToolTrigger } from '@/shared/toolsDb'
-
-const TEST_RESULT_TIMEOUT_MS = 8000
-
 export interface TestResult {
   ok: boolean
   error?: string
 }
 
-const pendingTests = new Map<string, (result: TestResult) => void>()
-
-/** Called when the test page's supervisor reports its verdict. */
-export function resolveTestResult(requestId: string, result: TestResult): void {
-  const resolve = pendingTests.get(requestId)
-  if (!resolve) return
-  pendingTests.delete(requestId)
-  resolve(result)
+function describeError(error: unknown): string {
+  if (error instanceof Error) return error.message
+  return String(error)
 }
 
-function waitForResult(requestId: string): Promise<TestResult> {
-  return new Promise((resolve) => {
-    pendingTests.set(requestId, resolve)
-    setTimeout(() => {
-      if (!pendingTests.has(requestId)) return
-      pendingTests.delete(requestId)
-      resolve({ ok: false, error: 'timeout' })
-    }, TEST_RESULT_TIMEOUT_MS)
-  })
+/** Wraps the tool's code so its outcome (success or thrown error) becomes the injection's return value. */
+function buildGuardedCode(code: string): string {
+  return `(async () => {
+    try {
+      ${code}
+      return { ok: true };
+    } catch (error) {
+      return { ok: false, error: error && error.message ? String(error.message) : String(error) };
+    }
+  })()`
 }
 
-/** Run `code` on a fresh test page, timed by `trigger`, and report if it threw. */
-export async function runCodeTest(code: string, trigger: ToolTrigger): Promise<TestResult> {
-  const requestId = crypto.randomUUID()
-  const testPageUrl = chrome.runtime.getURL('src/testpage/index.html')
-  const scriptId = 'pippo-test-' + requestId
+/** Runs `code` for real on `tabId`, catching any error it throws, and reports the outcome. */
+export async function runCodeTest(code: string, tabId: number | undefined): Promise<TestResult> {
+  if (tabId === undefined) {
+    return { ok: false, error: 'Open the tool builder from a webpage to test the code.' }
+  }
 
-  await chrome.userScripts.register([
-    {
-      id: scriptId,
-      // Match patterns ignore the query string, so the exact path is enough
-      // to also match testPageUrl + "?rid=...".
-      matches: [testPageUrl],
-      js: [{ code }],
-      runAt: trigger === 'pageStart' ? 'document_start' : 'document_idle',
+  try {
+    const injectionResults = await chrome.userScripts.execute({
+      target: { tabId },
+      js: [{ code: buildGuardedCode(code) }],
       world: 'MAIN',
-    },
-  ])
-
-  const resultPromise = waitForResult(requestId)
-  await chrome.tabs.create({ url: `${testPageUrl}?rid=${requestId}`, active: true })
-
-  const result = await resultPromise
-  await chrome.userScripts.unregister({ ids: [scriptId] })
-  return result
+    })
+    const outcome = injectionResults[0]?.result as TestResult | undefined
+    return outcome ?? { ok: false, error: 'No result from the test run.' }
+  } catch (error) {
+    return { ok: false, error: describeError(error) }
+  }
 }
