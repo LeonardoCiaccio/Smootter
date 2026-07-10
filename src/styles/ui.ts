@@ -15,8 +15,10 @@ export const ui = {
   card: 'rounded-tool border border-gray-200 bg-white p-4 shadow-sm',
   input:
     'w-full resize-none rounded-tool border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',
-  // App shell: toolbar (top) + boxed content row (middle, flex-1) + footer (bottom)
-  appShell: 'flex h-full w-full flex-col bg-white dark:bg-gray-900',
+  // App shell: toolbar (top) + boxed content row (middle, flex-1) + footer (bottom).
+  // isolate: contains the glow's negative z-index to this stacking context, so it can't
+  // escape past appShell's own background and get painted over by it.
+  appShell: 'relative isolate flex h-full w-full flex-col bg-white dark:bg-gray-900',
   // 3-column boxed layout: empty side columns, app content in the center (max-w-7xl = 1280px)
   layoutRoot: 'flex w-full min-h-0 flex-1',
   layoutSide: 'flex-1 h-full',
@@ -41,6 +43,12 @@ export const ui = {
   footer: 'flex-shrink-0 px-5 py-2.5 text-center text-[11px] text-gray-400 dark:text-gray-500',
   statusText: 'text-lg font-semibold text-gray-900 dark:text-gray-100',
   homeShell: 'flex flex-col',
+  // Decorative blurred blobs behind the whole app (all views) — fixed to appShell's own box,
+  // so nothing (like layoutCenter's overflow-hidden) can clip the blur bleed.
+  heroGlow: 'pointer-events-none absolute inset-0 -z-10',
+  heroGlowBlobA: 'absolute left-10 -top-10 h-64 w-64 rounded-full bg-violet-500 opacity-20 blur-3xl dark:opacity-25',
+  heroGlowBlobB: 'absolute right-10 top-6 h-56 w-56 rounded-full bg-cyan-400 opacity-20 blur-3xl dark:opacity-20',
+  heroGlowBlobC: 'absolute left-1/3 top-72 h-56 w-56 rounded-full bg-fuchsia-400 opacity-10 blur-3xl dark:opacity-15',
   // Home hero: pushed toward the top (the toolbar above is a normal in-flow element now)
   heroWrapper: 'flex flex-col items-center gap-4 px-6 pt-20 text-center',
   heroHeader:

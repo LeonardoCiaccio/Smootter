@@ -7,6 +7,11 @@ import ToastContainer from './components/ToastContainer.vue'
 
 <template>
   <div :class="ui.appShell">
+    <div :class="ui.heroGlow">
+      <div :class="ui.heroGlowBlobA" />
+      <div :class="ui.heroGlowBlobB" />
+      <div :class="ui.heroGlowBlobC" />
+    </div>
     <ToastContainer />
     <AppToolbar />
     <div :class="ui.layoutRoot">
