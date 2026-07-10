@@ -10,6 +10,8 @@ export const ui = {
     'inline-flex items-center justify-center gap-2 rounded-tool bg-cyan-600 px-3.5 py-1.5 text-sm font-medium text-white transition-colors hover:bg-cyan-500 focus:outline-none focus:ring-2 focus:ring-cyan-500 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-cyan-600',
   secondaryButton:
     'inline-flex items-center justify-center gap-2 rounded-tool border border-gray-300 px-3.5 py-1.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-100 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent dark:border-gray-700 dark:text-gray-300 dark:hover:bg-gray-800',
+  dangerButton:
+    'inline-flex items-center justify-center gap-2 rounded-tool border border-rose-300 px-3.5 py-1.5 text-sm font-medium text-rose-600 transition-colors hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent dark:border-rose-800 dark:text-rose-400 dark:hover:bg-rose-950',
   card: 'rounded-tool border border-gray-200 bg-white p-4 shadow-sm',
   input:
     'w-full resize-none rounded-tool border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',
@@ -39,7 +41,7 @@ export const ui = {
   footer: 'flex-shrink-0 px-5 py-2.5 text-center text-[11px] text-gray-400 dark:text-gray-500',
   statusText: 'text-lg font-semibold text-gray-900 dark:text-gray-100',
   // Home hero: pushed toward the top (the toolbar above is a normal in-flow element now)
-  heroWrapper: 'flex flex-col items-center gap-4 px-6 pt-10 text-center',
+  heroWrapper: 'flex flex-col items-center gap-4 px-6 pt-20 text-center',
   heroHeader:
     'bg-gradient-to-r from-violet-600 to-cyan-400 bg-clip-text pb-1 text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl',
   heroSubheader: 'max-w-md text-base text-gray-600 dark:text-gray-400',
@@ -77,6 +79,12 @@ export const ui = {
   // Non-home views: a fixed breadcrumb on top, content filling the rest.
   viewShell: 'flex h-full flex-col',
   viewContent: 'flex flex-1 items-center justify-center',
+  // Options: no sidebar (too few settings), left-aligned title, sections stacked below.
+  optionsContent: 'flex-1 overflow-y-auto px-8 py-6 text-left',
+  optionsSection: 'mt-8 flex max-w-md flex-col gap-4 border-t border-gray-200 pt-6 dark:border-gray-800',
+  optionsSectionTitle: 'text-sm font-semibold text-gray-900 dark:text-gray-100',
+  optionsSectionDescription: 'text-xs text-gray-500 dark:text-gray-400',
+  optionsSectionActions: 'flex items-center justify-between gap-3',
   breadcrumb: 'flex items-center gap-1.5 self-start px-6 pt-6 text-sm font-medium',
   breadcrumbHome:
     'text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100',

@@ -34,3 +34,8 @@ export async function setPreference<K extends keyof Preferences>(
 ): Promise<void> {
   await chrome.storage.local.set({ [PREFIX + key]: value })
 }
+
+/** Erase a stored preference (e.g. the user resetting the LLM config). */
+export async function removePreference<K extends keyof Preferences>(key: K): Promise<void> {
+  await chrome.storage.local.remove(PREFIX + key)
+}

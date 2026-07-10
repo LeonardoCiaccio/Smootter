@@ -106,5 +106,11 @@
   "llmPromptCancel": { "message": "Annulla" },
   "llmGenerateOk": { "message": "Codice generato" },
   "wizardClearCode": { "message": "Svuota codice" },
-  "wizardClearCodeConfirm": { "message": "Clicca di nuovo per svuotare" }
+  "wizardClearCodeConfirm": { "message": "Clicca di nuovo per svuotare" },
+  "llmSettingsDescription": { "message": "Collega il tuo modello AI per generare il codice dei tool da una descrizione." },
+  "llmConfigSaved": { "message": "Configurazione AI salvata" },
+  "llmConfigReset": { "message": "Configurazione AI rimossa" },
+  "llmConfigResetButton": { "message": "Reimposta" },
+  "llmConfigResetConfirm": { "message": "Clicca di nuovo per reimpostare" },
+  "llmGroupTitle": { "message": "LLM" }
 }

@@ -7,14 +7,13 @@
 import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import BuilderView from '../views/BuilderView.vue'
-import PlaceholderView from '../views/PlaceholderView.vue'
+import OptionsView from '../views/OptionsView.vue'
 
 export const router = createRouter({
   history: createWebHashHistory(),
   routes: [
     { path: '/', component: HomeView },
     { path: '/builder', component: BuilderView },
-    // Options still shares the generic placeholder until it gets real content.
-    { path: '/options', component: PlaceholderView, props: { viewKey: 'options' } },
+    { path: '/options', component: OptionsView },
   ],
 })

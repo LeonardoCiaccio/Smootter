@@ -25,6 +25,11 @@ export type GetPreferenceRequest = {
   [K in keyof Preferences]: { type: 'getPreference'; key: K }
 }[keyof Preferences]
 
+/** Erases a stored preference (e.g. resetting the LLM config). Replies with preferenceValue (value: undefined). */
+export type RemovePreferenceRequest = {
+  [K in keyof Preferences]: { type: 'removePreference'; key: K }
+}[keyof Preferences]
+
 export interface GetTopMessageRequest {
   type: 'getTopMessage'
 }
@@ -122,6 +127,7 @@ export type ChannelRequest =
   | PingRequest
   | SetPreferenceRequest
   | GetPreferenceRequest
+  | RemovePreferenceRequest
   | GetTopMessageRequest
   | CloseModalSignal
   | GetUserScriptsStatusRequest

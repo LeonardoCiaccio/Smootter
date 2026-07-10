@@ -108,5 +108,11 @@
   "llmPromptCancel": { "message": "Cancel" },
   "llmGenerateOk": { "message": "Code generated" },
   "wizardClearCode": { "message": "Clear code" },
-  "wizardClearCodeConfirm": { "message": "Click again to clear" }
+  "wizardClearCodeConfirm": { "message": "Click again to clear" },
+  "llmSettingsDescription": { "message": "Connect your own AI model to generate tool code from a description." },
+  "llmConfigSaved": { "message": "AI configuration saved" },
+  "llmConfigReset": { "message": "AI configuration removed" },
+  "llmConfigResetButton": { "message": "Reset" },
+  "llmConfigResetConfirm": { "message": "Click again to reset" },
+  "llmGroupTitle": { "message": "LLM" }
 }

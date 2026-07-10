@@ -11,11 +11,12 @@ import {
   type ChannelRequest,
   type SetPreferenceRequest,
   type GetPreferenceRequest,
+  type RemovePreferenceRequest,
   type TestCodeRequest,
   type TestLlmConfigRequest,
   type GenerateCodeRequest,
 } from '@/shared/messages'
-import { getPreference, setPreference, type Preferences } from '@/shared/preferences'
+import { getPreference, setPreference, removePreference, type Preferences } from '@/shared/preferences'
 import { isUserScriptsEnabled } from './userScripts'
 import { runCodeTest } from './testRunner'
 import { testLlmConfig, generateCode } from './llmClient'
@@ -72,6 +73,24 @@ grip.register({
 grip.hook('getPreference', {
   after({ result }, context: Context) {
     if (result.isSuccess) context.sendResponse(result.result)
+  },
+})
+
+grip.register({
+  name: 'removePreference',
+  validate(args: RemovePreferenceRequest) {
+    if (typeof args.key !== 'string') throw new Error('key is required.')
+  },
+  async business(args: RemovePreferenceRequest) {
+    await removePreference(args.key)
+    return { type: 'preferenceValue', key: args.key, value: undefined }
+  },
+})
+grip.hook('removePreference', {
+  after({ result }, context: Context) {
+    if (!result.isSuccess) return
+    context.sendResponse(result.result)
+    void chrome.runtime.sendMessage(result.result)
   },
 })
 

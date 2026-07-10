@@ -114,5 +114,11 @@
   "llmPromptCancel": { "message": "Abbrechen" },
   "llmGenerateOk": { "message": "Code generiert" },
   "wizardClearCode": { "message": "Code leeren" },
-  "wizardClearCodeConfirm": { "message": "Erneut klicken zum Leeren" }
+  "wizardClearCodeConfirm": { "message": "Erneut klicken zum Leeren" },
+  "llmSettingsDescription": { "message": "Verbinde dein eigenes KI-Modell, um Tool-Code aus einer Beschreibung zu generieren." },
+  "llmConfigSaved": { "message": "KI-Konfiguration gespeichert" },
+  "llmConfigReset": { "message": "KI-Konfiguration entfernt" },
+  "llmConfigResetButton": { "message": "Zurücksetzen" },
+  "llmConfigResetConfirm": { "message": "Erneut klicken zum Zurücksetzen" },
+  "llmGroupTitle": { "message": "LLM" }
 }

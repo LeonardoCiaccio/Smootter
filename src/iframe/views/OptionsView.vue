@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { ui } from '@/styles/ui'
 import Breadcrumb from '../components/Breadcrumb.vue'
-
-defineProps<{ viewKey: string }>()
+import LlmSettingsSection from '../components/LlmSettingsSection.vue'
 </script>
 
 <template>
   <div :class="ui.viewShell">
-    <Breadcrumb :view-key="viewKey" />
-    <div :class="ui.viewContent">
-      <p :class="ui.statusText">Hello World</p>
+    <Breadcrumb view-key="options" />
+    <div :class="ui.optionsContent">
+      <LlmSettingsSection />
     </div>
   </div>
 </template>

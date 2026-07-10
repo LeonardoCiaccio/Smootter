@@ -1,57 +1,18 @@
 <script setup lang="ts">
-import { inject, reactive, ref, watch } from 'vue'
+import { ref } from 'vue'
 import { ArrowPathIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
-import { channelKey } from '@/shared/vuePlugins/messaging'
-import type { LlmConfig } from '@/shared/preferences'
-import { llmErrorText } from '@/shared/llmErrorText'
+import { useLlmConfigForm } from '../../composables/useLlmConfigForm'
 
 const emit = defineEmits<{ close: []; saved: [] }>()
-const channel = inject(channelKey)
+const { form, testing, verdict, errorMessage, test, persist } = useLlmConfigForm()
 
-const form = reactive<LlmConfig>({ endpoint: '', apiKey: '', model: '' })
-
-const testing = ref(false)
 const saving = ref(false)
-const verdict = ref<'idle' | 'ok' | 'error'>('idle')
-const errorMessage = ref('')
-
-// Any edit invalidates a previous test — must be tested again before saving.
-watch(form, () => (verdict.value = 'idle'))
-
-async function test(): Promise<void> {
-  if (!channel) return
-  if (!form.endpoint.trim() || !form.apiKey.trim() || !form.model.trim()) {
-    verdict.value = 'error'
-    errorMessage.value = chrome.i18n.getMessage('llmFieldsRequired')
-    return
-  }
-
-  testing.value = true
-  verdict.value = 'idle'
-  const response = await channel.send({ type: 'testLlmConfig', config: { ...form } })
-  testing.value = false
-
-  // The background always resolves (it times out internally), but the
-  // response is still validated here — the user must never be left hanging
-  // without any feedback.
-  if (response.type !== 'testLlmConfigResult') {
-    verdict.value = 'error'
-    errorMessage.value = llmErrorText('unknown', undefined)
-    return
-  }
-  if (response.ok) {
-    verdict.value = 'ok'
-  } else {
-    verdict.value = 'error'
-    errorMessage.value = llmErrorText(response.errorCode, response.detail)
-  }
-}
 
 async function save(): Promise<void> {
-  if (!channel || verdict.value !== 'ok') return
+  if (verdict.value !== 'ok') return
   saving.value = true
-  await channel.send({ type: 'setPreference', key: 'llmConfig', value: { ...form } })
+  await persist()
   saving.value = false
   emit('saved')
 }
