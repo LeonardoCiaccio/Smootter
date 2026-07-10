@@ -149,7 +149,7 @@ function goTo(index: number): void {
       <WizardStepTiming v-else-if="currentIndex === 1" v-model:data="data" />
       <WizardStepScope v-else-if="currentIndex === 2" v-model:data="data" />
       <WizardStepChat v-else-if="currentIndex === 3" v-model:data="data" />
-      <WizardStepTester v-else v-model:data="data" />
+      <WizardStepTester v-else v-model:data="data" @cancel="currentIndex = 3" />
     </div>
 
     <div :class="ui.wizardSteps">

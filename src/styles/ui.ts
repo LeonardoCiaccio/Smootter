@@ -179,10 +179,17 @@ export const ui = {
     'absolute bottom-2.5 right-2.5 flex h-7 w-7 items-center justify-center rounded-full bg-cyan-600 text-white transition-colors hover:bg-cyan-500 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-cyan-500 dark:hover:bg-cyan-400',
   wizardChatEditorColumn: 'relative h-full min-h-0 w-full overflow-hidden text-left',
   // Tester step: message centered, Save centered below it once the test passes.
-  wizardTesterBody: 'flex w-full flex-col items-center gap-5 text-center',
+  wizardTesterBody: 'flex w-full flex-col items-center gap-6 text-center',
+  // Processing animation: a spinning ring around a pulsing icon.
+  wizardTesterSpinnerWrapper: 'relative flex h-16 w-16 items-center justify-center',
+  wizardTesterSpinnerTrack: 'absolute inset-0 rounded-full border-4 border-cyan-100 dark:border-cyan-950',
+  wizardTesterSpinnerArc:
+    'absolute inset-0 animate-spin rounded-full border-4 border-transparent border-t-cyan-500 dark:border-t-cyan-400',
+  wizardTesterSpinnerIcon: 'h-6 w-6 animate-pulse text-cyan-500 dark:text-cyan-400',
   testStatusWaiting: 'text-lg font-semibold text-gray-500 dark:text-gray-400',
   testStatusOk: 'text-lg font-semibold text-emerald-600 dark:text-emerald-400',
   testStatusError: 'text-lg font-semibold text-rose-600 dark:text-rose-400',
+  wizardTesterActions: 'flex items-center gap-3',
   // Generic modal: dim overlay + centered panel, reused by the LLM config popup.
   modalOverlay: 'fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-6',
   modalPanel: 'flex w-full max-w-md flex-col gap-5 rounded-tool bg-white p-6 text-left shadow-xl dark:bg-gray-900',

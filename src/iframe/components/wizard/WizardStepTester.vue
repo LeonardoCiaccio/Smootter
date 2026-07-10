@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, inject, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { SparklesIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { useToast } from '../../plugins/toast'
 import { saveTool, type StoredTool } from '@/shared/toolsDb'
@@ -9,6 +10,7 @@ import { capChatMessages } from '@/shared/messages'
 import type { WizardData } from './WizardData'
 
 const data = defineModel<WizardData>('data', { required: true })
+const emit = defineEmits<{ cancel: [] }>()
 const toast = useToast()
 const router = useRouter()
 const channel = inject(channelKey)
@@ -27,6 +29,15 @@ const statusText = computed(() => {
   return chrome.i18n.getMessage('wizardTesterRunning')
 })
 
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+// Even when the real test finishes almost instantly, a bare flash of text
+// doesn't read as "we actually built and ran your tool" — a short minimum
+// keeps the processing animation on screen long enough to feel real.
+const MIN_ANIMATION_MS = 2000
+
 /** Runs the tool's code for real, governed by the background worker. */
 async function runTest(): Promise<void> {
   if (!channel) return
@@ -34,7 +45,11 @@ async function runTest(): Promise<void> {
   verdict.value = 'running'
   data.value.codeTested = false
 
+  const startedAt = Date.now()
   const response = await channel.send({ type: 'testCode', code: data.value.code })
+  const elapsed = Date.now() - startedAt
+  if (elapsed < MIN_ANIMATION_MS) await sleep(MIN_ANIMATION_MS - elapsed)
+
   if (response.type !== 'testCodeResult') return
 
   if (response.ok) {
@@ -49,6 +64,7 @@ async function runTest(): Promise<void> {
 onMounted(runTest)
 
 async function save(): Promise<void> {
+  if (verdict.value !== 'ok') return
   const tool: StoredTool = {
     id: data.value.id ?? crypto.randomUUID(),
     name: data.value.name,
@@ -69,13 +85,26 @@ async function save(): Promise<void> {
 }
 
 const saveLabel = chrome.i18n.getMessage('wizardSave')
+const cancelLabel = chrome.i18n.getMessage('wizardTesterCancel')
 </script>
 
 <template>
   <div :class="ui.wizardTesterBody">
+    <div v-if="verdict === 'running'" :class="ui.wizardTesterSpinnerWrapper">
+      <div :class="ui.wizardTesterSpinnerTrack" />
+      <div :class="ui.wizardTesterSpinnerArc" />
+      <SparklesIcon :class="ui.wizardTesterSpinnerIcon" />
+    </div>
+
     <p :class="statusClass">{{ statusText }}</p>
-    <button v-if="verdict === 'ok'" type="button" :class="ui.primaryButton" @click="save">
-      {{ saveLabel }}
-    </button>
+
+    <div v-if="verdict !== 'running'" :class="ui.wizardTesterActions">
+      <button type="button" :class="ui.secondaryButton" @click="emit('cancel')">
+        {{ cancelLabel }}
+      </button>
+      <button v-if="verdict === 'ok'" type="button" :class="ui.primaryButton" @click="save">
+        {{ saveLabel }}
+      </button>
+    </div>
   </div>
 </template>

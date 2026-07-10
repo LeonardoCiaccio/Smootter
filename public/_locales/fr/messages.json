@@ -82,6 +82,7 @@
   },
   "wizardTest": { "message": "Tester" },
   "wizardTesterRunning": { "message": "Test de votre code en cours..." },
+  "wizardTesterCancel": { "message": "Annuler" },
   "wizardSave": { "message": "Enregistrer" },
   "wizardTestPassed": { "message": "Test réussi : le code s'exécute sans erreur." },
   "wizardRuntimeError": { "message": "Erreur d'exécution" },
