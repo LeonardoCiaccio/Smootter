@@ -222,7 +222,15 @@ export async function generateCode(
 
     const toolCall = result.message.tool_calls?.[0]
     const name = toolCall?.function?.name
-    if (!toolCall || !name) return { ok: false, errorCode: 'noToolSupport' }
+    if (!toolCall || !name) {
+      // Some providers don't reliably honor tool_choice: 'required' on a
+      // continuation turn (e.g. right after a fetch_url result) and just
+      // answer in plain text instead. That's still a real, usable answer —
+      // treat it as the reply rather than failing the whole conversation.
+      const content = result.message.content?.trim()
+      if (content) return { ok: true, reply: content }
+      return { ok: false, errorCode: 'noToolSupport' }
+    }
 
     if (name === 'fetch_url') {
       let args: { url?: string } = {}
