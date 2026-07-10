@@ -4,10 +4,10 @@
  * key + model name), the de facto standard many providers and local
  * runtimes implement — no fixed provider list, no SDK, plain fetch.
  * The model MUST support tool calling: that's how it hands back structured
- * code instead of free-form text.
+ * code (and a chat reply) instead of free-form text.
  */
 import type { LlmConfig } from '@/shared/preferences'
-import type { LlmErrorCode } from '@/shared/messages'
+import type { LlmErrorCode, ChatMessage } from '@/shared/messages'
 
 export interface LlmTestResult {
   ok: boolean
@@ -18,6 +18,7 @@ export interface LlmTestResult {
 export interface LlmGenerateResult {
   ok: boolean
   code?: string
+  reply?: string
   errorCode?: LlmErrorCode
   detail?: string
 }
@@ -26,11 +27,22 @@ const WRITE_CODE_TOOL = {
   type: 'function',
   function: {
     name: 'write_code',
-    description: 'Return the generated JavaScript code for the browser tool.',
+    description: "Return the generated JavaScript code for the browser tool, plus a short chat reply for the user.",
     parameters: {
       type: 'object',
-      properties: { code: { type: 'string', description: 'The complete JavaScript code.' } },
-      required: ['code'],
+      properties: {
+        code: {
+          type: 'string',
+          description:
+            'The complete JavaScript code. Leave this out (or empty) if the message is just a question, greeting, or otherwise does not require writing or changing code — never invent placeholder code.',
+        },
+        reply: {
+          type: 'string',
+          description:
+            'A short, plain chat message for the user describing what you did or asking a clarifying question. Never include code or reasoning here.',
+        },
+      },
+      required: ['reply'],
     },
   },
 } as const
@@ -101,7 +113,7 @@ async function callChatCompletions(
 export async function testLlmConfig(config: LlmConfig): Promise<LlmTestResult> {
   const result = await callChatCompletions(
     config,
-    [{ role: 'user', content: 'Call the write_code tool with a single console.log("ok"); statement.' }],
+    [{ role: 'user', content: 'Call the write_code tool with a single console.log("ok"); statement and any short reply.' }],
     WRITE_CODE_TOOL,
   )
 
@@ -117,42 +129,38 @@ export async function testLlmConfig(config: LlmConfig): Promise<LlmTestResult> {
  * what the code is for and how it runs, the CSS rule this whole system
  * depends on (injected into arbitrary third-party pages, so styling must be
  * inline and forced, never a <style> tag or external stylesheet the host
- * page could override), and — only when the editor actually has code — how
- * to treat it as discardable context rather than something to preserve.
+ * page could override), how to reply in the chat (short, no code, no
+ * reasoning), and — only when the editor actually has code — how to treat
+ * it as discardable context rather than something to preserve.
  */
-function buildSystemPrompt(hasExistingCode: boolean): string {
+function buildSystemPrompt(existingCode: string): string {
   const parts = [
-    'You are the code generator for Pippo, a browser extension that lets users build small automation tools without writing code themselves.',
+    'You are the code generator for Pippo, a browser extension that lets users build small automation tools without writing code themselves, through a chat conversation.',
     'You write a single, self-contained JavaScript snippet. It gets injected directly into real, arbitrary web pages via chrome.userScripts (MAIN world) — no imports, no exports, no surrounding wrapper function, just plain statements.',
+    "If the request doesn't say anything about styling, apply any CSS inline on the elements themselves (e.g. element.style.cssText, always with 'important'), never via a <style> tag or an external stylesheet — the code runs on pages you don't control, and the page's own CSS could otherwise override or conflict with it.",
+    "Always answer by calling the write_code tool. `reply` is always required: a short, plain chat message for the user — never code, never your reasoning, just what you'd say in a chat. `code` is only for when the user actually wants code written or changed — leave it out entirely for greetings, questions, or general conversation that doesn't call for it.",
   ]
-  if (hasExistingCode) {
+
+  if (existingCode.trim() !== '') {
     parts.push(
-      "The user's message includes the code currently in the editor as existing context: they might be asking to improve, fix, or extend working code, not necessarily start over. If that existing code does not fit the new request, discard it and write fresh code instead of forcing it to fit.",
+      `Current code in the editor (context — the user may be asking to improve, fix, or extend it; if it doesn't fit the conversation, discard it and write fresh code instead):\n\`\`\`js\n${existingCode}\n\`\`\``,
     )
   }
-  parts.push(
-    "If the request doesn't say anything about styling, apply any CSS inline on the elements themselves (e.g. element.style.cssText, always with 'important'), never via a <style> tag or an external stylesheet — the code runs on pages you don't control, and the page's own CSS could otherwise override or conflict with it.",
-    'Always answer by calling the write_code tool with the final code.',
-  )
-  return parts.join(' ')
+
+  return parts.join('\n\n')
 }
 
-function buildUserMessage(prompt: string, existingCode: string): string {
-  if (existingCode.trim() === '') return prompt
-  return `Existing code in the editor (context — discard it if it doesn't fit the request below):\n\`\`\`js\n${existingCode}\n\`\`\`\n\nRequest: ${prompt}`
-}
-
-/** Asks the model to generate a tool's code from a natural-language prompt, given the editor's current code as context. */
+/** Asks the model to continue the chat and generate the tool's code, given the full conversation and the editor's current code as context. */
 export async function generateCode(
   config: LlmConfig,
-  prompt: string,
+  messages: ChatMessage[],
   existingCode: string,
 ): Promise<LlmGenerateResult> {
   const result = await callChatCompletions(
     config,
     [
-      { role: 'system', content: buildSystemPrompt(existingCode.trim() !== '') },
-      { role: 'user', content: buildUserMessage(prompt, existingCode) },
+      { role: 'system', content: buildSystemPrompt(existingCode) },
+      ...messages.map((message) => ({ role: message.role, content: message.content })),
     ],
     WRITE_CODE_TOOL,
   )
@@ -163,11 +171,10 @@ export async function generateCode(
   }
 
   try {
-    const args = JSON.parse(result.toolCall.function?.arguments ?? '{}') as { code?: string }
-    if (typeof args.code !== 'string' || args.code.trim() === '') {
-      return { ok: false, errorCode: 'unknown', detail: 'Empty code in tool call.' }
-    }
-    return { ok: true, code: args.code }
+    const args = JSON.parse(result.toolCall.function?.arguments ?? '{}') as { code?: string; reply?: string }
+    // code is optional — the model leaves it out for plain conversation, not every turn writes code.
+    const code = typeof args.code === 'string' && args.code.trim() !== '' ? args.code : undefined
+    return { ok: true, code, reply: args.reply ?? '' }
   } catch (error) {
     return { ok: false, errorCode: 'unknown', detail: describeError(error) }
   }

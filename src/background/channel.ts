@@ -170,8 +170,8 @@ grip.hook('testLlmConfig', {
 grip.register({
   name: 'generateCode',
   validate(args: GenerateCodeRequest) {
-    if (typeof args.prompt !== 'string' || args.prompt.trim() === '') {
-      throw new Error('prompt is required.')
+    if (!Array.isArray(args.messages) || args.messages.length === 0) {
+      throw new Error('messages is required.')
     }
   },
   async business(args: GenerateCodeRequest) {
@@ -179,11 +179,12 @@ grip.register({
     if (!config) {
       return { type: 'generateCodeResult', ok: false, errorCode: 'unknown', detail: 'No LLM configured.' }
     }
-    const result = await generateCode(config, args.prompt, args.existingCode)
+    const result = await generateCode(config, args.messages, args.existingCode)
     return {
       type: 'generateCodeResult',
       ok: result.ok,
       code: result.code,
+      reply: result.reply,
       errorCode: result.errorCode,
       detail: result.detail,
     }

@@ -137,8 +137,8 @@ function goTo(index: number): void {
 </script>
 
 <template>
-  <div :class="ui.wizardWrapper">
-    <div :class="ui.wizardHeader">
+  <div :class="[ui.wizardWrapperBase, currentIndex === 3 ? ui.wizardWrapperWidthWide : ui.wizardWrapperWidth]">
+    <div v-if="currentIndex !== 3" :class="ui.wizardHeader">
       <h1 :class="ui.wizardTitle">{{ currentStep.title }}</h1>
       <p :class="ui.wizardSubtitle">{{ currentStep.subtitle }}</p>
     </div>

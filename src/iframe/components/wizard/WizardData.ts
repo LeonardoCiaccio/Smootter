@@ -3,6 +3,7 @@
  * Only the fields used by built steps exist; future steps add their own
  * fields here once implemented.
  */
+import type { ChatMessage } from '@/shared/messages'
 
 /**
  * When the tool runs:
@@ -33,4 +34,6 @@ export class WizardData {
   codeTested = false
   // New tools start enabled; editing a saved tool preserves its current state.
   enabled = true
+  // The step 4 chat: full conversation with the LLM, sent as context on every turn.
+  chatMessages: ChatMessage[] = []
 }

@@ -107,23 +107,35 @@ export interface TestLlmConfigResult {
   detail?: string
 }
 
+/** One turn in the wizard's LLM chat — the full conversation is sent as context on every request. */
+export interface ChatMessage {
+  role: 'user' | 'assistant'
+  content: string
+}
+
 /**
- * Sent by the wizard's prompt box: asks the configured LLM to generate the
- * tool's code. `existingCode` (the editor's current content, may be empty)
- * is passed as context — the user may be improving working code, not
- * starting from scratch.
+ * Sent by the wizard's chat panel: asks the configured LLM to continue the
+ * conversation. `messages` is the full chat so far (ending with the user's
+ * latest turn) — multi-turn context, not a single one-off prompt.
+ * `existingCode` (the editor's current content, may be empty) is passed
+ * separately — the user may be improving working code, not starting fresh.
  */
 export interface GenerateCodeRequest {
   type: 'generateCode'
-  prompt: string
+  messages: ChatMessage[]
   existingCode: string
 }
 
-/** Reply to generateCode. */
+/**
+ * Reply to generateCode. `reply` is the assistant's chat-facing message
+ * (never code, never reasoning) — shown in the transcript. `code` is applied
+ * to the editor directly, never printed in the chat.
+ */
 export interface GenerateCodeResult {
   type: 'generateCodeResult'
   ok: boolean
   code?: string
+  reply?: string
   errorCode?: LlmErrorCode
   detail?: string
 }
