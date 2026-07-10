@@ -185,7 +185,7 @@ export const ui = {
   wizardChatInput:
     'h-16 w-full resize-none rounded-tool border border-gray-300 bg-white py-2 pl-3 pr-12 text-sm text-gray-900 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',
   wizardChatSendButton:
-    'absolute bottom-2.5 right-5 flex h-7 w-7 items-center justify-center rounded-full bg-cyan-600 text-white transition-colors hover:bg-cyan-500 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-cyan-500 dark:hover:bg-cyan-400',
+    'absolute right-5 top-1/2 -translate-y-1/2 flex h-7 w-7 items-center justify-center rounded-full bg-cyan-600 text-white transition-colors hover:bg-cyan-500 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-cyan-500 dark:hover:bg-cyan-400',
   wizardChatEditorColumn: 'relative h-full min-h-0 w-full overflow-hidden text-left',
   // Tester step: message centered, Save centered below it once the test passes.
   wizardTesterBody: 'flex w-full flex-col items-center gap-6 text-center',
