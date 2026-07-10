@@ -62,5 +62,8 @@
   },
   "wizardScopeDomainTitle": { "message": "Domaine ou page spécifique" },
   "wizardScopeDomainDescription": { "message": "Fonctionne uniquement là où vous l'autorisez." },
-  "wizardScopeTargetsPlaceholder": { "message": "ex. example.com, example.com/chemin" }
+  "wizardScopeTargetsPlaceholder": { "message": "Un par ligne, ex.\nexample.com\nexample.com/chemin" },
+  "wizardBasicsRequiredError": {
+    "message": "Renseignez le nom et la description avant de continuer."
+  }
 }

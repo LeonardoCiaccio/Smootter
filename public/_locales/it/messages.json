@@ -60,5 +60,6 @@
   "wizardScopeEverywhereDescription": { "message": "Funziona su qualsiasi sito visiti." },
   "wizardScopeDomainTitle": { "message": "Dominio o pagina specifica" },
   "wizardScopeDomainDescription": { "message": "Funziona solo dove lo autorizzi." },
-  "wizardScopeTargetsPlaceholder": { "message": "es. example.com, example.com/percorso" }
+  "wizardScopeTargetsPlaceholder": { "message": "Uno per riga, es.\nexample.com\nexample.com/percorso" },
+  "wizardBasicsRequiredError": { "message": "Compila sia il nome che la descrizione per continuare." }
 }

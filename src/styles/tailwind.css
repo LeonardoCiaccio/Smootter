@@ -15,3 +15,16 @@
 .view-leave-to {
   @apply opacity-0;
 }
+
+/* Named classes required by Vue's <TransitionGroup name="toast">. */
+.toast-enter-active,
+.toast-leave-active {
+  @apply transition-all duration-200 ease-in-out;
+}
+.toast-enter-from,
+.toast-leave-to {
+  @apply -translate-y-2 opacity-0;
+}
+.toast-leave-active {
+  @apply absolute;
+}

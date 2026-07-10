@@ -62,5 +62,8 @@
   },
   "wizardScopeDomainTitle": { "message": "Bestimmte Domain oder Seite" },
   "wizardScopeDomainDescription": { "message": "Funktioniert nur dort, wo du es erlaubst." },
-  "wizardScopeTargetsPlaceholder": { "message": "z. B. example.com, example.com/pfad" }
+  "wizardScopeTargetsPlaceholder": { "message": "Einer pro Zeile, z. B.\nexample.com\nexample.com/pfad" },
+  "wizardBasicsRequiredError": {
+    "message": "Gib sowohl den Namen als auch die Beschreibung ein, bevor du fortfährst."
+  }
 }

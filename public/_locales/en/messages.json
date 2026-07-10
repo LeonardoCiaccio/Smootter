@@ -60,5 +60,8 @@
   "wizardScopeEverywhereDescription": { "message": "Runs on any site you visit." },
   "wizardScopeDomainTitle": { "message": "Specific domain or page" },
   "wizardScopeDomainDescription": { "message": "Runs only where you allow it." },
-  "wizardScopeTargetsPlaceholder": { "message": "e.g. example.com, example.com/path" }
+  "wizardScopeTargetsPlaceholder": { "message": "One per line, e.g.\nexample.com\nexample.com/path" },
+  "wizardBasicsRequiredError": {
+    "message": "Fill in both the name and the description before continuing."
+  }
 }

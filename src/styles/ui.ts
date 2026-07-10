@@ -85,6 +85,18 @@ export const ui = {
   wizardOptionText: 'flex flex-col gap-0.5',
   wizardOptionTitle: 'text-sm font-semibold text-gray-900 dark:text-gray-100',
   wizardOptionDescription: 'text-xs text-gray-500 dark:text-gray-400',
+  // Toast notifications: stacked, top-centered, one variant per type
+  toastContainer: 'pointer-events-none fixed inset-x-0 top-4 z-50 flex flex-col items-center gap-2 px-4',
+  toast: 'pointer-events-auto flex max-w-sm items-start gap-2 rounded-xl border px-4 py-3 text-sm shadow-lg',
+  toastIcon: 'h-5 w-5 flex-shrink-0',
+  toastInfo:
+    'border-sky-200 bg-sky-50 text-sky-800 dark:border-sky-800 dark:bg-sky-950 dark:text-sky-200',
+  toastSuccess:
+    'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-200',
+  toastWarning:
+    'border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200',
+  toastError:
+    'border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-800 dark:bg-rose-950 dark:text-rose-200',
 } as const
 
 export type UiVariant = keyof typeof ui

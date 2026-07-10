@@ -6,6 +6,7 @@ import WizardStepBasics from './WizardStepBasics.vue'
 import WizardStepTiming from './WizardStepTiming.vue'
 import WizardStepScope from './WizardStepScope.vue'
 import WizardStepPlaceholder from './WizardStepPlaceholder.vue'
+import { useToast } from '../../plugins/toast'
 
 interface StepMeta {
   label: string
@@ -31,8 +32,16 @@ const data = reactive(new WizardData())
 const currentIndex = ref(0)
 const currentStep = computed(() => stepMeta[currentIndex.value])
 
+const isBasicsComplete = computed(() => data.name.trim() !== '' && data.description.trim() !== '')
+
+const toast = useToast()
+
 /** The user can jump to any step at will, to revisit and edit freely. */
 function goTo(index: number): void {
+  if (currentIndex.value === 0 && index !== 0 && !isBasicsComplete.value) {
+    toast.error(chrome.i18n.getMessage('wizardBasicsRequiredError'))
+    return
+  }
   currentIndex.value = index
 }
 </script>
