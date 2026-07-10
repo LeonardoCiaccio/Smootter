@@ -31,14 +31,35 @@ function isVisible(): boolean {
   return modal !== null && modal.style.display !== 'none'
 }
 
+// ---- Host page scroll lock: hidden while the modal is visible ----
+let previousHostOverflow = ''
+let isHostScrollLocked = false
+
+function lockHostScroll(): void {
+  if (isHostScrollLocked) return
+  previousHostOverflow = document.documentElement.style.overflow
+  document.documentElement.style.overflow = 'hidden'
+  isHostScrollLocked = true
+}
+
+function unlockHostScroll(): void {
+  if (!isHostScrollLocked) return
+  document.documentElement.style.overflow = previousHostOverflow
+  isHostScrollLocked = false
+}
+
 function show(): void {
   const modal = getModal()
-  if (modal) modal.style.display = ''
+  if (!modal) return
+  modal.style.display = ''
+  lockHostScroll()
 }
 
 function hide(): void {
   const modal = getModal()
-  if (modal) modal.style.display = 'none'
+  if (!modal) return
+  modal.style.display = 'none'
+  unlockHostScroll()
 }
 
 // ---- Channel: listen for the iframe's close request ----
@@ -79,6 +100,7 @@ function createModal(): void {
   modal.style.zIndex = String(getMaxZIndex() + 10)
   modal.appendChild(buildIframe())
   document.body.appendChild(modal)
+  lockHostScroll()
 }
 
 // ---- Controller: handle one toolbar click (one injection) ----

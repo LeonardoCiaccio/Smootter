@@ -28,3 +28,35 @@
 .toast-leave-active {
   @apply absolute;
 }
+
+/* Minimal, modern scrollbars across the whole SaaS (both engines, theme-aware). */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #d1d5db transparent; /* gray-300 */
+}
+.dark * {
+  scrollbar-color: #4b5563 transparent; /* gray-600 */
+}
+
+*::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+  background-color: #d1d5db; /* gray-300 */
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  border-radius: 9999px;
+}
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #9ca3af; /* gray-400 */
+}
+.dark *::-webkit-scrollbar-thumb {
+  background-color: #4b5563; /* gray-600 */
+}
+.dark *::-webkit-scrollbar-thumb:hover {
+  background-color: #6b7280; /* gray-500 */
+}

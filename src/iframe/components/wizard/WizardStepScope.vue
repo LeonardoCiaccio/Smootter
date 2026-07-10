@@ -64,7 +64,7 @@ function select(value: WizardScope): void {
         <textarea
           v-if="option.value === 'domain' && data.scope === 'domain'"
           v-model="data.scopeTargets"
-          rows="3"
+          rows="6"
           :class="ui.input"
           :placeholder="targetsPlaceholder"
         />
