@@ -174,12 +174,13 @@ grip.register({
       throw new Error('messages is required.')
     }
   },
-  async business(args: GenerateCodeRequest) {
+  async business(args: GenerateCodeRequest, context?: object) {
     const config = await getPreference('llmConfig')
     if (!config) {
       return { type: 'generateCodeResult', ok: false, errorCode: 'unknown', detail: 'No LLM configured.' }
     }
-    const result = await generateCode(config, args.messages, args.existingCode)
+    const pageUrl = (context as Context | undefined)?.sender.tab?.url
+    const result = await generateCode(config, args.messages, args.existingCode, pageUrl)
     return {
       type: 'generateCodeResult',
       ok: result.ok,

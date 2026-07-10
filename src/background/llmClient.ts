@@ -178,11 +178,13 @@ export async function testLlmConfig(config: LlmConfig): Promise<LlmTestResult> {
  * how it runs, the CSS rule this whole system depends on (injected into
  * arbitrary third-party pages, so styling must be inline and forced, never
  * a <style> tag or external stylesheet the host page could override), how
- * to reply in the chat (short, no code, no reasoning), and — only when the
- * editor actually has code — how to treat it as discardable context rather
- * than something to preserve.
+ * to reply in the chat (short, no code, no reasoning), the page the tool is
+ * being built for (so "this page"/"the page I'm on" resolves to something
+ * real, fetchable via fetch_url), and — only when the editor actually has
+ * code — how to treat it as discardable context rather than something to
+ * preserve.
  */
-function buildSystemPrompt(existingCode: string): string {
+function buildSystemPrompt(existingCode: string, pageUrl: string | undefined): string {
   const parts = [
     'You are the code generator for Pippo, a browser extension that lets users build small automation tools without writing code themselves, through a chat conversation.',
     'Tool calling is available and working in this conversation: you have `write_code` (deliver your final answer) and `fetch_url` (fetch real data before answering). You DO support tool calling here — never claim otherwise, never answer with plain text, always call one of these two tools.',
@@ -190,6 +192,12 @@ function buildSystemPrompt(existingCode: string): string {
     "If the request doesn't say anything about styling, apply any CSS inline on the elements themselves (e.g. element.style.cssText, always with 'important'), never via a <style> tag or an external stylesheet — the code runs on pages you don't control, and the page's own CSS could otherwise override or conflict with it.",
     "Use fetch_url when you need real data to get the code right — an API's actual response shape, a page's real content — instead of guessing. Once you have what you need (or don't need it), call write_code to answer. `reply` is always required: a short, plain chat message for the user — never code, never your reasoning. `code` is only for when the user actually wants code written or changed — leave it out entirely for greetings, questions, or general conversation that doesn't call for it.",
   ]
+
+  if (pageUrl) {
+    parts.push(
+      `The user is building this tool while looking at: ${pageUrl}. If they refer to "this page", "the page I'm on", or similar, they mean this URL — use fetch_url on it if you need to see its actual content.`,
+    )
+  }
 
   if (existingCode.trim() !== '') {
     parts.push(
@@ -202,17 +210,19 @@ function buildSystemPrompt(existingCode: string): string {
 
 /**
  * Asks the model to continue the chat and generate the tool's code, given
- * the full conversation and the editor's current code as context. The model
- * may call fetch_url first (one or more times, actually executed here) to
- * gather real data before calling write_code with its final answer.
+ * the full conversation, the editor's current code, and the page the user
+ * is building the tool for, all as context. The model may call fetch_url
+ * first (one or more times, actually executed here) to gather real data
+ * before calling write_code with its final answer.
  */
 export async function generateCode(
   config: LlmConfig,
   messages: ChatMessage[],
   existingCode: string,
+  pageUrl: string | undefined,
 ): Promise<LlmGenerateResult> {
   const conversation: ConversationMessage[] = [
-    { role: 'system', content: buildSystemPrompt(existingCode) },
+    { role: 'system', content: buildSystemPrompt(existingCode, pageUrl) },
     ...messages.map((message) => ({ role: message.role, content: message.content })),
   ]
 
