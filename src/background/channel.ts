@@ -13,6 +13,7 @@ import {
   type GetPreferenceRequest,
 } from '@/shared/messages'
 import { getPreference, setPreference, type Preferences } from '@/shared/preferences'
+import { isUserScriptsEnabled } from './userScripts'
 
 // All connected channel ports (UI + environment)
 const ports = new Set<chrome.runtime.Port>()
@@ -84,6 +85,20 @@ grip.hook('closeModal', {
   after({ result }) {
     if (!result.isSuccess) return
     for (const port of ports) port.postMessage(result.result)
+  },
+})
+
+grip.register({
+  name: 'getUserScriptsStatus',
+  validate() {},
+  async business() {
+    const enabled = await isUserScriptsEnabled()
+    return { type: 'userScriptsStatus', enabled }
+  },
+})
+grip.hook('getUserScriptsStatus', {
+  after({ result }, context: Context) {
+    if (result.isSuccess) context.port.postMessage(result.result)
   },
 })
 

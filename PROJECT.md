@@ -45,9 +45,11 @@ Estensione browser che **crea tool al bisogno**, sfruttando una **LLM scelta dal
 
 ## Principio Architetturale
 
-- **Niente `eval` né codice auto-eseguito. Mai.** Non per policy, per buon senso: è la porta aperta ai guai.
-- I tool sono **configurazioni/istruzioni interpretate da un motore incluso nell'estensione**. Il motore è nel pacchetto; i tool sono dati che lo pilotano.
-- Conseguenza gratuita: conforme MV3 (che vieta il codice remoto) e intrinsecamente più sicuro. _(dettagli motore da definire)_
+- **Niente `eval`, niente `<script>` iniettato a mano, niente interprete fatto in casa.** Il codice generato dall'LLM (o scritto dall'utente) gira tramite **`chrome.userScripts`**, l'API che Chrome ha creato apposta per gli userscript manager (Tampermonkey, Violentmonkey) — verificato: è una delle due sole eccezioni esplicite alla policy anti-remote-code del Web Store (l'altra è la Debugger API).
+- Il codice del tool passa **verbatim** (`js: [{ code: '...' }]`), senza manipolazioni, esattamente come lo genera l'LLM o lo scrive l'utente — noi non lo vettiamo, come Tampermonkey non vetta gli script dei suoi utenti.
+- Gira nel mondo isolato `USER_SCRIPT` (CSP della pagina non si applica, privilegi dell'estensione non sono raggiungibili). Comunica indietro con l'estensione solo tramite `runtime.onUserScriptMessage`/`onUserScriptConnect` — canale separato e dedicato, tenuto distinto da quello interno perché è un livello di fiducia diverso.
+- **Costo reale**: l'utente deve attivare manualmente "Allow User Scripts" per la nostra estensione (`chrome://extensions`) — non è automatizzabile, è un gate anti-abuso di Chrome. Va comunicato chiaramente in UI finché non è attivo.
+- **Responsabilità**: coerente col modello Tampermonkey — cosa fa il tool è responsabilità di chi lo ha creato (utente + LLM che ha scelto), non nostra.
 
 ## Doppio Livello (massima copertura)
 

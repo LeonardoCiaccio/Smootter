@@ -64,5 +64,9 @@
   "wizardBasicsRequiredError": { "message": "Compila sia il nome che la descrizione per continuare." },
   "wizardScopeRequiredError": {
     "message": "Inserisci almeno un dominio o una pagina per continuare."
+  },
+  "userScriptsDisabledTitle": { "message": "Attiva l'esecuzione dei tool" },
+  "userScriptsDisabledDescription": {
+    "message": "Apri chrome://extensions, trova questa estensione e attiva \"Consenti script utente\" per far funzionare i tuoi tool."
   }
 }

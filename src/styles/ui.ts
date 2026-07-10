@@ -97,6 +97,13 @@ export const ui = {
     'border-amber-200 bg-amber-50 text-amber-800 dark:border-amber-800 dark:bg-amber-950 dark:text-amber-200',
   toastError:
     'border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-800 dark:bg-rose-950 dark:text-rose-200',
+  // Capability banner (e.g. "Allow User Scripts" not enabled yet)
+  banner:
+    'mx-6 mt-8 flex items-start gap-3 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-left dark:border-amber-900 dark:bg-amber-950',
+  bannerIcon: 'h-5 w-5 flex-shrink-0 text-amber-600 dark:text-amber-400',
+  bannerText: 'flex flex-col gap-0.5',
+  bannerTitle: 'text-sm font-semibold text-amber-900 dark:text-amber-200',
+  bannerDescription: 'text-xs text-amber-700 dark:text-amber-300',
 } as const
 
 export type UiVariant = keyof typeof ui

@@ -66,5 +66,9 @@
   },
   "wizardScopeRequiredError": {
     "message": "Enter at least one domain or page before continuing."
+  },
+  "userScriptsDisabledTitle": { "message": "Enable tool execution" },
+  "userScriptsDisabledDescription": {
+    "message": "Open chrome://extensions, find this extension, and turn on \"Allow User Scripts\" to let your tools run."
   }
 }

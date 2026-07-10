@@ -47,6 +47,16 @@ export interface TopMessageResponse {
   value: string
 }
 
+export interface GetUserScriptsStatusRequest {
+  type: 'getUserScriptsStatus'
+}
+
+/** Reply to getUserScriptsStatus: whether "Allow User Scripts" is enabled. */
+export interface UserScriptsStatusResponse {
+  type: 'userScriptsStatus'
+  enabled: boolean
+}
+
 /** Reply to getPreference: value is undefined when not stored. */
 export interface PreferenceValue {
   type: 'preferenceValue'
@@ -68,6 +78,7 @@ export type ChannelRequest =
   | GetPreferenceRequest
   | GetTopMessageRequest
   | CloseModalSignal
+  | GetUserScriptsStatusRequest
 
 /** Messages sent from the background to the UI. */
 export type ChannelResponse =
@@ -76,3 +87,4 @@ export type ChannelResponse =
   | PreferenceSaved
   | TopMessageResponse
   | CloseModalSignal
+  | UserScriptsStatusResponse
