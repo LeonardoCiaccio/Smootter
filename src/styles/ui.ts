@@ -154,12 +154,14 @@ export const ui = {
   codeEditor: 'h-full min-h-[16rem] w-full overflow-hidden rounded-xl border border-gray-200 text-sm dark:border-gray-800',
   // Wraps the code editor so the floating action buttons (clear, AI) can overlay its bottom-right corner.
   codeEditorWrapper: 'relative min-h-0 w-full flex-1',
-  codeEditorActions: 'absolute bottom-3 right-3 z-10 flex items-center gap-1.5',
+  codeEditorActions: 'absolute bottom-3 right-6 z-10 flex items-center gap-1.5',
   codeEditorActionButton:
     'flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-gray-500 shadow-sm ring-1 ring-gray-200 backdrop-blur transition-colors hover:bg-white hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-gray-800/90 dark:text-gray-400 dark:ring-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200',
   codeEditorActionButtonDanger:
     'flex h-8 w-8 items-center justify-center rounded-full bg-white/90 text-rose-500 shadow-sm ring-1 ring-gray-200 backdrop-blur transition-colors hover:bg-rose-50 dark:bg-gray-800/90 dark:ring-gray-700 dark:hover:bg-rose-950',
   codeEditorActionIcon: 'h-4 w-4',
+  codeEditorTestButton:
+    'flex h-8 items-center justify-center rounded-full bg-cyan-600 px-3.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-cyan-500 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-cyan-500 dark:hover:bg-cyan-400',
   // Step 4: two columns — chat with the LLM on the left, code editor at full height on the right.
   // Fixed viewport-relative height: decoupled from the ancestor flex/grid
   // chain entirely (percentage heights there kept silently resolving to
@@ -181,7 +183,7 @@ export const ui = {
   wizardChatInput:
     'h-16 w-full resize-none rounded-tool border border-gray-300 bg-white py-2 pl-3 pr-12 text-sm text-gray-900 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',
   wizardChatSendButton:
-    'absolute bottom-2.5 right-2.5 flex h-7 w-7 items-center justify-center rounded-full bg-cyan-600 text-white transition-colors hover:bg-cyan-500 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-cyan-500 dark:hover:bg-cyan-400',
+    'absolute bottom-2.5 right-5 flex h-7 w-7 items-center justify-center rounded-full bg-cyan-600 text-white transition-colors hover:bg-cyan-500 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-cyan-500 dark:hover:bg-cyan-400',
   wizardChatEditorColumn: 'relative h-full min-h-0 w-full overflow-hidden text-left',
   // Tester step: message centered, Save centered below it once the test passes.
   wizardTesterBody: 'flex w-full flex-col items-center gap-6 text-center',

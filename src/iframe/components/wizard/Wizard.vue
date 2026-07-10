@@ -160,7 +160,7 @@ function goNext(): void {
       <WizardStepBasics v-if="currentIndex === 0" v-model:data="data" />
       <WizardStepTiming v-else-if="currentIndex === 1" v-model:data="data" />
       <WizardStepScope v-else-if="currentIndex === 2" v-model:data="data" />
-      <WizardStepChat v-else-if="currentIndex === 3" v-model:data="data" />
+      <WizardStepChat v-else-if="currentIndex === 3" v-model:data="data" @advance="goTo(4)" />
       <WizardStepTester v-else v-model:data="data" @cancel="currentIndex = 3" />
     </div>
 

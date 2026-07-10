@@ -8,6 +8,7 @@ import CodeEditor from './CodeEditor.vue'
 import LlmChatPanel from './LlmChatPanel.vue'
 
 const data = defineModel<WizardData>('data', { required: true })
+const emit = defineEmits<{ advance: [] }>()
 
 /** Any edit invalidates a previous test — must be tested again before saving. */
 function onCodeChange(value: string): void {
@@ -37,6 +38,7 @@ function onClearClick(): void {
 
 const clearLabel = chrome.i18n.getMessage('wizardClearCode')
 const clearConfirmLabel = chrome.i18n.getMessage('wizardClearCodeConfirm')
+const testLabel = chrome.i18n.getMessage('wizardTest')
 </script>
 
 <template>
@@ -55,10 +57,20 @@ const clearConfirmLabel = chrome.i18n.getMessage('wizardClearCodeConfirm')
         <button
           type="button"
           :class="confirmingClear ? ui.codeEditorActionButtonDanger : ui.codeEditorActionButton"
+          :disabled="data.code.trim() === ''"
           :title="confirmingClear ? clearConfirmLabel : clearLabel"
           @click="onClearClick"
         >
           <TrashIcon :class="ui.codeEditorActionIcon" />
+        </button>
+        <button
+          type="button"
+          :class="ui.codeEditorTestButton"
+          :disabled="data.code.trim() === ''"
+          :title="testLabel"
+          @click="emit('advance')"
+        >
+          {{ testLabel }}
         </button>
       </div>
     </div>
