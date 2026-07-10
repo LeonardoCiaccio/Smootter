@@ -31,4 +31,6 @@ export class WizardData {
   code = ''
   // Reset to false whenever code changes; Save is gated on this being true.
   codeTested = false
+  // New tools start enabled; editing a saved tool preserves its current state.
+  enabled = true
 }

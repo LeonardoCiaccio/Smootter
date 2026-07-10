@@ -60,6 +60,7 @@ onMounted(async () => {
   data.scope = tool.scope
   data.scopeTargets = tool.scopeTargets
   data.code = tool.code
+  data.enabled = tool.enabled
   // The code was valid when it was saved; only a further edit invalidates it.
   data.codeTested = true
 })

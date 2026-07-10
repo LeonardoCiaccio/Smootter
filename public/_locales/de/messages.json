@@ -94,6 +94,8 @@
   "toolDeleted": { "message": "Tool gelöscht" },
   "toolCardCreated": { "message": "Erstellt" },
   "toolCardUpdated": { "message": "Geändert" },
+  "toolEnable": { "message": "Aktivieren" },
+  "toolDisable": { "message": "Deaktivieren" },
   "llmButtonLabel": { "message": "Mit KI generieren" },
   "llmConfigTitle": { "message": "KI-Modell verbinden" },
   "llmEndpointLabel": { "message": "Endpoint" },

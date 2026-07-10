@@ -17,6 +17,7 @@ export interface StoredTool {
   scope: ToolScope
   scopeTargets: string
   code: string
+  enabled: boolean
   createdAt: number
   updatedAt: number
 }
@@ -69,6 +70,22 @@ export async function getAllTools(): Promise<StoredTool[]> {
     const request = transaction.objectStore(STORE_NAME).getAll()
     request.onsuccess = () => resolve(request.result as StoredTool[])
     request.onerror = () => reject(request.error)
+  })
+}
+
+/** Enable or disable a tool without touching its other fields. */
+export async function setToolEnabled(id: string, enabled: boolean): Promise<void> {
+  const db = await openDb()
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(STORE_NAME, 'readwrite')
+    const store = transaction.objectStore(STORE_NAME)
+    const request = store.get(id)
+    request.onsuccess = () => {
+      const tool = request.result as StoredTool | undefined
+      if (tool) store.put({ ...tool, enabled })
+    }
+    transaction.oncomplete = () => resolve()
+    transaction.onerror = () => reject(transaction.error)
   })
 }
 

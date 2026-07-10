@@ -56,6 +56,7 @@ async function save(): Promise<void> {
     scope: data.value.scope,
     scopeTargets: data.value.scopeTargets,
     code: data.value.code,
+    enabled: data.value.enabled,
     createdAt: data.value.createdAt ?? Date.now(),
     updatedAt: Date.now(),
   }

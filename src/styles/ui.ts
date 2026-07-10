@@ -54,7 +54,14 @@ export const ui = {
     'group relative flex h-32 w-full flex-col gap-1 rounded-tool border border-gray-200 p-4 text-left transition-colors hover:border-cyan-500 dark:border-gray-800 dark:hover:border-cyan-400',
   toolCardTitle: 'truncate pr-14 text-sm font-semibold text-gray-900 dark:text-gray-100',
   toolCardDescription: 'line-clamp-2 flex-1 text-xs text-gray-500 dark:text-gray-400',
-  toolCardMeta: 'truncate text-[11px] text-gray-400 dark:text-gray-500',
+  toolCardMetaRow: 'flex items-center justify-between gap-2',
+  toolCardMeta: 'min-w-0 flex-1 truncate text-[11px] text-gray-400 dark:text-gray-500',
+  // Enable/disable switch, right after the dates.
+  switchTrack: 'relative inline-flex h-5 w-9 flex-shrink-0 items-center rounded-full transition-colors',
+  switchTrackOff: 'bg-gray-300 dark:bg-gray-600',
+  switchTrackOn: 'bg-cyan-600 dark:bg-cyan-500',
+  switchThumb: 'inline-block h-3.5 w-3.5 translate-x-1 rounded-full bg-white transition-transform',
+  switchThumbOn: 'translate-x-[1.125rem]',
   toolCardActions:
     'absolute right-3 top-3 flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100',
   toolCardActionButton:

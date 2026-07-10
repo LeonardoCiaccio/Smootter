@@ -88,6 +88,8 @@
   "toolDeleted": { "message": "Herramienta eliminada" },
   "toolCardCreated": { "message": "Creado" },
   "toolCardUpdated": { "message": "Modificado" },
+  "toolEnable": { "message": "Activar" },
+  "toolDisable": { "message": "Desactivar" },
   "llmButtonLabel": { "message": "Generar con IA" },
   "llmConfigTitle": { "message": "Conecta un modelo de IA" },
   "llmEndpointLabel": { "message": "Endpoint" },

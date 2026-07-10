@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { useToast } from '../plugins/toast'
-import { deleteTool, type StoredTool } from '@/shared/toolsDb'
+import { deleteTool, setToolEnabled, type StoredTool } from '@/shared/toolsDb'
 
 const props = defineProps<{ tool: StoredTool }>()
 const emit = defineEmits<{ deleted: [id: string] }>()
@@ -19,6 +19,16 @@ const updatedLabel = chrome.i18n.getMessage('toolCardUpdated')
 const createdAtDate = new Date(props.tool.createdAt).toLocaleDateString()
 const updatedAtDate = new Date(props.tool.updatedAt).toLocaleDateString()
 const metaText = `${createdLabel} ${createdAtDate} · ${updatedLabel} ${updatedAtDate}`
+
+const enabled = ref(props.tool.enabled)
+const enableLabel = chrome.i18n.getMessage('toolEnable')
+const disableLabel = chrome.i18n.getMessage('toolDisable')
+
+async function onToggleEnabled(): Promise<void> {
+  const next = !enabled.value
+  enabled.value = next
+  await setToolEnabled(props.tool.id, next)
+}
 
 // Delete needs two clicks: the first arms it (auto-disarms after a few
 // seconds), the second actually deletes.
@@ -43,7 +53,20 @@ async function onDeleteClick(): Promise<void> {
   <div :class="ui.toolCard">
     <span :class="ui.toolCardTitle" :title="tool.name">{{ tool.name }}</span>
     <span :class="ui.toolCardDescription" :title="tool.description">{{ tool.description }}</span>
-    <span :class="ui.toolCardMeta" :title="metaText">{{ metaText }}</span>
+
+    <div :class="ui.toolCardMetaRow">
+      <span :class="ui.toolCardMeta" :title="metaText">{{ metaText }}</span>
+      <button
+        type="button"
+        role="switch"
+        :aria-checked="enabled"
+        :class="[ui.switchTrack, enabled ? ui.switchTrackOn : ui.switchTrackOff]"
+        :title="enabled ? disableLabel : enableLabel"
+        @click="onToggleEnabled"
+      >
+        <span :class="[ui.switchThumb, enabled && ui.switchThumbOn]" />
+      </button>
+    </div>
 
     <div :class="ui.toolCardActions">
       <RouterLink

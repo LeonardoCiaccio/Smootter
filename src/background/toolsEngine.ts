@@ -51,7 +51,7 @@ async function findMatchingTools(rawUrl: string, trigger: ToolTrigger): Promise<
   if (url.protocol !== 'http:' && url.protocol !== 'https:') return []
 
   const tools = await getAllTools()
-  return tools.filter((tool) => tool.trigger === trigger && toolMatchesUrl(tool, url))
+  return tools.filter((tool) => tool.enabled && tool.trigger === trigger && toolMatchesUrl(tool, url))
 }
 
 function describeError(error: unknown): string {
