@@ -5,7 +5,7 @@ import { ui } from '@/styles/ui'
 import ToolsEmptyState from './ToolsEmptyState.vue'
 import AddToolCard from './AddToolCard.vue'
 import ToolCard from './ToolCard.vue'
-import { deleteTool, getAllTools, type StoredTool } from '@/shared/toolsDb'
+import { getAllTools, type StoredTool } from '@/shared/toolsDb'
 
 const tools = ref<StoredTool[]>([])
 const hasTools = computed(() => tools.value.length > 0)
@@ -30,15 +30,7 @@ const searchPlaceholder = chrome.i18n.getMessage('toolsSearchPlaceholder')
 const searchClearLabel = chrome.i18n.getMessage('toolsSearchClear')
 const noResultsText = chrome.i18n.getMessage('toolsNoResults')
 
-// TEMPORARY: purges the fake tools seeded earlier for layout testing. Remove this block afterward.
-async function cleanupFakeTools(existing: StoredTool[]): Promise<void> {
-  const fakeTools = existing.filter((tool) => tool.name.startsWith('Tool fittizio'))
-  for (const tool of fakeTools) await deleteTool(tool.id)
-}
-
 onMounted(async () => {
-  const existing = await getAllTools()
-  await cleanupFakeTools(existing)
   tools.value = await getAllTools()
 })
 
