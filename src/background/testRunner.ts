@@ -10,10 +10,13 @@
  * chrome.userScripts.execute() does NOT reject when the injected code
  * throws (it only rejects on injection-level failures, e.g. bad target) —
  * a runtime error inside the code is otherwise silently swallowed. So the
- * code is wrapped in a real try/catch before being handed to the sanctioned
- * API, and the outcome is read back as the injection's completion value:
- * the actual, governed source of truth for whether it threw.
+ * code is wrapped in a real try/catch (see ./guardedCode) before being
+ * handed to the sanctioned API, and the outcome is read back as the
+ * injection's completion value: the actual, governed source of truth for
+ * whether it threw.
  */
+import { buildGuardedCode } from './guardedCode'
+
 export interface TestResult {
   ok: boolean
   error?: string
@@ -22,18 +25,6 @@ export interface TestResult {
 function describeError(error: unknown): string {
   if (error instanceof Error) return error.message
   return String(error)
-}
-
-/** Wraps the tool's code so its outcome (success or thrown error) becomes the injection's return value. */
-function buildGuardedCode(code: string): string {
-  return `(async () => {
-    try {
-      ${code}
-      return { ok: true };
-    } catch (error) {
-      return { ok: false, error: error && error.message ? String(error.message) : String(error) };
-    }
-  })()`
 }
 
 /** Runs `code` for real on `tabId`, catching any error it throws, and reports the outcome. */
