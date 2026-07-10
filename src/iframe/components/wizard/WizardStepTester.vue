@@ -4,10 +4,9 @@ import { useRouter } from 'vue-router'
 import { SparklesIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { useToast } from '../../plugins/toast'
-import { saveTool, type StoredTool } from '@/shared/toolsDb'
+import { saveTool } from '@/shared/toolsDb'
 import { channelKey } from '@/shared/vuePlugins/messaging'
-import { capChatMessages } from '@/shared/messages'
-import type { WizardData } from './WizardData'
+import { toStoredTool, type WizardData } from './WizardData'
 
 const data = defineModel<WizardData>('data', { required: true })
 const emit = defineEmits<{ cancel: [] }>()
@@ -65,20 +64,7 @@ onMounted(runTest)
 
 async function save(): Promise<void> {
   if (verdict.value !== 'ok') return
-  const tool: StoredTool = {
-    id: data.value.id ?? crypto.randomUUID(),
-    name: data.value.name,
-    description: data.value.description,
-    trigger: data.value.trigger ?? 'pageStart',
-    scope: data.value.scope,
-    scopeTargets: data.value.scopeTargets,
-    code: data.value.code,
-    enabled: data.value.enabled,
-    chatMessages: capChatMessages(data.value.chatMessages),
-    createdAt: data.value.createdAt ?? Date.now(),
-    updatedAt: Date.now(),
-  }
-  await saveTool(tool)
+  await saveTool(toStoredTool(data.value))
   toast.success(chrome.i18n.getMessage('wizardToolSaved'))
   // ToolsPanel fetches its list on mount, so returning Home reloads it fresh.
   router.push('/')

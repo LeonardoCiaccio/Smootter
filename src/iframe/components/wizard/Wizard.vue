@@ -1,17 +1,18 @@
 <script setup lang="ts">
-import { computed, onMounted, reactive, ref } from 'vue'
+import { computed, inject, nextTick, onMounted, onUnmounted, reactive, ref, watch, watchEffect } from 'vue'
 import { useRoute } from 'vue-router'
 import { parse } from 'acorn'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
-import { WizardData } from './WizardData'
+import { WizardData, toStoredTool } from './WizardData'
 import WizardStepBasics from './WizardStepBasics.vue'
 import WizardStepTiming from './WizardStepTiming.vue'
 import WizardStepScope from './WizardStepScope.vue'
 import WizardStepChat from './WizardStepChat.vue'
 import WizardStepTester from './WizardStepTester.vue'
 import { useToast } from '../../plugins/toast'
-import { getTool } from '@/shared/toolsDb'
+import { getTool, saveTool } from '@/shared/toolsDb'
+import { quickSaveKey } from './quickSave'
 
 interface StepMeta {
   label: string
@@ -36,6 +37,7 @@ const stepMeta: StepMeta[] = stepMessageKeys.map((keys) => ({
 
 const backLabel = chrome.i18n.getMessage('wizardBack')
 const nextLabel = chrome.i18n.getMessage('wizardNext')
+const quickSaveLabel = chrome.i18n.getMessage('wizardSaveChanges')
 
 const data = reactive(new WizardData())
 const currentIndex = ref(0)
@@ -48,26 +50,64 @@ const DOMAIN_PATTERN =
 
 const route = useRoute()
 
+// Editing a saved tool (vs. creating a new one): lets quick save skip the
+// test-then-save flow, since the user may only want to fix e.g. the name.
+const isEditing = computed(() => data.id !== null)
+
+// Tracks unsaved changes while editing, to show/hide the quick save button.
+// Ignored until the initial load (if any) has finished, so restoring the
+// tool's fields below doesn't itself mark the form dirty.
+const ready = ref(false)
+const dirty = ref(false)
+
 /** If opened via "edit a saved tool", load its data into the wizard. */
 onMounted(async () => {
   const editId = route.query.edit
-  if (typeof editId !== 'string') return
+  if (typeof editId === 'string') {
+    const tool = await getTool(editId)
+    if (tool) {
+      data.id = tool.id
+      data.createdAt = tool.createdAt
+      data.name = tool.name
+      data.description = tool.description
+      data.trigger = tool.trigger
+      data.scope = tool.scope
+      data.scopeTargets = tool.scopeTargets
+      data.code = tool.code
+      data.enabled = tool.enabled
+      data.chatMessages = tool.chatMessages ?? []
+      // The code was valid when it was saved; only a further edit invalidates it.
+      data.codeTested = true
+    }
+  }
+  await nextTick()
+  ready.value = true
+})
 
-  const tool = await getTool(editId)
-  if (!tool) return
+watch(
+  () => JSON.stringify(data),
+  () => {
+    if (ready.value && isEditing.value) dirty.value = true
+  },
+)
 
-  data.id = tool.id
-  data.createdAt = tool.createdAt
-  data.name = tool.name
-  data.description = tool.description
-  data.trigger = tool.trigger
-  data.scope = tool.scope
-  data.scopeTargets = tool.scopeTargets
-  data.code = tool.code
-  data.enabled = tool.enabled
-  data.chatMessages = tool.chatMessages ?? []
-  // The code was valid when it was saved; only a further edit invalidates it.
-  data.codeTested = true
+const toast = useToast()
+
+/** Persists every field as-is, without testing — the user decides where to go next. */
+async function quickSave(): Promise<void> {
+  await saveTool(toStoredTool(data))
+  dirty.value = false
+  toast.success(chrome.i18n.getMessage('wizardToolSaved'))
+}
+
+// BuilderView renders the actual button (next to the breadcrumb); this just drives its state.
+const quickSaveController = inject(quickSaveKey)
+watchEffect(() => {
+  if (!quickSaveController) return
+  quickSaveController.value = { visible: isEditing.value && dirty.value, label: quickSaveLabel, save: quickSave }
+})
+onUnmounted(() => {
+  if (quickSaveController) quickSaveController.value = null
 })
 
 /** Returns the error message blocking this step, or null if it's complete. */
@@ -116,8 +156,6 @@ const stepValidators: Array<() => string | null> = [
   validateChat,
   () => null,
 ]
-
-const toast = useToast()
 
 /**
  * Going back is always allowed. Going forward requires every step strictly

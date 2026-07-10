@@ -90,6 +90,8 @@ export const ui = {
     'text-gray-500 transition-colors hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100',
   breadcrumbSeparator: 'text-gray-300 dark:text-gray-600',
   breadcrumbCurrent: 'text-gray-900 dark:text-gray-100',
+  // Quick save (edit mode only): styled as a breadcrumb segment, colored to stand out from the plain trail.
+  breadcrumbSaveAction: 'font-semibold text-cyan-600 transition-colors hover:text-cyan-500 dark:text-cyan-400 dark:hover:text-cyan-300',
   // Wizard viewport: centers the wizard both ways within the view
   wizardViewport: 'flex flex-1 items-center justify-center px-6 pb-6 pt-6',
   // Wizard: fixed 3-row layout (header / body / dots), 78% of the viewport height.

@@ -3,7 +3,8 @@
  * Only the fields used by built steps exist; future steps add their own
  * fields here once implemented.
  */
-import type { ChatMessage } from '@/shared/messages'
+import { capChatMessages, type ChatMessage } from '@/shared/messages'
+import type { StoredTool } from '@/shared/toolsDb'
 
 /**
  * When the tool runs:
@@ -36,4 +37,21 @@ export class WizardData {
   enabled = true
   // The step 4 chat: full conversation with the LLM, sent as context on every turn.
   chatMessages: ChatMessage[] = []
+}
+
+/** Builds the record to persist, shared by the tester step (test-then-save) and quick save (edit mode). */
+export function toStoredTool(data: WizardData): StoredTool {
+  return {
+    id: data.id ?? crypto.randomUUID(),
+    name: data.name,
+    description: data.description,
+    trigger: data.trigger ?? 'pageStart',
+    scope: data.scope,
+    scopeTargets: data.scopeTargets,
+    code: data.code,
+    enabled: data.enabled,
+    chatMessages: capChatMessages(data.chatMessages),
+    createdAt: data.createdAt ?? Date.now(),
+    updatedAt: Date.now(),
+  }
 }

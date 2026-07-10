@@ -13,5 +13,6 @@ const currentLabel = computed(() => chrome.i18n.getMessage(props.viewKey))
     <RouterLink to="/" :class="ui.breadcrumbHome">{{ homeLabel }}</RouterLink>
     <span :class="ui.breadcrumbSeparator">/</span>
     <span :class="ui.breadcrumbCurrent">{{ currentLabel }}</span>
+    <slot />
   </div>
 </template>

@@ -78,6 +78,7 @@
   "wizardTesterRunning": { "message": "Testing your code..." },
   "wizardTesterCancel": { "message": "Cancel" },
   "wizardSave": { "message": "Save" },
+  "wizardSaveChanges": { "message": "Save changes" },
   "wizardTestPassed": { "message": "Test passed: the code ran without errors." },
   "wizardRuntimeError": { "message": "Runtime error" },
   "wizardCodeEmpty": { "message": "Write some code first" },
