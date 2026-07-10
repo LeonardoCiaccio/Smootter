@@ -15,6 +15,10 @@ export interface LlmConfig {
   endpoint: string
   apiKey: string
   model: string
+  // Sent as max_tokens on every request — providers often default this low
+  // enough to truncate a longer generated tool. Not auto-detectable in a
+  // provider-agnostic way, so it's a plain user-set number.
+  maxOutputTokens: number
 }
 
 export interface Preferences {

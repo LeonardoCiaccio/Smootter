@@ -114,6 +114,18 @@ export interface ChatMessage {
 }
 
 /**
+ * Cap on stored/resent chat history: every turn resends the full
+ * conversation as context, so letting it grow unbounded would keep
+ * inflating both storage and every request's token cost.
+ */
+export const MAX_CHAT_MESSAGES = 40
+
+/** Keeps only the most recent messages, per MAX_CHAT_MESSAGES. */
+export function capChatMessages(messages: ChatMessage[]): ChatMessage[] {
+  return messages.length > MAX_CHAT_MESSAGES ? messages.slice(messages.length - MAX_CHAT_MESSAGES) : messages
+}
+
+/**
  * Sent by the wizard's chat panel: asks the configured LLM to continue the
  * conversation. `messages` is the full chat so far (ending with the user's
  * latest turn) — multi-turn context, not a single one-off prompt.

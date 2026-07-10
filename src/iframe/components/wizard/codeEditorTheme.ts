@@ -4,6 +4,8 @@
  * with the app palette in styles/ui.ts by hand.
  */
 import { EditorView } from '@codemirror/view'
+import { HighlightStyle } from '@codemirror/language'
+import { tags } from '@lezer/highlight'
 
 export const lightEditorTheme = EditorView.theme(
   {
@@ -32,3 +34,26 @@ export const darkEditorTheme = EditorView.theme(
   },
   { dark: true },
 )
+
+/**
+ * @codemirror/language's defaultHighlightStyle is tuned for light
+ * backgrounds — several token colors (plain identifiers, some punctuation)
+ * are dark, low-contrast blues/grays that are barely readable against our
+ * dark editor background. This is a dedicated dark-mode palette instead.
+ */
+export const darkHighlightStyle = HighlightStyle.define([
+  { tag: tags.comment, color: '#6b7280' }, // gray-500
+  { tag: tags.keyword, color: '#c084fc' }, // violet-400
+  { tag: [tags.name, tags.propertyName], color: '#f3f4f6' }, // gray-100
+  { tag: [tags.string, tags.special(tags.string)], color: '#4ade80' }, // green-400
+  { tag: tags.number, color: '#fb923c' }, // orange-400
+  { tag: tags.bool, color: '#fb923c' },
+  { tag: tags.null, color: '#fb923c' },
+  { tag: [tags.definition(tags.variableName), tags.function(tags.variableName)], color: '#67e8f9' }, // cyan-300
+  { tag: tags.variableName, color: '#f3f4f6' },
+  { tag: tags.operator, color: '#f3f4f6' },
+  { tag: tags.className, color: '#facc15' }, // yellow-400
+  { tag: tags.typeName, color: '#facc15' },
+  { tag: tags.punctuation, color: '#9ca3af' }, // gray-400
+  { tag: tags.invalid, color: '#f87171' }, // red-400
+])

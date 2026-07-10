@@ -21,6 +21,7 @@ const title = chrome.i18n.getMessage('llmConfigTitle')
 const endpointLabel = chrome.i18n.getMessage('llmEndpointLabel')
 const apiKeyLabel = chrome.i18n.getMessage('llmApiKeyLabel')
 const modelLabel = chrome.i18n.getMessage('llmModelLabel')
+const maxOutputTokensLabel = chrome.i18n.getMessage('llmMaxOutputTokensLabel')
 const testLabel = chrome.i18n.getMessage('wizardTest')
 const saveLabel = chrome.i18n.getMessage('wizardSave')
 const okText = chrome.i18n.getMessage('llmTestOk')
@@ -48,6 +49,10 @@ const okText = chrome.i18n.getMessage('llmTestOk')
         <label :class="ui.wizardField">
           <span :class="ui.wizardFieldLabel">{{ modelLabel }}</span>
           <input v-model.trim="form.model" type="text" :class="ui.input" />
+        </label>
+        <label :class="ui.wizardField">
+          <span :class="ui.wizardFieldLabel">{{ maxOutputTokensLabel }}</span>
+          <input v-model.number="form.maxOutputTokens" type="number" min="1" :class="ui.input" />
         </label>
 
         <p v-if="verdict === 'ok'" :class="ui.modalStatusOk">{{ okText }}</p>

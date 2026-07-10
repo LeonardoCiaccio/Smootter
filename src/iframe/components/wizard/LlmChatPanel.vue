@@ -4,7 +4,7 @@ import { ArrowPathIcon, PaperAirplaneIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { llmErrorText } from '@/shared/llmErrorText'
-import type { ChatMessage } from '@/shared/messages'
+import { capChatMessages, type ChatMessage } from '@/shared/messages'
 import LlmConfigModal from './LlmConfigModal.vue'
 
 const props = defineProps<{ messages: ChatMessage[]; existingCode: string }>()
@@ -37,7 +37,7 @@ async function send(): Promise<void> {
     return
   }
 
-  const nextMessages: ChatMessage[] = [...props.messages, { role: 'user', content: text }]
+  const nextMessages = capChatMessages([...props.messages, { role: 'user', content: text }])
   emit('update:messages', nextMessages)
   prompt.value = ''
 
@@ -52,17 +52,17 @@ async function send(): Promise<void> {
   if (response.type !== 'generateCodeResult' || !response.ok) {
     const errorCode = response.type === 'generateCodeResult' ? response.errorCode : 'unknown'
     const detail = response.type === 'generateCodeResult' ? response.detail : undefined
-    emit('update:messages', [
+    emit('update:messages', capChatMessages([
       ...nextMessages,
       { role: 'assistant', content: llmErrorText(errorCode, detail) },
-    ])
+    ]))
     return
   }
 
   // Only the chat-facing reply goes in the transcript — the code is applied
   // to the editor directly, never printed here. Not every turn writes code
   // (a greeting or question doesn't) — only touch the editor when it does.
-  emit('update:messages', [...nextMessages, { role: 'assistant', content: response.reply ?? '' }])
+  emit('update:messages', capChatMessages([...nextMessages, { role: 'assistant', content: response.reply ?? '' }]))
   if (response.code) emit('generated', response.code)
 }
 

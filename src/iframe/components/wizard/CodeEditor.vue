@@ -13,18 +13,25 @@ import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language'
 import { javascript } from '@codemirror/lang-javascript'
 import { ui } from '@/styles/ui'
 import { useTheme } from '@/shared/vuePlugins/theme'
-import { darkEditorTheme, lightEditorTheme } from './codeEditorTheme'
+import { darkEditorTheme, darkHighlightStyle, lightEditorTheme } from './codeEditorTheme'
 
 const props = defineProps<{ modelValue: string }>()
 const emit = defineEmits<{ 'update:modelValue': [value: string] }>()
 
 const container = ref<HTMLDivElement>()
 const themeCompartment = new Compartment()
+const highlightCompartment = new Compartment()
 const { theme } = useTheme()
 let view: EditorView | undefined
 
 function editorTheme() {
   return theme.value === 'dark' ? darkEditorTheme : lightEditorTheme
+}
+
+function highlightStyle() {
+  return syntaxHighlighting(theme.value === 'dark' ? darkHighlightStyle : defaultHighlightStyle, {
+    fallback: true,
+  })
 }
 
 onMounted(() => {
@@ -40,7 +47,7 @@ onMounted(() => {
         history(),
         keymap.of([...defaultKeymap, ...historyKeymap]),
         javascript(),
-        syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+        highlightCompartment.of(highlightStyle()),
         themeCompartment.of(editorTheme()),
         EditorView.updateListener.of((update) => {
           if (update.docChanged) emit('update:modelValue', update.state.doc.toString())
@@ -51,7 +58,9 @@ onMounted(() => {
 })
 
 watch(theme, () => {
-  view?.dispatch({ effects: themeCompartment.reconfigure(editorTheme()) })
+  view?.dispatch({
+    effects: [themeCompartment.reconfigure(editorTheme()), highlightCompartment.reconfigure(highlightStyle())],
+  })
 })
 
 // Pushes external changes (e.g. AI-generated code) into the editor. Guarded

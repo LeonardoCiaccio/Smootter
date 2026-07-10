@@ -93,6 +93,7 @@
   "llmEndpointLabel": { "message": "Endpoint" },
   "llmApiKeyLabel": { "message": "API key (opzionale — non serve per runtime locali come Ollama)" },
   "llmModelLabel": { "message": "Modello" },
+  "llmMaxOutputTokensLabel": { "message": "Token massimi in output" },
   "llmFieldsRequired": { "message": "Compila tutti i campi" },
   "llmTestOk": { "message": "Connessione riuscita: il modello supporta i tools." },
   "llmTestErrorNetwork": { "message": "Impossibile raggiungere l'endpoint." },

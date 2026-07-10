@@ -5,6 +5,7 @@ import { ui } from '@/styles/ui'
 import { useToast } from '../../plugins/toast'
 import { saveTool, type StoredTool } from '@/shared/toolsDb'
 import { channelKey } from '@/shared/vuePlugins/messaging'
+import { capChatMessages } from '@/shared/messages'
 import type { WizardData } from './WizardData'
 
 const data = defineModel<WizardData>('data', { required: true })
@@ -57,6 +58,7 @@ async function save(): Promise<void> {
     scopeTargets: data.value.scopeTargets,
     code: data.value.code,
     enabled: data.value.enabled,
+    chatMessages: capChatMessages(data.value.chatMessages),
     createdAt: data.value.createdAt ?? Date.now(),
     updatedAt: Date.now(),
   }

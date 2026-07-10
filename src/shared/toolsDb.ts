@@ -6,6 +6,8 @@
  * Available in every context (service worker, extension pages).
  */
 
+import type { ChatMessage } from './messages'
+
 export type ToolTrigger = 'pageStart' | 'pageIdle'
 export type ToolScope = 'everywhere' | 'domain'
 
@@ -20,6 +22,9 @@ export interface StoredTool {
   enabled: boolean
   createdAt: number
   updatedAt: number
+  // The build chat, so reopening a tool to edit it picks the conversation
+  // back up instead of starting cold. Capped at save time — see WizardStepTester.
+  chatMessages: ChatMessage[]
 }
 
 const DB_NAME = chrome.runtime.getManifest().short_name + '_tools'
@@ -45,7 +50,10 @@ export async function saveTool(tool: StoredTool): Promise<void> {
   const db = await openDb()
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(STORE_NAME, 'readwrite')
-    transaction.objectStore(STORE_NAME).put(tool)
+    // `tool` often comes from Vue reactive state — its Proxy wrapper isn't
+    // structured-clone-safe ("DataCloneError"). A JSON round-trip strips it
+    // down to plain, cloneable data; every field here is JSON-safe already.
+    transaction.objectStore(STORE_NAME).put(JSON.parse(JSON.stringify(tool)))
     transaction.oncomplete = () => resolve()
     transaction.onerror = () => reject(transaction.error)
   })

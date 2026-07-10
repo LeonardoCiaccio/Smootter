@@ -61,6 +61,7 @@ onMounted(async () => {
   data.scopeTargets = tool.scopeTargets
   data.code = tool.code
   data.enabled = tool.enabled
+  data.chatMessages = tool.chatMessages ?? []
   // The code was valid when it was saved; only a further edit invalidates it.
   data.codeTested = true
 })

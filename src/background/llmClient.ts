@@ -127,6 +127,7 @@ async function callChatCompletions(
         messages,
         tools: TOOLS,
         tool_choice: 'required',
+        max_tokens: config.maxOutputTokens,
       }),
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
     })

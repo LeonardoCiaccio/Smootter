@@ -11,7 +11,8 @@ import type { LlmConfig } from '@/shared/preferences'
 export function useLlmConfigForm() {
   const channel = inject(channelKey)
 
-  const form = reactive<LlmConfig>({ endpoint: '', apiKey: '', model: '' })
+  const DEFAULT_MAX_OUTPUT_TOKENS = 8192
+  const form = reactive<LlmConfig>({ endpoint: '', apiKey: '', model: '', maxOutputTokens: DEFAULT_MAX_OUTPUT_TOKENS })
   const testing = ref(false)
   const verdict = ref<'idle' | 'ok' | 'error'>('idle')
   const errorMessage = ref('')
@@ -32,7 +33,13 @@ export function useLlmConfigForm() {
     if (!channel) return
     // apiKey is only required for non-local endpoints — local runtimes (Ollama, LM Studio, ...) don't need one.
     const keyRequired = !isLocalLlmEndpoint(form.endpoint)
-    if (!form.endpoint.trim() || !form.model.trim() || (keyRequired && !form.apiKey.trim())) {
+    if (
+      !form.endpoint.trim() ||
+      !form.model.trim() ||
+      (keyRequired && !form.apiKey.trim()) ||
+      !form.maxOutputTokens ||
+      form.maxOutputTokens < 1
+    ) {
       verdict.value = 'error'
       errorMessage.value = chrome.i18n.getMessage('llmFieldsRequired')
       return
@@ -69,6 +76,7 @@ export function useLlmConfigForm() {
     form.endpoint = ''
     form.apiKey = ''
     form.model = ''
+    form.maxOutputTokens = DEFAULT_MAX_OUTPUT_TOKENS
     verdict.value = 'idle'
   }
 

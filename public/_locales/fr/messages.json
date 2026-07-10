@@ -101,6 +101,7 @@
   "llmEndpointLabel": { "message": "Endpoint" },
   "llmApiKeyLabel": { "message": "Clé API (optionnelle — inutile pour les runtimes locaux comme Ollama)" },
   "llmModelLabel": { "message": "Modèle" },
+  "llmMaxOutputTokensLabel": { "message": "Tokens de sortie max" },
   "llmFieldsRequired": { "message": "Remplissez tous les champs" },
   "llmTestOk": { "message": "Connexion réussie : le modèle prend en charge les tools." },
   "llmTestErrorNetwork": { "message": "Impossible de joindre l'endpoint." },
