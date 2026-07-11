@@ -126,7 +126,11 @@ async function callChatCompletions(
         model: config.model,
         messages,
         tools: TOOLS,
-        tool_choice: 'required',
+        // 'required' forces a tool call every turn, but some providers/gateways (e.g. OpenCode
+        // Zen) reject it outright with a 400. 'auto' is honored everywhere and models still call
+        // a tool on their own when one applies — the loop below already treats a plain-text,
+        // no-tool-call reply as valid, so nothing downstream depends on it being forced.
+        tool_choice: 'auto',
         max_tokens: config.maxOutputTokens,
       }),
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
