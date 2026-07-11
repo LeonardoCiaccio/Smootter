@@ -129,5 +129,6 @@
     "message": "Imported $COUNT$ tool(s)",
     "placeholders": { "count": { "content": "$1" } }
   },
-  "toolsImportError": { "message": "Couldn't import that file — check it's a valid tool export." }
+  "toolsImportError": { "message": "Couldn't import that file — check it's a valid tool export." },
+  "toolsDropHint": { "message": "Drop to import" }
 }

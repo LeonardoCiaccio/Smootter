@@ -129,5 +129,6 @@
     "message": "$COUNT$ herramienta(s) importada(s)",
     "placeholders": { "count": { "content": "$1" } }
   },
-  "toolsImportError": { "message": "No se pudo importar el archivo — comprueba que sea una exportación válida." }
+  "toolsImportError": { "message": "No se pudo importar el archivo — comprueba que sea una exportación válida." },
+  "toolsDropHint": { "message": "Suelta para importar" }
 }

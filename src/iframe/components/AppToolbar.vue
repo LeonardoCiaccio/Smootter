@@ -5,8 +5,8 @@ import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { useTheme } from '@/shared/vuePlugins/theme'
 import { useToast } from '../plugins/toast'
-import { getAllTools, saveTool } from '@/shared/toolsDb'
-import { exportAllTools, parseToolsFile } from '@/shared/toolsTransfer'
+import { getAllTools } from '@/shared/toolsDb'
+import { exportAllTools, importToolsFromFiles } from '@/shared/toolsTransfer'
 import { notifyToolsChanged } from '../composables/toolsRefresh'
 
 const manifest = chrome.runtime.getManifest()
@@ -47,18 +47,16 @@ function onImportClick(): void {
 
 async function onImportFileChange(event: Event): Promise<void> {
   const input = event.target as HTMLInputElement
-  const file = input.files?.[0]
+  const files = Array.from(input.files ?? [])
   input.value = '' // lets the same file be re-selected later
+  if (files.length === 0) return
 
-  if (!file) return
-  try {
-    const tools = await parseToolsFile(file)
-    for (const tool of tools) await saveTool(tool)
+  const { imported, failed } = await importToolsFromFiles(files)
+  if (imported > 0) {
     notifyToolsChanged()
-    toast.success(chrome.i18n.getMessage('toolsImportSuccess', [String(tools.length)]))
-  } catch {
-    toast.error(chrome.i18n.getMessage('toolsImportError'))
+    toast.success(chrome.i18n.getMessage('toolsImportSuccess', [String(imported)]))
   }
+  if (failed > 0) toast.error(chrome.i18n.getMessage('toolsImportError'))
 }
 </script>
 
@@ -87,6 +85,7 @@ async function onImportFileChange(event: Event): Promise<void> {
         ref="importInput"
         type="file"
         accept=".json,application/json"
+        multiple
         :class="ui.toolbarHiddenFileInput"
         @change="onImportFileChange"
       />

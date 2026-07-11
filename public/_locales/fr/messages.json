@@ -135,5 +135,6 @@
     "message": "$COUNT$ outil(s) importé(s)",
     "placeholders": { "count": { "content": "$1" } }
   },
-  "toolsImportError": { "message": "Impossible d'importer ce fichier — vérifiez qu'il s'agit d'un export valide." }
+  "toolsImportError": { "message": "Impossible d'importer ce fichier — vérifiez qu'il s'agit d'un export valide." },
+  "toolsDropHint": { "message": "Déposez pour importer" }
 }

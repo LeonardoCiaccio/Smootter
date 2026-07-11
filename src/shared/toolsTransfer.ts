@@ -3,7 +3,7 @@
  * Import auto-detects a single tool object vs. a collection (array) in the
  * same file, and fills in anything missing so older/partial exports still load.
  */
-import type { StoredTool } from './toolsDb'
+import { saveTool, type StoredTool } from './toolsDb'
 
 /** UTF-8-safe base64 encode — btoa alone chokes on non-Latin1 characters. */
 function encodeBase64(text: string): string {
@@ -104,4 +104,27 @@ export async function parseToolsFile(file: File): Promise<StoredTool[]> {
   if (valid.length === 0) throw new Error('invalidShape')
 
   return valid.map(normalizeTool)
+}
+
+export interface ImportSummary {
+  imported: number
+  failed: number
+}
+
+/** Parses and saves every file (toolbar file picker or a drag-and-drop drop), tallying failures. */
+export async function importToolsFromFiles(files: File[]): Promise<ImportSummary> {
+  let imported = 0
+  let failed = 0
+
+  for (const file of files) {
+    try {
+      const tools = await parseToolsFile(file)
+      for (const tool of tools) await saveTool(tool)
+      imported += tools.length
+    } catch {
+      failed++
+    }
+  }
+
+  return { imported, failed }
 }

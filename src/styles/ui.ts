@@ -46,6 +46,11 @@ export const ui = {
   footer: 'flex-shrink-0 px-5 py-2.5 text-center text-[11px] text-gray-400 dark:text-gray-500',
   statusText: 'text-lg font-semibold text-gray-900 dark:text-gray-100',
   homeShell: 'flex flex-col',
+  // Shown while dragging a file over the home area, to import it as a tool.
+  toolsDropOverlay:
+    'pointer-events-none fixed inset-0 z-40 flex flex-col items-center justify-center gap-3 bg-white/90 dark:bg-gray-900/90',
+  toolsDropOverlayIcon: 'h-10 w-10 text-cyan-600 dark:text-cyan-400',
+  toolsDropOverlayText: 'text-sm font-medium text-gray-700 dark:text-gray-300',
   // Decorative blurred blobs behind the whole app (all views) — fixed to appShell's own box,
   // so nothing (like layoutCenter's overflow-hidden) can clip the blur bleed.
   heroGlow: 'pointer-events-none absolute inset-0 -z-10',
