@@ -40,7 +40,12 @@ const okText = chrome.i18n.getMessage('llmTestOk')
 
         <label :class="ui.wizardField">
           <span :class="ui.wizardFieldLabel">{{ endpointLabel }}</span>
-          <input v-model.trim="form.endpoint" type="text" :class="ui.input" />
+          <input
+            v-model.trim="form.endpoint"
+            type="text"
+            placeholder="http://localhost:11434/v1/chat/completions"
+            :class="ui.input"
+          />
         </label>
         <label :class="ui.wizardField">
           <span :class="ui.wizardFieldLabel">{{ apiKeyLabel }}</span>
@@ -48,7 +53,7 @@ const okText = chrome.i18n.getMessage('llmTestOk')
         </label>
         <label :class="ui.wizardField">
           <span :class="ui.wizardFieldLabel">{{ modelLabel }}</span>
-          <input v-model.trim="form.model" type="text" :class="ui.input" />
+          <input v-model.trim="form.model" type="text" placeholder="gemma4:31b-cloud" :class="ui.input" />
         </label>
         <label :class="ui.wizardField">
           <span :class="ui.wizardFieldLabel">{{ maxOutputTokensLabel }}</span>
