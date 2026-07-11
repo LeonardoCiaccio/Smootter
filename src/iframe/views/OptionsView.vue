@@ -10,7 +10,6 @@ import CreditsSection from '../components/CreditsSection.vue'
     <Breadcrumb view-key="options" />
     <div :class="ui.optionsContent">
       <LlmSettingsSection />
-      <div :class="ui.optionsSeparator" />
       <CreditsSection />
     </div>
   </div>

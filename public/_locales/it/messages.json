@@ -73,6 +73,7 @@
     "message": "Apri chrome://extensions, trova questa estensione e attiva \"Consenti script utente\" per far funzionare i tuoi tool."
   },
   "wizardTest": { "message": "Testa" },
+  "wizardTestAndSave": { "message": "Testa e Salva" },
   "wizardTesterRunning": { "message": "Test del codice in corso..." },
   "wizardTesterCancel": { "message": "Annulla" },
   "wizardSave": { "message": "Salva" },

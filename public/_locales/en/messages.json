@@ -75,6 +75,7 @@
     "message": "Open chrome://extensions, find this extension, and turn on \"Allow User Scripts\" to let your tools run."
   },
   "wizardTest": { "message": "Test" },
+  "wizardTestAndSave": { "message": "Test & Save" },
   "wizardTesterRunning": { "message": "Testing your code..." },
   "wizardTesterCancel": { "message": "Cancel" },
   "wizardSave": { "message": "Save" },

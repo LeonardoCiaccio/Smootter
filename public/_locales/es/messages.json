@@ -75,6 +75,7 @@
     "message": "Abre chrome://extensions, busca esta extensión y activa \"Permitir scripts de usuario\" para que tus herramientas funcionen."
   },
   "wizardTest": { "message": "Probar" },
+  "wizardTestAndSave": { "message": "Probar y guardar" },
   "wizardTesterRunning": { "message": "Probando tu código..." },
   "wizardTesterCancel": { "message": "Cancelar" },
   "wizardSave": { "message": "Guardar" },

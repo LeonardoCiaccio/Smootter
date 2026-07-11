@@ -38,7 +38,7 @@ function onClearClick(): void {
 
 const clearLabel = chrome.i18n.getMessage('wizardClearCode')
 const clearConfirmLabel = chrome.i18n.getMessage('wizardClearCodeConfirm')
-const testLabel = chrome.i18n.getMessage('wizardTest')
+const testLabel = chrome.i18n.getMessage('wizardTestAndSave')
 </script>
 
 <template>

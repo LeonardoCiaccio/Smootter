@@ -104,14 +104,13 @@ export const ui = {
   viewContent: 'flex flex-1 items-center justify-center',
   // Options: no sidebar (too few settings), sections centered in the page, fields left-aligned within.
   optionsContent: 'flex flex-1 flex-col items-center overflow-y-auto px-8 py-6',
-  optionsSection: 'mt-8 flex w-full max-w-md flex-col gap-4 text-left',
-  optionsSectionTitle: 'text-sm font-semibold text-gray-900 dark:text-gray-100',
+  optionsSection: 'mt-12 flex w-full max-w-md flex-col gap-4 text-left',
+  optionsSectionTitle: 'text-base font-semibold text-gray-900 dark:text-gray-100',
   optionsSectionDescription: 'text-xs text-gray-500 dark:text-gray-400',
   optionsSectionActions: 'flex items-center justify-between gap-3',
-  // Divider between option sections (e.g. LLM → Credits).
-  optionsSeparator: 'my-2 h-px w-full max-w-md bg-gray-200 dark:bg-gray-800',
   creditsList: 'flex flex-col divide-y divide-gray-100 dark:divide-gray-800',
-  creditsItem: 'flex items-center justify-between py-2 text-sm text-gray-700 dark:text-gray-300',
+  creditsItem: 'flex items-center justify-between py-2 text-sm',
+  creditsLink: 'text-gray-700 transition-colors hover:text-cyan-600 hover:underline dark:text-gray-300 dark:hover:text-cyan-400',
   creditsVersion: 'text-xs text-gray-400 dark:text-gray-500',
   breadcrumb: 'flex items-center gap-1.5 self-start px-6 pt-6 text-sm font-medium',
   breadcrumbHome:

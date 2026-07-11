@@ -81,6 +81,7 @@
     "message": "Ouvrez chrome://extensions, trouvez cette extension et activez « Autoriser les scripts utilisateur » pour que vos outils fonctionnent."
   },
   "wizardTest": { "message": "Tester" },
+  "wizardTestAndSave": { "message": "Tester et enregistrer" },
   "wizardTesterRunning": { "message": "Test de votre code en cours..." },
   "wizardTesterCancel": { "message": "Annuler" },
   "wizardSave": { "message": "Enregistrer" },

@@ -81,6 +81,7 @@
     "message": "Öffne chrome://extensions, suche diese Erweiterung und aktiviere „Benutzerskripte zulassen“, damit deine Tools funktionieren."
   },
   "wizardTest": { "message": "Testen" },
+  "wizardTestAndSave": { "message": "Testen & Speichern" },
   "wizardTesterRunning": { "message": "Dein Code wird getestet..." },
   "wizardTesterCancel": { "message": "Abbrechen" },
   "wizardSave": { "message": "Speichern" },

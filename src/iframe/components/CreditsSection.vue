@@ -4,18 +4,20 @@ import { ui } from '@/styles/ui'
 interface CreditEntry {
   name: string
   version: string
+  url: string
 }
 
 // Kept in sync by hand with package.json's dependencies.
 const CREDITS: CreditEntry[] = [
-  { name: 'Vue', version: '3.5.39' },
-  { name: 'Vue Router', version: '5.1.0' },
-  { name: 'Tailwind CSS', version: '3.4.19' },
-  { name: 'Heroicons', version: '2.2.0' },
-  { name: 'CodeMirror', version: '6.0.2' },
-  { name: 'Acorn', version: '8.17.0' },
-  { name: 'canvas-confetti', version: '1.9.4' },
-  { name: 'GRIP', version: '1.173.0' },
+  { name: 'Vue', version: '3.5.39', url: 'https://vuejs.org' },
+  { name: 'Vue Router', version: '5.1.0', url: 'https://router.vuejs.org' },
+  { name: 'Tailwind CSS', version: '3.4.19', url: 'https://tailwindcss.com' },
+  { name: 'Heroicons', version: '2.2.0', url: 'https://heroicons.com' },
+  { name: 'CodeMirror', version: '6.0.2', url: 'https://codemirror.net' },
+  { name: 'Acorn', version: '8.17.0', url: 'https://github.com/acornjs/acorn' },
+  { name: 'canvas-confetti', version: '1.9.4', url: 'https://github.com/catdad/canvas-confetti' },
+  { name: 'GRIP', version: '1.173.0', url: 'https://www.npmjs.com/package/@leonardo.ciaccio/grip' },
+  { name: 'unDraw', version: '', url: 'https://undraw.co' },
 ]
 
 const sectionTitle = chrome.i18n.getMessage('creditsTitle')
@@ -31,8 +33,10 @@ const sectionDescription = chrome.i18n.getMessage('creditsDescription')
 
     <ul :class="ui.creditsList">
       <li v-for="credit in CREDITS" :key="credit.name" :class="ui.creditsItem">
-        <span>{{ credit.name }}</span>
-        <span :class="ui.creditsVersion">v{{ credit.version }}</span>
+        <a :href="credit.url" target="_blank" rel="noopener noreferrer" :class="ui.creditsLink">{{
+          credit.name
+        }}</a>
+        <span v-if="credit.version" :class="ui.creditsVersion">v{{ credit.version }}</span>
       </li>
     </ul>
   </div>
