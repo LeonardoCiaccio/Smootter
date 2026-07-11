@@ -99,6 +99,9 @@ async function onImportFileChange(event: Event): Promise<void> {
       <RouterLink to="/options" :class="ui.toolbarIconButton">
         <Cog6ToothIcon :class="ui.toolbarIcon" />
       </RouterLink>
+
+      <div :class="ui.toolbarDivider" />
+
       <button type="button" :class="ui.toolbarCloseButton" @click="closeModal">
         <XMarkIcon :class="ui.toolbarIcon" />
       </button>
