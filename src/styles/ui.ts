@@ -214,7 +214,7 @@ export const ui = {
     'flex h-full min-h-0 flex-col gap-3 overflow-hidden rounded-tool border border-gray-200 p-4 text-left dark:border-gray-800',
   wizardChatHeader: 'flex flex-col gap-1 pb-1',
   wizardChatTitle: 'font-heading font-extrabold text-lg text-gray-900 dark:text-gray-100',
-  wizardChatSubtitle: 'font-subheading text-xs text-gray-500 dark:text-gray-400',
+  wizardChatSubtitle: 'font-sans text-xs text-gray-500 dark:text-gray-400',
   wizardChatMessages: 'flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pr-1 [scrollbar-gutter:stable]',
   wizardChatEmpty: 'flex flex-1 items-center justify-center px-4 text-center text-xs text-gray-400 dark:text-gray-500',
   wizardChatBubbleUser:
