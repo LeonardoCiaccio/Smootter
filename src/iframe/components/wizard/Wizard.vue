@@ -10,6 +10,7 @@ import WizardStepTiming from './WizardStepTiming.vue'
 import WizardStepScope from './WizardStepScope.vue'
 import WizardStepChat from './WizardStepChat.vue'
 import WizardStepTester from './WizardStepTester.vue'
+import WizardStepper from './WizardStepper.vue'
 import { useToast } from '../../plugins/toast'
 import { getTool, saveTool } from '@/shared/toolsDb'
 import { quickSaveKey } from './quickSave'
@@ -203,7 +204,7 @@ function goNext(): void {
 
 <template>
   <div :class="[ui.wizardWrapperBase, currentIndex === 3 ? ui.wizardWrapperWidthWide : ui.wizardWrapperWidth]">
-    <div v-if="currentIndex !== 3" :class="ui.wizardHeader">
+    <div v-if="currentIndex < 3" :class="ui.wizardHeader">
       <h1 :class="ui.wizardTitle">{{ currentStep.title }}</h1>
       <p :class="ui.wizardSubtitle">{{ currentStep.subtitle }}</p>
     </div>
@@ -227,16 +228,7 @@ function goNext(): void {
         <ChevronLeftIcon :class="ui.wizardStepArrowIcon" />
       </button>
 
-      <div :class="ui.wizardStepDots">
-        <button
-          v-for="(step, index) in dotSteps"
-          :key="step.label"
-          type="button"
-          :class="[ui.wizardStepDot, index === currentIndex && ui.wizardStepDotActive]"
-          :aria-label="step.label"
-          @click="goTo(index)"
-        />
-      </div>
+      <WizardStepper :steps="dotSteps" :current-index="Math.min(currentIndex, dotSteps.length - 1)" @select="goTo" />
 
       <button
         type="button"

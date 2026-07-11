@@ -137,16 +137,29 @@ export const ui = {
   wizardField: 'flex flex-col gap-1.5 text-left',
   wizardFieldLabel: 'text-sm font-medium text-gray-700 dark:text-gray-300',
   wizardCounter: 'self-end text-xs text-gray-400 dark:text-gray-500',
-  // Dots: inactive = small circle, active = elongated pill (smooth width transition)
-  wizardSteps: 'flex items-center justify-center gap-3 pt-6',
-  wizardStepDots: 'flex items-center justify-center gap-2',
-  wizardStepDot:
-    'h-2 w-2 rounded-full bg-gray-300 transition-all duration-200 hover:bg-gray-400 dark:bg-gray-300 dark:hover:bg-gray-200',
-  wizardStepDotActive: 'w-6 bg-gray-900 hover:bg-gray-900 dark:bg-gray-100 dark:hover:bg-gray-100',
-  // Prev/next helpers flanking the dots.
+  wizardSteps: 'flex w-full items-start justify-center gap-3 pt-12',
+  // Prev/next helpers flanking the stepper (nudged down to align with the circles, not the labels below them).
   wizardStepArrow:
-    'flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent dark:hover:bg-gray-800 dark:hover:text-gray-200',
+    'mt-1 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:bg-transparent dark:hover:bg-gray-800 dark:hover:text-gray-200',
   wizardStepArrowIcon: 'h-4 w-4',
+  // Labeled stepper: numbered circles connected by a track, filled up to the current step
+  // with the same cyan→violet gradient as the wizard title.
+  wizardStepperWrapper: 'relative flex w-full max-w-sm items-start justify-between',
+  wizardStepperTrack: 'absolute left-4 right-4 top-4 h-0.5 bg-gray-200 dark:bg-gray-800',
+  wizardStepperTrackFill:
+    'absolute left-4 top-4 h-0.5 bg-gradient-to-r from-cyan-500 to-violet-500 transition-[width] duration-300',
+  wizardStepperButton: 'relative z-10 flex flex-col items-center gap-2 focus:outline-none',
+  wizardStepperCircle:
+    'flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full border-2 text-xs font-semibold transition-colors',
+  wizardStepperCircleUpcoming:
+    'border-gray-300 bg-white text-gray-400 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-600',
+  wizardStepperCircleActive:
+    'border-cyan-500 bg-cyan-500 text-white shadow-[0_0_0_4px_rgba(6,182,212,0.15)] dark:shadow-[0_0_0_4px_rgba(34,211,238,0.2)]',
+  wizardStepperCircleDone: 'border-cyan-500 bg-cyan-500 text-white',
+  wizardStepperCircleIcon: 'h-4 w-4',
+  wizardStepperLabel: 'text-[11px] font-medium transition-colors',
+  wizardStepperLabelUpcoming: 'text-gray-400 dark:text-gray-600',
+  wizardStepperLabelActive: 'text-gray-900 dark:text-gray-100',
   // Wizard option cards: reused by any step with a selectable-card list (whole card is the click target)
   wizardOptionList: 'flex w-full flex-col gap-3',
   wizardOption:
