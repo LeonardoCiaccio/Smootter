@@ -84,8 +84,18 @@ onMounted(async () => {
   ready.value = true
 })
 
+// Excludes chatMessages on purpose: sending a message to the LLM shouldn't itself flag the
+// form dirty (before it even replies) — chat activity goes through the test-then-save flow.
 watch(
-  () => JSON.stringify(data),
+  () => JSON.stringify({
+    name: data.name,
+    description: data.description,
+    trigger: data.trigger,
+    scope: data.scope,
+    scopeTargets: data.scopeTargets,
+    code: data.code,
+    enabled: data.enabled,
+  }),
   () => {
     if (ready.value && isEditing.value) dirty.value = true
   },
