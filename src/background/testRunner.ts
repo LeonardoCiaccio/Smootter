@@ -46,7 +46,7 @@ async function createTestFrame(tabId: number, frameToken: string): Promise<numbe
     func: (token: string) => {
       const iframe = document.createElement('iframe')
       iframe.src = 'about:blank'
-      iframe.setAttribute('data-pippo-test-frame', token)
+      iframe.setAttribute('data-smootter-test-frame', token)
       iframe.style.cssText = 'position:fixed;top:-9999px;left:-9999px;width:1px;height:1px;border:0;'
       document.documentElement.appendChild(iframe)
     },
@@ -69,7 +69,7 @@ async function removeTestFrame(tabId: number, frameToken: string): Promise<void>
     await chrome.scripting.executeScript({
       target: { tabId },
       func: (token: string) => {
-        document.querySelector(`[data-pippo-test-frame="${token}"]`)?.remove()
+        document.querySelector(`[data-smootter-test-frame="${token}"]`)?.remove()
       },
       args: [frameToken],
     })
@@ -85,7 +85,7 @@ async function removeTestFrame(tabId: number, frameToken: string): Promise<void>
  */
 function buildGuardedTestCode(code: string): string {
   return `(async () => {
-    window.alert = function (message) { console.log('[Pippo test] alert:', message); };
+    window.alert = function (message) { console.log('[Smootter test] alert:', message); };
     try {
       ${code}
       return { ok: true };

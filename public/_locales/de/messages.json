@@ -128,7 +128,7 @@
   "toolsSearchClear": { "message": "Suche löschen" },
   "toolsNoResults": { "message": "Keine Tools entsprechen der Suche." },
   "creditsTitle": { "message": "Credits" },
-  "creditsDescription": { "message": "Open-Source-Bibliotheken, mit denen Pippo gebaut wurde." },
+  "creditsDescription": { "message": "Open-Source-Bibliotheken, mit denen Smootter gebaut wurde." },
   "toolbarExportAll": { "message": "Alle Tools exportieren" },
   "toolbarImport": { "message": "Tools importieren" },
   "toolsImportSuccess": {

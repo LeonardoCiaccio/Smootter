@@ -69,10 +69,10 @@ async function runTool(tool: StoredTool, tabId: number): Promise<void> {
     })
     const outcome = results[0]?.result as { ok: boolean; error?: string } | undefined
     if (outcome && !outcome.ok) {
-      console.error(`[Pippo] Tool "${tool.name}" threw:`, outcome.error)
+      console.error(`[Smootter] Tool "${tool.name}" threw:`, outcome.error)
     }
   } catch (error) {
-    console.error(`[Pippo] Tool "${tool.name}" failed to run:`, describeError(error))
+    console.error(`[Smootter] Tool "${tool.name}" failed to run:`, describeError(error))
   }
 }
 

@@ -128,7 +128,7 @@
   "toolsSearchClear": { "message": "Effacer la recherche" },
   "toolsNoResults": { "message": "Aucun outil ne correspond à la recherche." },
   "creditsTitle": { "message": "Crédits" },
-  "creditsDescription": { "message": "Bibliothèques open source utilisées pour construire Pippo." },
+  "creditsDescription": { "message": "Bibliothèques open source utilisées pour construire Smootter." },
   "toolbarExportAll": { "message": "Exporter tous les outils" },
   "toolbarImport": { "message": "Importer des outils" },
   "toolsImportSuccess": {

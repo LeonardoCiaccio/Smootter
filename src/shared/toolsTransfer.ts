@@ -49,7 +49,7 @@ export function exportTool(tool: StoredTool): void {
 }
 
 export function exportAllTools(tools: StoredTool[]): void {
-  downloadJson(`pippo-tools-${new Date().toISOString().slice(0, 10)}.json`, tools.map(toExportable))
+  downloadJson(`smootter-tools-${new Date().toISOString().slice(0, 10)}.json`, tools.map(toExportable))
 }
 
 type ImportCandidate = Partial<StoredTool> & { name: string; code: string }

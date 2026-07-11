@@ -1,6 +1,6 @@
 # Progetto — Idea di Base
 
-> **Nome provvisorio:** Pippo _(placeholder — `manifest.json`: name/description/icons)_
+> **Nome:** Smootter _(`smootter.com` — `manifest.json`: name/description/icons)_
 
 ## Concetto
 

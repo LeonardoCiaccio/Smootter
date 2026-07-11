@@ -16,7 +16,7 @@ export interface ChannelClient {
   subscribe: (handler: (message: ChannelResponse) => void) => () => void
 }
 
-export const channelKey: InjectionKey<ChannelClient> = Symbol('pippo-channel')
+export const channelKey: InjectionKey<ChannelClient> = Symbol('smootter-channel')
 
 function createClient(): ChannelClient {
   const send = (message: ChannelRequest): Promise<ChannelResponse> => {
