@@ -111,7 +111,7 @@ export const ui = {
   viewShell: 'flex h-full flex-col',
   viewContent: 'flex flex-1 items-center justify-center',
   // Options: no sidebar (too few settings), sections centered in the page, fields left-aligned within.
-  optionsContent: 'flex flex-1 flex-col items-center overflow-y-auto px-8 py-6',
+  optionsContent: 'flex flex-1 flex-row flex-wrap items-start justify-center gap-8 overflow-y-auto px-8 py-6',
   optionsSection: 'mt-12 flex w-full max-w-md flex-col gap-4 text-left',
   optionsSectionTitle: 'text-base font-semibold text-gray-900 dark:text-gray-100',
   optionsSectionDescription: 'text-xs text-gray-500 dark:text-gray-400',
