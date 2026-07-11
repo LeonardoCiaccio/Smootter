@@ -8,6 +8,11 @@ export default {
       borderRadius: {
         tool: '0.375rem',
       },
+      fontFamily: {
+        sans: ['"PT Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        heading: ['"Open Sans"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        subheading: ['"Cooper Hewitt"', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+      },
     },
   },
   plugins: [],

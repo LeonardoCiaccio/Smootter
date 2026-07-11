@@ -52,8 +52,8 @@ export const ui = {
   // Home hero: pushed toward the top (the toolbar above is a normal in-flow element now)
   heroWrapper: 'flex flex-col items-center gap-4 px-6 pt-20 text-center',
   heroHeader:
-    'bg-gradient-to-r from-violet-600 to-cyan-400 bg-clip-text pb-1 text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl',
-  heroSubheader: 'max-w-md text-base text-gray-600 dark:text-gray-400',
+    'font-heading bg-gradient-to-r from-violet-600 to-cyan-400 bg-clip-text pb-1 text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl',
+  heroSubheader: 'font-subheading max-w-md text-base text-gray-600 dark:text-gray-400',
   // Tools panel: empty state, illustration + plain icon/label (icon follows text color via currentColor).
   toolsPanel: 'mt-16 flex flex-col items-center',
   toolsEmptyWrapper: 'flex flex-col items-center gap-6',
@@ -128,8 +128,8 @@ export const ui = {
   wizardWrapperWidthWide: 'max-w-none',
   wizardHeader: 'flex flex-col gap-1 pb-1',
   wizardTitle:
-    'bg-gradient-to-r from-cyan-500 to-emerald-400 bg-clip-text pb-1 text-3xl font-extrabold tracking-tight text-transparent',
-  wizardSubtitle: 'text-sm text-gray-500 dark:text-gray-400',
+    'font-heading bg-gradient-to-r from-cyan-500 to-emerald-400 bg-clip-text pb-1 text-3xl font-extrabold tracking-tight text-transparent',
+  wizardSubtitle: 'font-subheading text-base text-gray-600 dark:text-gray-400',
   wizardBody:
     'flex w-full min-h-0 flex-1 flex-col justify-center overflow-y-auto pr-1 [scrollbar-gutter:stable]',
   wizardStepBody: 'flex w-full flex-col gap-4 text-left',
@@ -213,8 +213,8 @@ export const ui = {
   wizardChatColumn:
     'flex h-full min-h-0 flex-col gap-3 overflow-hidden rounded-tool border border-gray-200 p-4 text-left dark:border-gray-800',
   wizardChatHeader: 'flex flex-col gap-1 pb-1',
-  wizardChatTitle: 'text-lg font-semibold text-gray-900 dark:text-gray-100',
-  wizardChatSubtitle: 'text-xs text-gray-500 dark:text-gray-400',
+  wizardChatTitle: 'font-heading font-extrabold text-lg text-gray-900 dark:text-gray-100',
+  wizardChatSubtitle: 'font-subheading text-xs text-gray-500 dark:text-gray-400',
   wizardChatMessages: 'flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pr-1 [scrollbar-gutter:stable]',
   wizardChatEmpty: 'flex flex-1 items-center justify-center px-4 text-center text-xs text-gray-400 dark:text-gray-500',
   wizardChatBubbleUser:

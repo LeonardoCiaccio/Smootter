@@ -2,6 +2,36 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Self-hosted (no runtime network requests). */
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('/fonts/open-sans-variable.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'Cooper Hewitt';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/cooper-hewitt-book.woff') format('woff');
+}
+@font-face {
+  font-family: 'PT Sans';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/pt-sans-400.woff2') format('woff2');
+}
+@font-face {
+  font-family: 'PT Sans';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/pt-sans-700.woff2') format('woff2');
+}
+
 /* Named classes required by Vue's <Transition name="view">; no Tailwind
    utility can target these lifecycle-specific selectors directly.
    Both views are absolutely positioned during the transition so they overlap
