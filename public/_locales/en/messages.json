@@ -86,6 +86,7 @@
   "wizardCodeInvalid": { "message": "Syntax error" },
   "wizardToolSaved": { "message": "Tool saved" },
   "toolEdit": { "message": "Edit" },
+  "toolExport": { "message": "Export" },
   "toolDelete": { "message": "Delete" },
   "toolDeleteConfirm": { "message": "Click again to delete" },
   "toolDeleted": { "message": "Tool deleted" },
@@ -121,5 +122,12 @@
   "toolsSearchClear": { "message": "Clear search" },
   "toolsNoResults": { "message": "No tools match your search." },
   "creditsTitle": { "message": "Credits" },
-  "creditsDescription": { "message": "Open source libraries used to build Pippo." }
+  "creditsDescription": { "message": "Open source libraries used to build Pippo." },
+  "toolbarExportAll": { "message": "Export all tools" },
+  "toolbarImport": { "message": "Import tools" },
+  "toolsImportSuccess": {
+    "message": "Imported $COUNT$ tool(s)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "toolsImportError": { "message": "Couldn't import that file — check it's a valid tool export." }
 }

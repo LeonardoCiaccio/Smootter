@@ -86,6 +86,7 @@
   "wizardCodeInvalid": { "message": "Error de sintaxis" },
   "wizardToolSaved": { "message": "Herramienta guardada" },
   "toolEdit": { "message": "Editar" },
+  "toolExport": { "message": "Exportar" },
   "toolDelete": { "message": "Eliminar" },
   "toolDeleteConfirm": { "message": "Haz clic de nuevo para eliminar" },
   "toolDeleted": { "message": "Herramienta eliminada" },
@@ -121,5 +122,12 @@
   "toolsSearchClear": { "message": "Borrar búsqueda" },
   "toolsNoResults": { "message": "Ninguna herramienta coincide con la búsqueda." },
   "creditsTitle": { "message": "Créditos" },
-  "creditsDescription": { "message": "Bibliotecas de código abierto usadas para construir Pippo." }
+  "creditsDescription": { "message": "Bibliotecas de código abierto usadas para construir Pippo." },
+  "toolbarExportAll": { "message": "Exportar todas las herramientas" },
+  "toolbarImport": { "message": "Importar herramientas" },
+  "toolsImportSuccess": {
+    "message": "$COUNT$ herramienta(s) importada(s)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "toolsImportError": { "message": "No se pudo importar el archivo — comprueba que sea una exportación válida." }
 }

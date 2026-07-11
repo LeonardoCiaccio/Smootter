@@ -1,9 +1,13 @@
 <script setup lang="ts">
 import { computed, inject, onMounted, ref } from 'vue'
-import { Cog6ToothIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { ArrowDownTrayIcon, ArrowUpTrayIcon, Cog6ToothIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { useTheme } from '@/shared/vuePlugins/theme'
+import { useToast } from '../plugins/toast'
+import { getAllTools, saveTool } from '@/shared/toolsDb'
+import { exportAllTools, parseToolsFile } from '@/shared/toolsTransfer'
+import { notifyToolsChanged } from '../composables/toolsRefresh'
 
 const manifest = chrome.runtime.getManifest()
 const appName = manifest.name
@@ -25,6 +29,37 @@ const ThemeIcon = computed(() => (theme.value === 'dark' ? SunIcon : MoonIcon))
 function closeModal(): void {
   channel?.send({ type: 'closeModal' })
 }
+
+const toast = useToast()
+const exportAllLabel = chrome.i18n.getMessage('toolbarExportAll')
+const importLabel = chrome.i18n.getMessage('toolbarImport')
+
+async function onExportAllClick(): Promise<void> {
+  const tools = await getAllTools()
+  exportAllTools(tools)
+}
+
+const importInput = ref<HTMLInputElement>()
+
+function onImportClick(): void {
+  importInput.value?.click()
+}
+
+async function onImportFileChange(event: Event): Promise<void> {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  input.value = '' // lets the same file be re-selected later
+
+  if (!file) return
+  try {
+    const tools = await parseToolsFile(file)
+    for (const tool of tools) await saveTool(tool)
+    notifyToolsChanged()
+    toast.success(chrome.i18n.getMessage('toolsImportSuccess', [String(tools.length)]))
+  } catch {
+    toast.error(chrome.i18n.getMessage('toolsImportError'))
+  }
+}
 </script>
 
 <template>
@@ -42,6 +77,22 @@ function closeModal(): void {
     <div v-else />
 
     <div :class="ui.toolbarActions">
+      <button type="button" :class="ui.toolbarIconButton" :title="exportAllLabel" @click="onExportAllClick">
+        <ArrowUpTrayIcon :class="ui.toolbarIcon" />
+      </button>
+      <button type="button" :class="ui.toolbarIconButton" :title="importLabel" @click="onImportClick">
+        <ArrowDownTrayIcon :class="ui.toolbarIcon" />
+      </button>
+      <input
+        ref="importInput"
+        type="file"
+        accept=".json,application/json"
+        :class="ui.toolbarHiddenFileInput"
+        @change="onImportFileChange"
+      />
+
+      <div :class="ui.toolbarDivider" />
+
       <button type="button" :class="ui.toolbarIconButton" @click="toggle">
         <component :is="ThemeIcon" :class="ui.toolbarIcon" />
       </button>

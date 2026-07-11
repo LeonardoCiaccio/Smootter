@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { PencilIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import { ArrowUpTrayIcon, PencilIcon, TrashIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { useToast } from '../plugins/toast'
 import { deleteTool, setToolEnabled, type StoredTool } from '@/shared/toolsDb'
+import { exportTool } from '@/shared/toolsTransfer'
 
 const props = defineProps<{ tool: StoredTool }>()
 const emit = defineEmits<{ deleted: [id: string] }>()
@@ -11,6 +12,7 @@ const emit = defineEmits<{ deleted: [id: string] }>()
 const toast = useToast()
 
 const editLabel = chrome.i18n.getMessage('toolEdit')
+const exportLabel = chrome.i18n.getMessage('toolExport')
 const deleteLabel = chrome.i18n.getMessage('toolDelete')
 const deleteConfirmLabel = chrome.i18n.getMessage('toolDeleteConfirm')
 
@@ -76,6 +78,9 @@ async function onDeleteClick(): Promise<void> {
       >
         <PencilIcon :class="ui.toolCardIcon" />
       </RouterLink>
+      <button type="button" :class="ui.toolCardActionButton" :title="exportLabel" @click="exportTool(tool)">
+        <ArrowUpTrayIcon :class="ui.toolCardIcon" />
+      </button>
       <button
         type="button"
         :class="confirmingDelete ? ui.toolCardDeleteConfirm : ui.toolCardActionButton"

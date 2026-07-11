@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import ToolsEmptyState from './ToolsEmptyState.vue'
 import AddToolCard from './AddToolCard.vue'
 import ToolCard from './ToolCard.vue'
 import { getAllTools, type StoredTool } from '@/shared/toolsDb'
+import { toolsRefreshSignal } from '../composables/toolsRefresh'
 
 const tools = ref<StoredTool[]>([])
 const hasTools = computed(() => tools.value.length > 0)
@@ -31,6 +32,11 @@ const searchClearLabel = chrome.i18n.getMessage('toolsSearchClear')
 const noResultsText = chrome.i18n.getMessage('toolsNoResults')
 
 onMounted(async () => {
+  tools.value = await getAllTools()
+})
+
+// Imports happen from the toolbar (always mounted), outside this component.
+watch(toolsRefreshSignal, async () => {
   tools.value = await getAllTools()
 })
 

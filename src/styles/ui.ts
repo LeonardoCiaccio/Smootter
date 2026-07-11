@@ -36,6 +36,9 @@ export const ui = {
   toolbarActions: 'flex items-center gap-2 justify-self-end',
   toolbarIconButton:
     'flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100',
+  // Separates the export/import pair from the theme/options/close group.
+  toolbarDivider: 'mx-1 h-4 w-px flex-shrink-0 bg-gray-200 dark:bg-gray-800',
+  toolbarHiddenFileInput: 'hidden',
   toolbarCloseButton:
     'ml-1 flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100',
   toolbarIcon: 'h-4 w-4',
@@ -77,7 +80,7 @@ export const ui = {
   toolsList: 'grid w-full grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4',
   toolCard:
     'group relative flex h-32 w-full flex-col gap-1 rounded-tool border border-gray-200 p-4 text-left transition-colors hover:border-cyan-500 dark:border-gray-800 dark:hover:border-cyan-400',
-  toolCardTitle: 'truncate pr-14 text-sm font-semibold text-gray-900 dark:text-gray-100',
+  toolCardTitle: 'truncate pr-20 text-sm font-semibold text-gray-900 dark:text-gray-100',
   toolCardDescription: 'line-clamp-2 flex-1 text-xs text-gray-500 dark:text-gray-400',
   toolCardMetaRow: 'flex items-center justify-between gap-2',
   toolCardMeta: 'min-w-0 flex-1 truncate text-[11px] text-gray-400 dark:text-gray-500',

@@ -92,6 +92,7 @@
   "wizardCodeInvalid": { "message": "Erreur de syntaxe" },
   "wizardToolSaved": { "message": "Outil enregistré" },
   "toolEdit": { "message": "Modifier" },
+  "toolExport": { "message": "Exporter" },
   "toolDelete": { "message": "Supprimer" },
   "toolDeleteConfirm": { "message": "Cliquez à nouveau pour supprimer" },
   "toolDeleted": { "message": "Outil supprimé" },
@@ -127,5 +128,12 @@
   "toolsSearchClear": { "message": "Effacer la recherche" },
   "toolsNoResults": { "message": "Aucun outil ne correspond à la recherche." },
   "creditsTitle": { "message": "Crédits" },
-  "creditsDescription": { "message": "Bibliothèques open source utilisées pour construire Pippo." }
+  "creditsDescription": { "message": "Bibliothèques open source utilisées pour construire Pippo." },
+  "toolbarExportAll": { "message": "Exporter tous les outils" },
+  "toolbarImport": { "message": "Importer des outils" },
+  "toolsImportSuccess": {
+    "message": "$COUNT$ outil(s) importé(s)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "toolsImportError": { "message": "Impossible d'importer ce fichier — vérifiez qu'il s'agit d'un export valide." }
 }
