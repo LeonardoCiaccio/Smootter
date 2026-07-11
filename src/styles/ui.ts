@@ -113,7 +113,9 @@ export const ui = {
   // Options: no sidebar (too few settings), sections centered in the page, fields left-aligned within.
   optionsContent: 'flex flex-1 flex-row flex-wrap items-stretch justify-center gap-8 overflow-y-auto px-8 py-6',
   // Vertical divider between option sections (row layout) — stretches to the taller section.
-  optionsDivider: 'w-px flex-shrink-0 self-stretch bg-gray-200 dark:bg-gray-800',
+  // Hidden below `lg`: that's roughly where the two max-w-md sections stop fitting
+  // side by side and flex-wrap stacks them — a divider between stacked boxes reads wrong.
+  optionsDivider: 'hidden w-px flex-shrink-0 self-stretch bg-gray-200 dark:bg-gray-800 lg:block',
   optionsSection: 'mt-12 flex w-full max-w-md flex-col gap-4 text-left',
   optionsSectionTitle: 'text-base font-semibold text-gray-900 dark:text-gray-100',
   optionsSectionDescription: 'text-xs text-gray-500 dark:text-gray-400',
