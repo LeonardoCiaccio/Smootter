@@ -128,7 +128,7 @@ export const ui = {
   wizardWrapperWidthWide: 'max-w-none',
   wizardHeader: 'flex flex-col gap-1 pb-1',
   wizardTitle:
-    'font-heading bg-gradient-to-r from-cyan-500 to-emerald-400 bg-clip-text pb-1 text-3xl font-extrabold tracking-tight text-transparent',
+    'font-heading bg-gradient-to-r from-violet-600 to-cyan-400 bg-clip-text pb-1 text-3xl font-extrabold tracking-tight text-transparent',
   wizardSubtitle: 'font-subheading text-base text-gray-600 dark:text-gray-400',
   wizardBody:
     'flex w-full min-h-0 flex-1 flex-col justify-center overflow-y-auto pr-1 [scrollbar-gutter:stable]',

@@ -8,6 +8,7 @@
 import { registerChannel } from './channel'
 import { registerUserScriptBridge } from './userScripts'
 import { registerToolsEngine } from './toolsEngine'
+import { seedDefaultTools } from './defaultTools'
 
 /** Inject environment into the given tab. */
 function injectEnvironment(tabId: number): void {
@@ -26,6 +27,6 @@ chrome.action.onClicked.addListener((tab) => {
   injectEnvironment(tab.id)
 })
 
-chrome.runtime.onInstalled.addListener(() => {
-  // --> TODO: add a welcome page, or open the options page, or something
+chrome.runtime.onInstalled.addListener((details) => {
+  if (details.reason === 'install') void seedDefaultTools()
 })
