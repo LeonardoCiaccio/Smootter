@@ -88,10 +88,11 @@ function normalizeTool(raw: ImportCandidate): StoredTool {
   }
 }
 
-/** Parses a file's content as either a single tool or a collection of tools. */
-export async function parseToolsFile(file: File): Promise<StoredTool[]> {
-  const text = await file.text()
-
+/**
+ * Parses raw JSON text as either a single tool or a collection of tools — the core of
+ * import, shared by the file-picker/drag-and-drop import path and the default-tools seed.
+ */
+export function parseToolsText(text: string): StoredTool[] {
   let parsed: unknown
   try {
     parsed = JSON.parse(text)
@@ -104,6 +105,11 @@ export async function parseToolsFile(file: File): Promise<StoredTool[]> {
   if (valid.length === 0) throw new Error('invalidShape')
 
   return valid.map(normalizeTool)
+}
+
+/** Parses a file's content as either a single tool or a collection of tools. */
+export async function parseToolsFile(file: File): Promise<StoredTool[]> {
+  return parseToolsText(await file.text())
 }
 
 export interface ImportSummary {
