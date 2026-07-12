@@ -14,13 +14,14 @@ import {
   saveImportedBookmarklets,
   type BookmarkletImportCandidate,
 } from './bookmarkletsTransfer'
-import { getPreference, setPreference } from './preferences'
+import { getPreference, setPreference, type NetworkConfig } from './preferences'
 import { isLocalLlmEndpoint } from './llmEndpoint'
 
 interface Bundle {
   tools?: unknown
   bookmarklets?: unknown
   llmConfig?: unknown
+  networkConfig?: unknown
 }
 
 function isBundle(value: unknown): value is Bundle {
@@ -38,7 +39,19 @@ export interface ExportedLlmConfig {
 function isExportedLlmConfig(value: unknown): value is ExportedLlmConfig {
   if (typeof value !== 'object' || value === null) return false
   const record = value as Record<string, unknown>
-  return typeof record.endpoint === 'string' && typeof record.model === 'string' && typeof record.maxOutputTokens === 'number'
+  return (
+    typeof record.endpoint === 'string' &&
+    typeof record.model === 'string' &&
+    typeof record.maxOutputTokens === 'number' &&
+    Number.isInteger(record.maxOutputTokens) &&
+    record.maxOutputTokens >= 1
+  )
+}
+
+function isNetworkConfig(value: unknown): value is NetworkConfig {
+  if (typeof value !== 'object' || value === null) return false
+  const record = value as Record<string, unknown>
+  return typeof record.minSizeBytes === 'number' && Number.isInteger(record.minSizeBytes) && record.minSizeBytes >= 0
 }
 
 /**
@@ -46,11 +59,12 @@ function isExportedLlmConfig(value: unknown): value is ExportedLlmConfig {
  * that stays local to this device/browser and is never written to the exported file.
  */
 export async function exportEverything(): Promise<void> {
-  const [tools, bookmarklets, categories, llmConfig] = await Promise.all([
+  const [tools, bookmarklets, categories, llmConfig, networkConfig] = await Promise.all([
     getAllTools(),
     getAllBookmarklets(),
     getAllCategories(),
     getPreference('llmConfig'),
+    getPreference('networkConfig'),
   ])
 
   const exportedLlmConfig: ExportedLlmConfig | undefined = llmConfig
@@ -61,6 +75,7 @@ export async function exportEverything(): Promise<void> {
     tools: tools.map(toolToExportable),
     bookmarklets: bookmarklets.map((bookmarklet) => bookmarkletToExportable(bookmarklet, categories)),
     llmConfig: exportedLlmConfig,
+    networkConfig,
   })
 }
 
@@ -68,6 +83,7 @@ export interface ParsedImport {
   tools: StoredTool[]
   bookmarkletCandidates: BookmarkletImportCandidate[]
   llmConfig: ExportedLlmConfig | null
+  networkConfig: NetworkConfig | null
   /** Files (or bundle sections) that failed to parse — reported once, upfront. */
   failed: number
 }
@@ -77,6 +93,7 @@ export async function parseImportFiles(files: File[]): Promise<ParsedImport> {
   const tools: StoredTool[] = []
   const bookmarkletCandidates: BookmarkletImportCandidate[] = []
   let llmConfig: ExportedLlmConfig | null = null
+  let networkConfig: NetworkConfig | null = null
   let failed = 0
 
   for (const file of files) {
@@ -101,6 +118,7 @@ export async function parseImportFiles(files: File[]): Promise<ParsedImport> {
           }
         }
         if (isExportedLlmConfig(parsed.llmConfig)) llmConfig = parsed.llmConfig
+        if (isNetworkConfig(parsed.networkConfig)) networkConfig = parsed.networkConfig
         continue
       }
 
@@ -111,18 +129,19 @@ export async function parseImportFiles(files: File[]): Promise<ParsedImport> {
     }
   }
 
-  return { tools, bookmarkletCandidates, llmConfig, failed }
+  return { tools, bookmarkletCandidates, llmConfig, networkConfig, failed }
 }
 
 /** A file that's just tools — the common case — skips the confirmation step entirely. */
 export function needsImportConfirmation(parsed: ParsedImport): boolean {
-  return parsed.bookmarkletCandidates.length > 0 || parsed.llmConfig !== null
+  return parsed.bookmarkletCandidates.length > 0 || parsed.llmConfig !== null || parsed.networkConfig !== null
 }
 
 export interface ImportSelection {
   tools: boolean
   bookmarklets: boolean
   llmConfig: boolean
+  networkConfig: boolean
 }
 
 export interface ImportSummary {
@@ -132,6 +151,7 @@ export interface ImportSummary {
   // True when the imported endpoint isn't a local runtime (Ollama, LM Studio, ...) — those
   // need an API key, which imports never carry, so the caller should prompt for one.
   llmConfigNeedsApiKey: boolean
+  networkConfigImported: boolean
 }
 
 /** Saves whichever sections `selection` keeps, from an already-parsed import. */
@@ -140,6 +160,7 @@ export async function applyParsedImport(parsed: ParsedImport, selection: ImportS
   let bookmarkletsImported = 0
   let llmConfigImported = false
   let llmConfigNeedsApiKey = false
+  let networkConfigImported = false
 
   if (selection.tools && parsed.tools.length > 0) {
     for (const tool of parsed.tools) await saveTool(tool)
@@ -159,5 +180,10 @@ export async function applyParsedImport(parsed: ParsedImport, selection: ImportS
     if (!isLocalLlmEndpoint(parsed.llmConfig.endpoint)) llmConfigNeedsApiKey = true
   }
 
-  return { toolsImported, bookmarkletsImported, llmConfigImported, llmConfigNeedsApiKey }
+  if (selection.networkConfig && parsed.networkConfig) {
+    await setPreference('networkConfig', parsed.networkConfig)
+    networkConfigImported = true
+  }
+
+  return { toolsImported, bookmarkletsImported, llmConfigImported, llmConfigNeedsApiKey, networkConfigImported }
 }

@@ -24,7 +24,7 @@
     "service_worker": "service-worker.js",
     "type": "module"
   },
-  "permissions": ["scripting", "activeTab", "storage", "userScripts", "webNavigation"],
+  "permissions": ["scripting", "activeTab", "storage", "userScripts", "webNavigation", "webRequest", "downloads"],
   "host_permissions": ["<all_urls>"],
   "web_accessible_resources": [
     {

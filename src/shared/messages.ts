@@ -210,6 +210,48 @@ export interface SearchBookmarkletsResult {
   detail?: string
 }
 
+/**
+ * The fixed fallback bucket for a response that matches none of the user's mime category
+ * rules (see MimeCategoryRule in shared/preferences.ts) — always present in the sidebar,
+ * never one of the user-defined names.
+ */
+export const NETWORK_OTHER_CATEGORY = 'other'
+
+/**
+ * A single captured network response, read-only metadata from headers only (never the body).
+ * `category` is the name of the mime category rule it matched at capture time (or
+ * NETWORK_OTHER_CATEGORY) — a plain string since categories are fully user-defined.
+ */
+export interface NetworkEntry {
+  id: string
+  url: string
+  method: string
+  status: number
+  contentType: string
+  category: string
+  size: number
+  timestamp: number
+}
+
+/** Sent by NetworkView on mount: asks for everything captured so far for the tab this iframe is embedded in. */
+export interface GetNetworkLogRequest {
+  type: 'getNetworkLog'
+}
+
+/** Reply to getNetworkLog. `tabId` lets the view recognize which live networkEntryCaptured broadcasts are its own. */
+export interface NetworkLogResult {
+  type: 'networkLogResult'
+  tabId: number
+  entries: NetworkEntry[]
+}
+
+/** Broadcast the moment a new response is captured for any tab — NetworkView filters by tabId. */
+export interface NetworkEntryCapturedBroadcast {
+  type: 'networkEntryCaptured'
+  tabId: number
+  entry: NetworkEntry
+}
+
 /** Messages sent from the UI to the background. */
 export type ChannelRequest =
   | PingRequest
@@ -224,6 +266,7 @@ export type ChannelRequest =
   | GenerateCodeRequest
   | GenerateBookmarkletRequest
   | SearchBookmarkletsRequest
+  | GetNetworkLogRequest
 
 /** Messages sent from the background to the UI. */
 export type ChannelResponse =
@@ -238,3 +281,5 @@ export type ChannelResponse =
   | GenerateBookmarkletResult
   | GenerateCodeResult
   | SearchBookmarkletsResult
+  | NetworkLogResult
+  | NetworkEntryCapturedBroadcast

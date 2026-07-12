@@ -16,6 +16,7 @@
     "message": "Aggiungi un tool"
   },
   "bookmarklets": { "message": "Bookmarklet" },
+  "network": { "message": "Rete" },
   "home": {
     "message": "Home"
   },
@@ -115,6 +116,10 @@
   "llmConfigResetButton": { "message": "Reimposta" },
   "llmConfigResetConfirm": { "message": "Clicca di nuovo per reimpostare" },
   "llmGroupTitle": { "message": "LLM" },
+  "networkGroupTitle": { "message": "Rete" },
+  "networkSettingsDescription": { "message": "Filtra cosa registrare durante l'ispezione della rete." },
+  "networkMinSizeLabel": { "message": "Dimensione minima file (byte)" },
+  "networkConfigSaved": { "message": "Impostazioni rete salvate" },
   "toolsSearchPlaceholder": { "message": "Cerca tool..." },
   "toolsSearchClear": { "message": "Cancella ricerca" },
   "toolsNoResults": { "message": "Nessun tool corrisponde alla ricerca." },
@@ -160,8 +165,21 @@
     "placeholders": { "count": { "content": "$1" } }
   },
   "importConfirmLlmConfig": { "message": "Configurazione AI (endpoint, modello — senza la key)" },
+  "importConfirmNetworkConfig": { "message": "Impostazioni rete (soglia byte minima)" },
   "importConfirmButton": { "message": "Importa" },
   "importConfirmCancel": { "message": "Annulla" },
+  "networkCategoriesTitle": { "message": "Categorie" },
+  "networkCategoryAll": { "message": "Tutti" },
+  "networkCategoryOther": { "message": "Altro" },
+  "networkSearchPlaceholder": { "message": "Cerca per url, tipo di file, mimetype..." },
+  "networkSearchClear": { "message": "Cancella ricerca" },
+  "networkEmpty": { "message": "Nessuna richiesta registrata per questa pagina." },
+  "networkLoading": { "message": "Caricamento..." },
+  "networkCopyUrl": { "message": "Copia URL" },
+  "networkOpenInNewTab": { "message": "Apri in una nuova scheda" },
+  "networkUrlCopied": { "message": "URL copiato" },
+  "networkDownload": { "message": "Scarica file" },
+  "networkDownloadError": { "message": "Impossibile scaricare il file." },
   "llmApiKeyReminderTitle": { "message": "Serve una API key" },
   "llmApiKeyReminderMessage": {
     "message": "Hai importato una configurazione AI che non è un runtime locale (come Ollama) — questo provider richiede una API key. Vai nelle Opzioni per inserirla."

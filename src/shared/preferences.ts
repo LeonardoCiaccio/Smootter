@@ -6,6 +6,11 @@
 
 const PREFIX = chrome.runtime.getManifest().short_name + '_pref_'
 
+/** The chrome.storage.local key a given preference is stored under — for reading raw chrome.storage.onChanged events. */
+export function preferenceStorageKey<K extends keyof Preferences>(key: K): string {
+  return PREFIX + key
+}
+
 /**
  * Open provider: the user supplies their own OpenAI-compatible endpoint and
  * model. The key is optional — local runtimes (Ollama, LM Studio, ...)
@@ -21,9 +26,24 @@ export interface LlmConfig {
   maxOutputTokens: number
 }
 
+/**
+ * Network inspector capture filter, user-tunable from Options: `minSizeBytes` is the size
+ * floor below which a file/media response isn't captured at all (data calls — json/xml/html/
+ * text — are exempt, see networkInspector.ts). Sidebar categories are a fixed, system-defined
+ * set (see shared/networkCategories.ts) — not part of this config.
+ */
+export interface NetworkConfig {
+  minSizeBytes: number
+}
+
+export const DEFAULT_NETWORK_CONFIG: NetworkConfig = {
+  minSizeBytes: 100,
+}
+
 export interface Preferences {
   theme: 'light' | 'dark'
   llmConfig: LlmConfig
+  networkConfig: NetworkConfig
 }
 
 /** Read a stored preference, or undefined if not set. */

@@ -161,7 +161,8 @@ export const ui = {
   bookmarkletsSidebarItemActive: 'bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300',
   bookmarkletsSidebarItemText: 'truncate',
   bookmarkletsSidebarItemFavicon: 'h-3.5 w-3.5 flex-shrink-0',
-  bookmarkletsSidebarItemFaviconFallback: 'h-3.5 w-3.5 flex-shrink-0 text-gray-400 dark:text-gray-500',
+  bookmarkletsSidebarItemFaviconFallback:
+    'h-3.5 w-3.5 flex-shrink-0 text-gray-400 dark:text-gray-500',
   bookmarkletsMain: 'flex flex-1 overflow-y-auto',
   // Right sidebar: every tag across all bookmarklets, deletable (strips it everywhere it's used).
   bookmarkletsTagsSidebar:
@@ -178,7 +179,8 @@ export const ui = {
   bookmarkletsTagPillDeleteConfirm:
     'flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded-full text-rose-500 transition-colors hover:bg-rose-50 dark:hover:bg-rose-950',
   // Detailed results when a tag is clicked: a sorted, scannable list of every matching bookmarklet.
-  bookmarkletsTagResultsHeader: 'mb-6 font-heading text-xl font-bold text-gray-900 dark:text-gray-100',
+  bookmarkletsTagResultsHeader:
+    'mb-6 font-heading text-xl font-bold text-gray-900 dark:text-gray-100',
   bookmarkletsTagResultsList: 'flex flex-col gap-3',
   bookmarkletsTagResultRecord:
     'flex cursor-pointer flex-col gap-1 rounded-tool border border-gray-200 p-4 text-left transition-colors hover:border-cyan-500 dark:border-gray-800 dark:hover:border-cyan-400',
@@ -227,16 +229,19 @@ export const ui = {
     'text-cyan-500 transition-colors hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-200',
   tagsInput:
     'min-w-[6rem] flex-1 border-none bg-transparent p-0.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-0 dark:text-gray-100',
-  // Options: no sidebar (too few settings), sections centered in the page, fields left-aligned within.
-  optionsContent:
-    'flex flex-1 flex-row flex-wrap items-stretch justify-center gap-8 overflow-y-auto px-8 py-6',
-  // Vertical divider between option sections (row layout) — stretches to the taller section.
-  // Hidden below `lg`: that's roughly where the two max-w-md sections stop fitting
-  // side by side and flex-wrap stacks them — a divider between stacked boxes reads wrong.
-  optionsDivider: 'hidden w-px flex-shrink-0 self-stretch bg-gray-200 dark:bg-gray-800 lg:block',
-  optionsSection: 'mt-12 flex w-full max-w-md flex-col gap-4 text-left',
+  // Options: same two-pane shape as Bookmarklets/Network — sidebar picks one group,
+  // isolating it in the main area instead of stacking every section at once.
+  optionsLayout: 'flex min-h-0 flex-1',
+  optionsSidebar:
+    'flex w-56 flex-shrink-0 flex-col gap-1 overflow-y-auto border-r border-gray-200 px-4 pb-6 pt-10 dark:border-gray-800',
+  optionsSidebarItem:
+    'flex items-center gap-2 rounded-tool px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800',
+  optionsSidebarItemActive: 'bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300',
+  optionsSidebarIcon: 'h-4 w-4 flex-shrink-0',
+  optionsMain: 'flex flex-1 flex-col items-center overflow-y-auto px-8 py-10',
+  optionsSection: 'flex w-full max-w-md flex-col gap-4 text-left',
   optionsSectionTitle: 'text-base font-semibold text-gray-900 dark:text-gray-100',
-  optionsSectionDescription: 'text-xs text-gray-500 dark:text-gray-400',
+  optionsSectionDescription: 'text-xs text-gray-500 dark:text-gray-400 pb-2',
   optionsSectionActions: 'flex items-center justify-between gap-3',
   creditsList: 'flex flex-col divide-y divide-gray-100 dark:divide-gray-800',
   creditsItem: 'flex items-center justify-between py-2 text-sm',
@@ -305,20 +310,17 @@ export const ui = {
   wizardOptionText: 'flex flex-col gap-0.5',
   wizardOptionTitle: 'text-sm font-semibold text-gray-900 dark:text-gray-100',
   wizardOptionDescription: 'text-xs text-gray-500 dark:text-gray-400',
-  // Toast notifications: stacked, top-centered, one variant per type
+  // Toast notifications: stacked bottom-right, one neutral card style — the variant colors
+  // only the icon (plus a thin left accent), not the whole card. Calmer than a fully-tinted box.
   toastContainer:
-    'pointer-events-none fixed inset-x-0 top-4 z-50 flex flex-col items-center gap-2 px-4',
+    'pointer-events-none fixed inset-x-0 bottom-4 z-50 flex flex-col items-end gap-2 px-4 sm:inset-x-auto sm:right-4',
   toast:
-    'pointer-events-auto flex max-w-sm items-start gap-2 rounded-xl border px-4 py-3 text-sm shadow-lg',
+    'pointer-events-auto flex max-w-sm items-start gap-2 rounded-xl border border-l-4 border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200',
   toastIcon: 'h-5 w-5 flex-shrink-0',
-  toastInfo:
-    'border-sky-200 bg-sky-50 text-sky-800 dark:border-sky-800 dark:bg-sky-950 dark:text-sky-200',
-  toastSuccess:
-    'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-200',
-  toastWarning:
-    'border-violet-200 bg-violet-50 text-violet-800 dark:border-violet-800 dark:bg-violet-950 dark:text-violet-200',
-  toastError:
-    'border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-800 dark:bg-rose-950 dark:text-rose-200',
+  toastInfo: 'border-l-sky-400 dark:border-l-sky-500 [&>svg]:text-sky-500 dark:[&>svg]:text-sky-400',
+  toastSuccess: 'border-l-emerald-400 dark:border-l-emerald-500 [&>svg]:text-emerald-500 dark:[&>svg]:text-emerald-400',
+  toastWarning: 'border-l-amber-400 dark:border-l-amber-500 [&>svg]:text-amber-500 dark:[&>svg]:text-amber-400',
+  toastError: 'border-l-rose-400 dark:border-l-rose-500 [&>svg]:text-rose-500 dark:[&>svg]:text-rose-400',
   // Capability banner (e.g. "Allow User Scripts" not enabled yet)
   banner:
     'mx-6 mt-8 flex items-start gap-3 rounded-2xl border border-gray-200 bg-gray-50 p-4 text-left dark:border-gray-800 dark:bg-gray-800/50',
@@ -386,9 +388,51 @@ export const ui = {
   modalActions: 'flex items-center justify-end gap-3',
   modalBodyText: 'text-sm text-gray-600 dark:text-gray-400',
   importConfirmOption: 'flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300',
-  importConfirmCheckbox: 'h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500 dark:border-gray-700 dark:bg-gray-800',
+  importConfirmCheckbox:
+    'h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500 dark:border-gray-700 dark:bg-gray-800',
   modalStatusOk: 'break-words text-sm font-medium text-emerald-600 dark:text-emerald-400',
   modalStatusError: 'break-words text-sm font-medium text-rose-600 dark:text-rose-400',
+  // Network inspector: left sidebar (fixed categories) + center scrollable log, same
+  // two-pane shape as Bookmarklets but with its own tokens (independent, may diverge).
+  networkLayout: 'flex min-h-0 flex-1',
+  networkSidebar:
+    'flex w-56 flex-shrink-0 flex-col gap-1 overflow-y-auto border-r border-gray-200 px-4 pb-6 pt-10 dark:border-gray-800',
+  networkSidebarTitle:
+    'mb-2 text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500',
+  networkCategoryButton:
+    'flex items-center gap-2 rounded-tool px-2 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800',
+  networkCategoryButtonActive: 'bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300',
+  networkCategoryIcon: 'h-4 w-4 flex-shrink-0',
+  networkCategoryLabel: 'flex-1 truncate',
+  networkCategoryCount: 'text-xs text-gray-400 dark:text-gray-500',
+  networkMain: 'flex flex-1 flex-col overflow-y-auto px-6 pb-10 pt-10',
+  networkSearchRow: 'mb-4 flex-shrink-0',
+  networkSearchInputWrapper: 'relative min-w-0',
+  networkSearchInputIcon:
+    'pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-gray-500',
+  networkSearchInput:
+    'w-full rounded-full border border-gray-300 bg-white py-2 pl-9 pr-8 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',
+  networkEmpty:
+    'flex flex-1 flex-col items-center justify-center gap-3 text-center text-sm text-gray-400 dark:text-gray-500',
+  networkEmptyIcon: 'h-10 w-10 text-gray-300 dark:text-gray-700',
+  networkList: 'flex flex-col gap-2',
+  networkRow:
+    'group flex items-center gap-3 rounded-tool border border-gray-200 p-3 text-left transition-colors hover:border-cyan-500 dark:border-gray-800 dark:hover:border-cyan-400',
+  networkRowThumb:
+    'flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-tool border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800',
+  networkRowThumbImage: 'h-full w-full object-cover',
+  networkRowThumbIcon: 'h-5 w-5 text-gray-400 dark:text-gray-500',
+  networkRowBody: 'min-w-0 flex-1',
+  networkRowUrl: 'truncate text-sm font-medium text-gray-900 dark:text-gray-100',
+  networkRowMetaRow: 'flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500',
+  networkRowMethod: 'font-semibold text-gray-500 dark:text-gray-400',
+  networkRowStatusOk: 'font-semibold text-emerald-600 dark:text-emerald-400',
+  networkRowStatusRedirect: 'font-semibold text-sky-600 dark:text-sky-400',
+  networkRowStatusError: 'font-semibold text-rose-600 dark:text-rose-400',
+  networkRowActions: 'flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100',
+  networkRowActionButton:
+    'flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-tool text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200',
+  networkRowActionIcon: 'h-4 w-4',
 } as const
 
 export type UiVariant = keyof typeof ui

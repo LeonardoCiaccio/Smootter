@@ -16,6 +16,7 @@
     "message": "Tool hinzufügen"
   },
   "bookmarklets": { "message": "Bookmarklet" },
+  "network": { "message": "Netzwerk" },
   "home": {
     "message": "Start"
   },
@@ -123,6 +124,10 @@
   "llmConfigResetButton": { "message": "Zurücksetzen" },
   "llmConfigResetConfirm": { "message": "Erneut klicken zum Zurücksetzen" },
   "llmGroupTitle": { "message": "LLM" },
+  "networkGroupTitle": { "message": "Netzwerk" },
+  "networkSettingsDescription": { "message": "Filtere, was bei der Netzwerkuntersuchung erfasst wird." },
+  "networkMinSizeLabel": { "message": "Mindestdateigröße (Byte)" },
+  "networkConfigSaved": { "message": "Netzwerkeinstellungen gespeichert" },
   "toolsSearchPlaceholder": { "message": "Tools durchsuchen..." },
   "toolsSearchClear": { "message": "Suche löschen" },
   "toolsNoResults": { "message": "Keine Tools entsprechen der Suche." },
@@ -168,8 +173,21 @@
     "placeholders": { "count": { "content": "$1" } }
   },
   "importConfirmLlmConfig": { "message": "KI-Konfiguration (Endpoint, Modell — ohne Key)" },
+  "importConfirmNetworkConfig": { "message": "Netzwerkeinstellungen (Mindestgröße)" },
   "importConfirmButton": { "message": "Importieren" },
   "importConfirmCancel": { "message": "Abbrechen" },
+  "networkCategoriesTitle": { "message": "Kategorien" },
+  "networkCategoryAll": { "message": "Alle" },
+  "networkCategoryOther": { "message": "Andere" },
+  "networkSearchPlaceholder": { "message": "Suche nach URL, Dateityp, Mimetype..." },
+  "networkSearchClear": { "message": "Suche löschen" },
+  "networkEmpty": { "message": "Für diese Seite wurden noch keine Anfragen erfasst." },
+  "networkLoading": { "message": "Wird geladen..." },
+  "networkCopyUrl": { "message": "URL kopieren" },
+  "networkOpenInNewTab": { "message": "In neuem Tab öffnen" },
+  "networkUrlCopied": { "message": "URL kopiert" },
+  "networkDownload": { "message": "Datei herunterladen" },
+  "networkDownloadError": { "message": "Datei konnte nicht heruntergeladen werden." },
   "llmApiKeyReminderTitle": { "message": "Ein API-Schlüssel wird benötigt" },
   "llmApiKeyReminderMessage": {
     "message": "Du hast eine KI-Konfiguration importiert, die keine lokale Laufzeitumgebung ist (wie Ollama) — dieser Anbieter benötigt einen API-Schlüssel. Gehe zu den Optionen, um ihn einzugeben."

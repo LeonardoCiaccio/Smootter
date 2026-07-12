@@ -13,5 +13,6 @@ export const router = createRouter({
     { path: '/builder', component: () => import('../views/BuilderView.vue') },
     { path: '/options', component: () => import('../views/OptionsView.vue') },
     { path: '/bookmarklets', component: () => import('../views/BookmarkletsView.vue') },
+    { path: '/network', component: () => import('../views/NetworkView.vue') },
   ],
 })

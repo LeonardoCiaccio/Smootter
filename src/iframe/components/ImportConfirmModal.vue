@@ -7,12 +7,14 @@ import { cancelImport, confirmImport, pendingImport } from '../composables/impor
 const includeTools = ref(true)
 const includeBookmarklets = ref(true)
 const includeLlmConfig = ref(true)
+const includeNetworkConfig = ref(true)
 
 // Re-arm all checkboxes (checked) each time a new pending import shows up.
 watch(pendingImport, () => {
   includeTools.value = true
   includeBookmarklets.value = true
   includeLlmConfig.value = true
+  includeNetworkConfig.value = true
 })
 
 const title = chrome.i18n.getMessage('importConfirmTitle')
@@ -23,11 +25,17 @@ const bookmarkletsLabel = computed(() =>
   chrome.i18n.getMessage('importConfirmBookmarklets', [String(pendingImport.value?.bookmarkletCandidates.length ?? 0)]),
 )
 const llmConfigLabel = chrome.i18n.getMessage('importConfirmLlmConfig')
+const networkConfigLabel = chrome.i18n.getMessage('importConfirmNetworkConfig')
 const confirmLabel = chrome.i18n.getMessage('importConfirmButton')
 const cancelLabel = chrome.i18n.getMessage('importConfirmCancel')
 
 function onConfirm(): void {
-  confirmImport({ tools: includeTools.value, bookmarklets: includeBookmarklets.value, llmConfig: includeLlmConfig.value })
+  confirmImport({
+    tools: includeTools.value,
+    bookmarklets: includeBookmarklets.value,
+    llmConfig: includeLlmConfig.value,
+    networkConfig: includeNetworkConfig.value,
+  })
 }
 </script>
 
@@ -53,6 +61,10 @@ function onConfirm(): void {
         <label v-if="pendingImport.llmConfig" :class="ui.importConfirmOption">
           <input v-model="includeLlmConfig" type="checkbox" :class="ui.importConfirmCheckbox" />
           <span>{{ llmConfigLabel }}</span>
+        </label>
+        <label v-if="pendingImport.networkConfig" :class="ui.importConfirmOption">
+          <input v-model="includeNetworkConfig" type="checkbox" :class="ui.importConfirmCheckbox" />
+          <span>{{ networkConfigLabel }}</span>
         </label>
 
         <div :class="ui.modalActions">

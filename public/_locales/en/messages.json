@@ -16,6 +16,7 @@
     "message": "Add a tool"
   },
   "bookmarklets": { "message": "Bookmarklet" },
+  "network": { "message": "Network" },
   "home": {
     "message": "Home"
   },
@@ -117,6 +118,10 @@
   "llmConfigResetButton": { "message": "Reset" },
   "llmConfigResetConfirm": { "message": "Click again to reset" },
   "llmGroupTitle": { "message": "LLM" },
+  "networkGroupTitle": { "message": "Network" },
+  "networkSettingsDescription": { "message": "Filter what gets captured while inspecting the network." },
+  "networkMinSizeLabel": { "message": "Minimum file size (bytes)" },
+  "networkConfigSaved": { "message": "Network settings saved" },
   "toolsSearchPlaceholder": { "message": "Search tools..." },
   "toolsSearchClear": { "message": "Clear search" },
   "toolsNoResults": { "message": "No tools match your search." },
@@ -162,8 +167,21 @@
     "placeholders": { "count": { "content": "$1" } }
   },
   "importConfirmLlmConfig": { "message": "AI configuration (endpoint, model — no key)" },
+  "importConfirmNetworkConfig": { "message": "Network settings (minimum size floor)" },
   "importConfirmButton": { "message": "Import" },
   "importConfirmCancel": { "message": "Cancel" },
+  "networkCategoriesTitle": { "message": "Categories" },
+  "networkCategoryAll": { "message": "All" },
+  "networkCategoryOther": { "message": "Other" },
+  "networkSearchPlaceholder": { "message": "Search by url, file type, mimetype..." },
+  "networkSearchClear": { "message": "Clear search" },
+  "networkEmpty": { "message": "No requests captured for this page yet." },
+  "networkLoading": { "message": "Loading..." },
+  "networkCopyUrl": { "message": "Copy URL" },
+  "networkOpenInNewTab": { "message": "Open in a new tab" },
+  "networkUrlCopied": { "message": "URL copied" },
+  "networkDownload": { "message": "Download file" },
+  "networkDownloadError": { "message": "Couldn't download the file." },
   "llmApiKeyReminderTitle": { "message": "An API key is needed" },
   "llmApiKeyReminderMessage": {
     "message": "You imported an AI configuration that isn't a local runtime (like Ollama) — this provider needs an API key. Go to Options to enter it."
