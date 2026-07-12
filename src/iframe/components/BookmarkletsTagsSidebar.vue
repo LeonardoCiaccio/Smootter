@@ -41,7 +41,7 @@ function onDeleteClick(tag: string): void {
         </button>
         <button
           type="button"
-          :class="confirmingTag === tag ? ui.toolCardDeleteConfirm : ui.toolCardActionButton"
+          :class="[confirmingTag === tag ? ui.toolCardDeleteConfirm : ui.toolCardActionButton, ui.bookmarkletsRowDelete]"
           :title="confirmingTag === tag ? deleteConfirmLabel : deleteLabel"
           @click="onDeleteClick(tag)"
         >

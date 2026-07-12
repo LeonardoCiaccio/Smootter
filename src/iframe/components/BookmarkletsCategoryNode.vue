@@ -87,7 +87,7 @@ function onDeleteCategoryClick(): void {
       <button
         v-if="node.category && !isUncategorized"
         type="button"
-        :class="confirmingCategory ? ui.toolCardDeleteConfirm : ui.toolCardActionButton"
+        :class="[confirmingCategory ? ui.toolCardDeleteConfirm : ui.toolCardActionButton, ui.bookmarkletsRowDelete]"
         :title="confirmingCategory ? categoryDeleteConfirmLabel : deleteLabel"
         @click.stop="onDeleteCategoryClick"
       >
@@ -132,7 +132,7 @@ function onDeleteCategoryClick(): void {
         </button>
         <button
           type="button"
-          :class="confirmingId === bookmarklet.id ? ui.toolCardDeleteConfirm : ui.toolCardActionButton"
+          :class="[confirmingId === bookmarklet.id ? ui.toolCardDeleteConfirm : ui.toolCardActionButton, ui.bookmarkletsRowDelete]"
           :title="confirmingId === bookmarklet.id ? deleteConfirmLabel : deleteLabel"
           @click.stop="onDeleteClick(bookmarklet.id)"
         >

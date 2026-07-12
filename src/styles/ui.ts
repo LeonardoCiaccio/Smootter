@@ -149,6 +149,8 @@ export const ui = {
   bookmarkletsCategoryIcon: 'h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-400',
   bookmarkletsCategoryName: 'truncate text-sm font-semibold text-gray-900 dark:text-gray-100',
   bookmarkletsSidebarRow: 'group flex items-center gap-1',
+  // Delete icons only earn their place on hover — always-on trash cans everywhere read as clutter.
+  bookmarkletsRowDelete: 'opacity-0 transition-opacity group-hover:opacity-100',
   bookmarkletsSidebarItem:
     'flex min-w-0 flex-1 items-center gap-1.5 rounded-tool py-1.5 pl-8 pr-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800',
   bookmarkletsSidebarItemActive: 'bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300',
@@ -160,7 +162,7 @@ export const ui = {
   bookmarkletsTagsSidebar:
     'flex w-56 flex-shrink-0 flex-col gap-4 overflow-y-auto border-l border-gray-200 px-4 pb-6 pt-10 dark:border-gray-800',
   bookmarkletsTagsList: 'flex flex-col gap-0.5',
-  bookmarkletsTagRow: 'flex items-center gap-1',
+  bookmarkletsTagRow: 'group flex items-center gap-1',
   bookmarkletsTagButton:
     'min-w-0 flex-1 truncate rounded-tool px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800',
   // Detailed results when a tag is clicked: a sorted, scannable list of every matching bookmarklet.
