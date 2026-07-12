@@ -166,10 +166,17 @@ export const ui = {
   // Right sidebar: every tag across all bookmarklets, deletable (strips it everywhere it's used).
   bookmarkletsTagsSidebar:
     'flex w-56 flex-shrink-0 flex-col gap-4 overflow-y-auto border-l border-gray-200 px-4 pb-6 pt-10 dark:border-gray-800',
-  bookmarkletsTagsList: 'flex flex-col gap-0.5',
-  bookmarkletsTagRow: 'group flex items-center gap-1',
-  bookmarkletsTagButton:
-    'min-w-0 flex-1 truncate rounded-tool px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800',
+  // Cloud layout: pills wrap and pack together instead of one per line.
+  bookmarkletsTagsList: 'flex flex-wrap gap-1.5',
+  bookmarkletsTagPill:
+    'group flex max-w-full items-center gap-1 rounded-full border border-gray-300 py-1 pl-2.5 pr-1 transition-colors hover:border-cyan-500 dark:border-gray-700 dark:hover:border-cyan-400',
+  bookmarkletsTagPillActive: 'border-cyan-500 bg-cyan-50 dark:border-cyan-400 dark:bg-cyan-950',
+  bookmarkletsTagPillLabel: 'truncate text-xs text-gray-700 dark:text-gray-300',
+  // The remove "x" only earns its place on hover — same reasoning as the row delete icons.
+  bookmarkletsTagPillDelete:
+    'flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded-full text-gray-400 opacity-0 transition-opacity hover:text-gray-700 group-hover:opacity-100 dark:hover:text-gray-200',
+  bookmarkletsTagPillDeleteConfirm:
+    'flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded-full text-rose-500 transition-colors hover:bg-rose-50 dark:hover:bg-rose-950',
   // Detailed results when a tag is clicked: a sorted, scannable list of every matching bookmarklet.
   bookmarkletsTagResultsHeader: 'mb-6 font-heading text-xl font-bold text-gray-900 dark:text-gray-100',
   bookmarkletsTagResultsList: 'flex flex-col gap-3',

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { TrashIcon } from '@heroicons/vue/24/outline'
+import { XMarkIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 
 const props = defineProps<{ tags: string[]; selectedTag: string | null }>()
@@ -30,22 +30,21 @@ function onDeleteClick(tag: string): void {
   <div :class="ui.bookmarkletsTagsSidebar">
     <span :class="ui.bookmarkletsSidebarTitle">{{ sidebarTitle }}</span>
     <div :class="ui.bookmarkletsTagsList">
-      <span v-for="tag in props.tags" :key="tag" :class="ui.bookmarkletsTagRow">
-        <button
-          type="button"
-          :class="[ui.bookmarkletsTagButton, tag === props.selectedTag && ui.bookmarkletsSidebarItemActive]"
-          :title="tag"
-          @click="emit('select', tag)"
-        >
+      <span
+        v-for="tag in props.tags"
+        :key="tag"
+        :class="[ui.bookmarkletsTagPill, tag === props.selectedTag && ui.bookmarkletsTagPillActive]"
+      >
+        <button type="button" :class="ui.bookmarkletsTagPillLabel" :title="tag" @click="emit('select', tag)">
           {{ tag }}
         </button>
         <button
           type="button"
-          :class="[confirmingTag === tag ? ui.toolCardDeleteConfirm : ui.toolCardActionButton, ui.bookmarkletsRowDelete]"
+          :class="confirmingTag === tag ? ui.bookmarkletsTagPillDeleteConfirm : ui.bookmarkletsTagPillDelete"
           :title="confirmingTag === tag ? deleteConfirmLabel : deleteLabel"
           @click="onDeleteClick(tag)"
         >
-          <TrashIcon :class="ui.toolCardIcon" />
+          <XMarkIcon class="h-3 w-3" />
         </button>
       </span>
     </div>
