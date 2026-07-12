@@ -172,8 +172,10 @@ export const ui = {
     'flex cursor-pointer flex-col gap-1 rounded-tool border border-gray-200 p-4 text-left transition-colors hover:border-cyan-500 dark:border-gray-800 dark:hover:border-cyan-400',
   bookmarkletsTagResultCategory:
     'w-fit rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:bg-gray-800 dark:text-gray-400',
-  bookmarkletsTagResultTitle: 'text-sm font-semibold text-gray-900 dark:text-gray-100',
+  bookmarkletsTagResultTitleRow: 'flex items-center gap-1.5',
+  bookmarkletsTagResultTitle: 'truncate text-sm font-semibold text-gray-900 dark:text-gray-100',
   bookmarkletsTagResultDescription: 'text-xs text-gray-500 dark:text-gray-400',
+  bookmarkletsTagResultTags: 'flex flex-wrap gap-1.5',
   bookmarkletDetailLink: 'block truncate text-sm text-cyan-600 hover:underline dark:text-cyan-400',
   inputReadonly:
     'w-full truncate rounded-tool border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-800/50 dark:text-gray-400',
