@@ -210,6 +210,43 @@ export interface SearchBookmarkletsResult {
   detail?: string
 }
 
+/**
+ * A single captured network response, read-only metadata from headers only
+ * (never the body). `category` is the coarse bucket NetworkView's sidebar
+ * filters on.
+ */
+export type NetworkEntryCategory = 'media' | 'document' | 'other'
+
+export interface NetworkEntry {
+  id: string
+  url: string
+  method: string
+  status: number
+  contentType: string
+  category: NetworkEntryCategory
+  size: number
+  timestamp: number
+}
+
+/** Sent by NetworkView on mount: asks for everything captured so far for the tab this iframe is embedded in. */
+export interface GetNetworkLogRequest {
+  type: 'getNetworkLog'
+}
+
+/** Reply to getNetworkLog. `tabId` lets the view recognize which live networkEntryCaptured broadcasts are its own. */
+export interface NetworkLogResult {
+  type: 'networkLogResult'
+  tabId: number
+  entries: NetworkEntry[]
+}
+
+/** Broadcast the moment a new response is captured for any tab — NetworkView filters by tabId. */
+export interface NetworkEntryCapturedBroadcast {
+  type: 'networkEntryCaptured'
+  tabId: number
+  entry: NetworkEntry
+}
+
 /** Messages sent from the UI to the background. */
 export type ChannelRequest =
   | PingRequest
@@ -224,6 +261,7 @@ export type ChannelRequest =
   | GenerateCodeRequest
   | GenerateBookmarkletRequest
   | SearchBookmarkletsRequest
+  | GetNetworkLogRequest
 
 /** Messages sent from the background to the UI. */
 export type ChannelResponse =
@@ -238,3 +276,5 @@ export type ChannelResponse =
   | GenerateBookmarkletResult
   | GenerateCodeResult
   | SearchBookmarkletsResult
+  | NetworkLogResult
+  | NetworkEntryCapturedBroadcast

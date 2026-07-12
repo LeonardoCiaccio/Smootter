@@ -16,6 +16,7 @@
     "message": "Tool hinzufügen"
   },
   "bookmarklets": { "message": "Bookmarklet" },
+  "network": { "message": "Netzwerk" },
   "home": {
     "message": "Start"
   },
@@ -170,6 +171,15 @@
   "importConfirmLlmConfig": { "message": "KI-Konfiguration (Endpoint, Modell — ohne Key)" },
   "importConfirmButton": { "message": "Importieren" },
   "importConfirmCancel": { "message": "Abbrechen" },
+  "networkCategoriesTitle": { "message": "Kategorien" },
+  "networkCategoryAll": { "message": "Alle" },
+  "networkCategoryMedia": { "message": "Medien" },
+  "networkCategoryDocuments": { "message": "Dokumente" },
+  "networkCategoryOther": { "message": "Andere" },
+  "networkEmpty": { "message": "Für diese Seite wurden noch keine Anfragen erfasst." },
+  "networkCopyUrl": { "message": "URL kopieren" },
+  "networkOpenInNewTab": { "message": "In neuem Tab öffnen" },
+  "networkUrlCopied": { "message": "URL kopiert" },
   "llmApiKeyReminderTitle": { "message": "Ein API-Schlüssel wird benötigt" },
   "llmApiKeyReminderMessage": {
     "message": "Du hast eine KI-Konfiguration importiert, die keine lokale Laufzeitumgebung ist (wie Ollama) — dieser Anbieter benötigt einen API-Schlüssel. Gehe zu den Optionen, um ihn einzugeben."

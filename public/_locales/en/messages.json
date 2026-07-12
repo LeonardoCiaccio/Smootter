@@ -16,6 +16,7 @@
     "message": "Add a tool"
   },
   "bookmarklets": { "message": "Bookmarklet" },
+  "network": { "message": "Network" },
   "home": {
     "message": "Home"
   },
@@ -164,6 +165,15 @@
   "importConfirmLlmConfig": { "message": "AI configuration (endpoint, model — no key)" },
   "importConfirmButton": { "message": "Import" },
   "importConfirmCancel": { "message": "Cancel" },
+  "networkCategoriesTitle": { "message": "Categories" },
+  "networkCategoryAll": { "message": "All" },
+  "networkCategoryMedia": { "message": "Media" },
+  "networkCategoryDocuments": { "message": "Documents" },
+  "networkCategoryOther": { "message": "Other" },
+  "networkEmpty": { "message": "No requests captured for this page yet." },
+  "networkCopyUrl": { "message": "Copy URL" },
+  "networkOpenInNewTab": { "message": "Open in a new tab" },
+  "networkUrlCopied": { "message": "URL copied" },
   "llmApiKeyReminderTitle": { "message": "An API key is needed" },
   "llmApiKeyReminderMessage": {
     "message": "You imported an AI configuration that isn't a local runtime (like Ollama) — this provider needs an API key. Go to Options to enter it."

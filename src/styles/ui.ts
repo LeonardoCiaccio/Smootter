@@ -389,6 +389,39 @@ export const ui = {
   importConfirmCheckbox: 'h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500 dark:border-gray-700 dark:bg-gray-800',
   modalStatusOk: 'break-words text-sm font-medium text-emerald-600 dark:text-emerald-400',
   modalStatusError: 'break-words text-sm font-medium text-rose-600 dark:text-rose-400',
+  // Network inspector: left sidebar (fixed categories) + center scrollable log, same
+  // two-pane shape as Bookmarklets but with its own tokens (independent, may diverge).
+  networkLayout: 'flex min-h-0 flex-1',
+  networkSidebar:
+    'flex w-56 flex-shrink-0 flex-col gap-1 overflow-y-auto border-r border-gray-200 px-4 pb-6 pt-10 dark:border-gray-800',
+  networkSidebarTitle: 'mb-2 text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500',
+  networkCategoryButton:
+    'flex items-center gap-2 rounded-tool px-2 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800',
+  networkCategoryButtonActive: 'bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300',
+  networkCategoryIcon: 'h-4 w-4 flex-shrink-0',
+  networkCategoryLabel: 'flex-1 truncate',
+  networkCategoryCount: 'text-xs text-gray-400 dark:text-gray-500',
+  networkMain: 'flex flex-1 flex-col overflow-y-auto px-6 pb-10 pt-10',
+  networkEmpty: 'flex flex-1 flex-col items-center justify-center gap-3 text-center text-sm text-gray-400 dark:text-gray-500',
+  networkEmptyIcon: 'h-10 w-10 text-gray-300 dark:text-gray-700',
+  networkList: 'flex flex-col gap-2',
+  networkRow:
+    'group flex items-center gap-3 rounded-tool border border-gray-200 p-3 text-left transition-colors hover:border-cyan-500 dark:border-gray-800 dark:hover:border-cyan-400',
+  networkRowThumb:
+    'flex h-10 w-10 flex-shrink-0 items-center justify-center overflow-hidden rounded-tool border border-gray-200 bg-gray-50 dark:border-gray-700 dark:bg-gray-800',
+  networkRowThumbImage: 'h-full w-full object-cover',
+  networkRowThumbIcon: 'h-5 w-5 text-gray-400 dark:text-gray-500',
+  networkRowBody: 'min-w-0 flex-1',
+  networkRowUrl: 'truncate text-sm font-medium text-gray-900 dark:text-gray-100',
+  networkRowMetaRow: 'flex items-center gap-2 text-xs text-gray-400 dark:text-gray-500',
+  networkRowMethod: 'font-semibold text-gray-500 dark:text-gray-400',
+  networkRowStatusOk: 'font-semibold text-emerald-600 dark:text-emerald-400',
+  networkRowStatusRedirect: 'font-semibold text-sky-600 dark:text-sky-400',
+  networkRowStatusError: 'font-semibold text-rose-600 dark:text-rose-400',
+  networkRowActions: 'flex items-center gap-1 opacity-0 transition-opacity group-hover:opacity-100',
+  networkRowActionButton:
+    'flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-tool text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200',
+  networkRowActionIcon: 'h-4 w-4',
 } as const
 
 export type UiVariant = keyof typeof ui

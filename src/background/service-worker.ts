@@ -8,6 +8,7 @@
 import { registerChannel } from './channel'
 import { registerUserScriptBridge } from './userScripts'
 import { registerToolsEngine } from './toolsEngine'
+import { registerNetworkInspector } from './networkInspector'
 import { seedDefaultTools } from './defaultTools'
 
 /** Inject environment into the given tab. */
@@ -21,6 +22,7 @@ function injectEnvironment(tabId: number): void {
 registerChannel()
 registerUserScriptBridge()
 registerToolsEngine()
+registerNetworkInspector()
 
 chrome.action.onClicked.addListener((tab) => {
   if (tab.id === undefined) return

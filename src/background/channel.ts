@@ -23,6 +23,7 @@ import { isLocalLlmEndpoint } from '@/shared/llmEndpoint'
 import { isUserScriptsEnabled } from './userScripts'
 import { runCodeTest } from './testRunner'
 import { testLlmConfig, generateCode, generateBookmarkletMetadata, searchBookmarklets } from './llmClient'
+import { getNetworkLog } from './networkInspector'
 
 interface Context {
   sender: chrome.runtime.MessageSender
@@ -250,6 +251,21 @@ grip.register({
   },
 })
 grip.hook('searchBookmarklets', {
+  after({ result }, context: Context) {
+    if (result.isSuccess) context.sendResponse(result.result)
+  },
+})
+
+grip.register({
+  name: 'getNetworkLog',
+  validate() {},
+  business(_args: unknown, context?: object) {
+    const tabId = (context as Context | undefined)?.sender.tab?.id
+    if (tabId === undefined) return { type: 'networkLogResult', tabId: -1, entries: [] }
+    return { type: 'networkLogResult', tabId, entries: getNetworkLog(tabId) }
+  },
+})
+grip.hook('getNetworkLog', {
   after({ result }, context: Context) {
     if (result.isSuccess) context.sendResponse(result.result)
   },

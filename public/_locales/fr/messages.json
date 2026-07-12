@@ -16,6 +16,7 @@
     "message": "Ajouter un outil"
   },
   "bookmarklets": { "message": "Bookmarklet" },
+  "network": { "message": "Réseau" },
   "home": {
     "message": "Accueil"
   },
@@ -170,6 +171,15 @@
   "importConfirmLlmConfig": { "message": "Configuration IA (endpoint, modèle — sans la clé)" },
   "importConfirmButton": { "message": "Importer" },
   "importConfirmCancel": { "message": "Annuler" },
+  "networkCategoriesTitle": { "message": "Catégories" },
+  "networkCategoryAll": { "message": "Tous" },
+  "networkCategoryMedia": { "message": "Médias" },
+  "networkCategoryDocuments": { "message": "Documents" },
+  "networkCategoryOther": { "message": "Autres" },
+  "networkEmpty": { "message": "Aucune requête capturée pour cette page pour l'instant." },
+  "networkCopyUrl": { "message": "Copier l'URL" },
+  "networkOpenInNewTab": { "message": "Ouvrir dans un nouvel onglet" },
+  "networkUrlCopied": { "message": "URL copiée" },
   "llmApiKeyReminderTitle": { "message": "Une clé API est nécessaire" },
   "llmApiKeyReminderMessage": {
     "message": "Vous avez importé une configuration IA qui n'est pas un runtime local (comme Ollama) — ce fournisseur nécessite une clé API. Rendez-vous dans les Options pour la saisir."

@@ -16,6 +16,7 @@
     "message": "Añadir una herramienta"
   },
   "bookmarklets": { "message": "Bookmarklet" },
+  "network": { "message": "Red" },
   "home": {
     "message": "Inicio"
   },
@@ -164,6 +165,15 @@
   "importConfirmLlmConfig": { "message": "Configuración de IA (endpoint, modelo — sin la key)" },
   "importConfirmButton": { "message": "Importar" },
   "importConfirmCancel": { "message": "Cancelar" },
+  "networkCategoriesTitle": { "message": "Categorías" },
+  "networkCategoryAll": { "message": "Todos" },
+  "networkCategoryMedia": { "message": "Multimedia" },
+  "networkCategoryDocuments": { "message": "Documentos" },
+  "networkCategoryOther": { "message": "Otros" },
+  "networkEmpty": { "message": "Aún no se ha capturado ninguna solicitud para esta página." },
+  "networkCopyUrl": { "message": "Copiar URL" },
+  "networkOpenInNewTab": { "message": "Abrir en una nueva pestaña" },
+  "networkUrlCopied": { "message": "URL copiada" },
   "llmApiKeyReminderTitle": { "message": "Se necesita una API key" },
   "llmApiKeyReminderMessage": {
     "message": "Has importado una configuración de IA que no es un runtime local (como Ollama) — este proveedor necesita una API key. Ve a Opciones para introducirla."
