@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { inject, onMounted, reactive, ref } from 'vue'
+import { inject, onMounted, onUnmounted, reactive, ref } from 'vue'
 import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
-import { DEFAULT_NETWORK_CONFIG, type NetworkConfig } from '@/shared/preferences'
+import { DEFAULT_NETWORK_CONFIG, preferenceStorageKey, type NetworkConfig } from '@/shared/preferences'
 import { useToast } from '../plugins/toast'
 
 const channel = inject(channelKey)
@@ -17,6 +17,18 @@ onMounted(async () => {
     Object.assign(form, response.value)
   }
 })
+
+// Keeps the form live if networkConfig changes from elsewhere (an import) — chrome.storage.onChanged
+// fires regardless of which context wrote it, unlike the channel broadcast (only fired by
+// channel.ts's own setPreference handler, which a direct import write bypasses).
+const networkConfigKey = preferenceStorageKey('networkConfig')
+function onStorageChanged(changes: Record<string, chrome.storage.StorageChange>, area: chrome.storage.AreaName): void {
+  if (area !== 'local' || !(networkConfigKey in changes)) return
+  const newValue = changes[networkConfigKey].newValue as NetworkConfig | undefined
+  if (newValue) Object.assign(form, newValue)
+}
+onMounted(() => chrome.storage.onChanged.addListener(onStorageChanged))
+onUnmounted(() => chrome.storage.onChanged.removeListener(onStorageChanged))
 
 async function save(): Promise<void> {
   if (!channel) return
