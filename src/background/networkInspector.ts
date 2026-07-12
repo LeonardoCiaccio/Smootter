@@ -57,12 +57,6 @@ function classify(contentType: string): string {
   return NETWORK_OTHER_CATEGORY
 }
 
-// Textual data calls (API responses, config, auth) — not a "file" download, so the size floor
-// below doesn't apply to them: a 40-byte JSON response can be exactly what an investigation needs.
-function isDataCall(contentType: string): boolean {
-  return /json|xml|text\/(plain|csv|html)/.test(contentType.toLowerCase())
-}
-
 function readHeaders(headers: chrome.webRequest.HttpHeader[] | undefined): { contentType: string; size: number } {
   let contentType = ''
   let size = 0
@@ -112,24 +106,12 @@ export function registerNetworkInspector(): void {
       if (details.tabId < 0) return
       if (details.url.startsWith('chrome-extension://')) return
 
-      // Preflight/no-body responses never carry anything worth investigating.
-      if (details.method === 'OPTIONS') return
-      if (details.statusCode === 204 || details.statusCode === 304 || details.statusCode === 101) return
-
       const { contentType: headerContentType, size } = readHeaders(details.responseHeaders)
       const contentType = headerContentType || EXTENSION_CONTENT_TYPES[fileExtensionOf(details.url)] || ''
-      // No content-length AND no content-type (even after the extension fallback above): not a
-      // real payload either (redirects, sendBeacon pings, empty acks) — junk regardless of type.
-      if (size === 0 && contentType === '') return
-      // AJAX/fetch calls (details.type is 'xmlhttprequest' for both) are exempt from the size
-      // floor outright, regardless of content-type — a tiny API response with no content-type
-      // set is still exactly the kind of call an investigation cares about, not junk. Nested
-      // iframes need no special handling: webRequest already reports every frame in the tab
-      // (details.frameId identifies which), not just the top one.
-      const isXhr = details.type === 'xmlhttprequest'
-      // The size floor only applies to actual file downloads (media/binary "other") — small
-      // data calls (json/xml/html/text, or any XHR/fetch response) are kept regardless of size.
-      if (!isXhr && !isDataCall(contentType) && size > 0 && size < config.minSizeBytes) return
+      // The size floor, plain and unconditional: below it, nothing is recorded — no exceptions
+      // for content-type, XHR/fetch, or an unknown/absent content-length (which reads as 0).
+      // Entirely in the user's hands via the single minSizeBytes number in Options.
+      if (size < config.minSizeBytes) return
 
       const entry: NetworkEntry = {
         id: crypto.randomUUID(),

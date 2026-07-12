@@ -46,8 +46,12 @@ const formattedSize = computed(() => formatBytes(props.entry.size))
 const formattedTime = computed(() => new Date(props.entry.timestamp).toLocaleTimeString())
 
 async function onCopyUrl(): Promise<void> {
-  await navigator.clipboard.writeText(props.entry.url)
-  toast.success(chrome.i18n.getMessage('networkUrlCopied'))
+  try {
+    await navigator.clipboard.writeText(props.entry.url)
+    toast.success(chrome.i18n.getMessage('networkUrlCopied'))
+  } catch {
+    toast.error(chrome.i18n.getMessage('networkCopyUrlError'))
+  }
 }
 
 async function onDownload(): Promise<void> {
