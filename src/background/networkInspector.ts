@@ -7,14 +7,17 @@
  * user edits — pure observation, matching the "replace devtools" use case.
  */
 import type { NetworkEntry, NetworkEntryCategory } from '@/shared/messages'
+import { getPreference, preferenceStorageKey, DEFAULT_NETWORK_CONFIG, type NetworkConfig } from '@/shared/preferences'
 
 const MAX_ENTRIES_PER_TAB = 500
-// Below this, a response is noise for an investigation (tracking pixels, empty beacons) — not
-// captured at all. Responses with no content-length header (size 0, e.g. chunked transfer) are
-// kept regardless: their real size is unknown, not necessarily small.
-const MIN_ENTRY_SIZE_BYTES = 1024
 
 const logsByTab = new Map<number, NetworkEntry[]>()
+
+// Cached in memory so the hot capture path (fires on every network response) never awaits
+// chrome.storage. Kept in sync via chrome.storage.onChanged below, which fires regardless of
+// which context wrote the preference (Options page, or a bundle import from anywhere else) —
+// simpler and more reliable than threading an explicit update call through every writer.
+let config: NetworkConfig = DEFAULT_NETWORK_CONFIG
 
 function classify(contentType: string): NetworkEntryCategory {
   const type = contentType.toLowerCase()
@@ -27,6 +30,13 @@ function classify(contentType: string): NetworkEntryCategory {
 // below doesn't apply to them: a 40-byte JSON response can be exactly what an investigation needs.
 function isDataCall(contentType: string): boolean {
   return /json|xml|text\/(plain|csv|html)/.test(contentType.toLowerCase())
+}
+
+// User-defined denylist, e.g. "image/" to silence every image, or "application/json" for a
+// specific one — a plain substring match on the lowercased content-type.
+function isBlockedByUser(contentType: string): boolean {
+  const type = contentType.toLowerCase()
+  return config.blockedMimeTypes.some((blocked) => blocked.trim() !== '' && type.includes(blocked.trim().toLowerCase()))
 }
 
 function readHeaders(headers: chrome.webRequest.HttpHeader[] | undefined): { contentType: string; size: number } {
@@ -63,6 +73,16 @@ function clearLog(tabId: number): void {
 
 /** Starts always-on capture. Independent of any NetworkView being open. */
 export function registerNetworkInspector(): void {
+  void getPreference('networkConfig').then((saved) => {
+    if (saved) config = saved
+  })
+
+  const networkConfigKey = preferenceStorageKey('networkConfig')
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area !== 'local' || !(networkConfigKey in changes)) return
+    config = (changes[networkConfigKey].newValue as NetworkConfig | undefined) ?? DEFAULT_NETWORK_CONFIG
+  })
+
   chrome.webRequest.onResponseStarted.addListener(
     (details) => {
       if (details.tabId < 0) return
@@ -76,9 +96,10 @@ export function registerNetworkInspector(): void {
       // No content-length AND no content-type: not a real payload either (redirects,
       // sendBeacon pings, empty acks) — junk regardless of type.
       if (size === 0 && contentType === '') return
+      if (isBlockedByUser(contentType)) return
       // The size floor only applies to actual file downloads (media/binary "other") — small
       // data calls (json/xml/html/text) are kept regardless of size, see isDataCall above.
-      if (!isDataCall(contentType) && size > 0 && size < MIN_ENTRY_SIZE_BYTES) return
+      if (!isDataCall(contentType) && size > 0 && size < config.minSizeBytes) return
 
       const entry: NetworkEntry = {
         id: crypto.randomUUID(),

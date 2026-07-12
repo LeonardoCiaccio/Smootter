@@ -227,14 +227,17 @@ export const ui = {
     'text-cyan-500 transition-colors hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-200',
   tagsInput:
     'min-w-[6rem] flex-1 border-none bg-transparent p-0.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-0 dark:text-gray-100',
-  // Options: no sidebar (too few settings), sections centered in the page, fields left-aligned within.
-  optionsContent:
-    'flex flex-1 flex-row flex-wrap items-stretch justify-center gap-8 overflow-y-auto px-8 py-6',
-  // Vertical divider between option sections (row layout) — stretches to the taller section.
-  // Hidden below `lg`: that's roughly where the two max-w-md sections stop fitting
-  // side by side and flex-wrap stacks them — a divider between stacked boxes reads wrong.
-  optionsDivider: 'hidden w-px flex-shrink-0 self-stretch bg-gray-200 dark:bg-gray-800 lg:block',
-  optionsSection: 'mt-12 flex w-full max-w-md flex-col gap-4 text-left',
+  // Options: same two-pane shape as Bookmarklets/Network — sidebar picks one group,
+  // isolating it in the main area instead of stacking every section at once.
+  optionsLayout: 'flex min-h-0 flex-1',
+  optionsSidebar:
+    'flex w-56 flex-shrink-0 flex-col gap-1 overflow-y-auto border-r border-gray-200 px-4 pb-6 pt-10 dark:border-gray-800',
+  optionsSidebarItem:
+    'flex items-center gap-2 rounded-tool px-3 py-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800',
+  optionsSidebarItemActive: 'bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300',
+  optionsSidebarIcon: 'h-4 w-4 flex-shrink-0',
+  optionsMain: 'flex flex-1 flex-col items-center overflow-y-auto px-8 py-10',
+  optionsSection: 'flex w-full max-w-md flex-col gap-4 text-left',
   optionsSectionTitle: 'text-base font-semibold text-gray-900 dark:text-gray-100',
   optionsSectionDescription: 'text-xs text-gray-500 dark:text-gray-400',
   optionsSectionActions: 'flex items-center justify-between gap-3',

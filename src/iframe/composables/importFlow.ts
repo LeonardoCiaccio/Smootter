@@ -48,7 +48,7 @@ export async function startImport(files: File[]): Promise<void> {
   if (files.length === 0) return
 
   const parsed = await parseImportFiles(files)
-  if (parsed.tools.length === 0 && parsed.bookmarkletCandidates.length === 0 && parsed.llmConfig === null) {
+  if (parsed.tools.length === 0 && parsed.bookmarkletCandidates.length === 0 && parsed.llmConfig === null && parsed.networkConfig === null) {
     if (parsed.failed > 0) toast.error(chrome.i18n.getMessage('toolsImportError'))
     return
   }
@@ -58,5 +58,5 @@ export async function startImport(files: File[]): Promise<void> {
     return
   }
 
-  await finishImport(parsed, { tools: true, bookmarklets: true, llmConfig: true })
+  await finishImport(parsed, { tools: true, bookmarklets: true, llmConfig: true, networkConfig: true })
 }
