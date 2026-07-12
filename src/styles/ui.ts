@@ -143,6 +143,9 @@ export const ui = {
   // and a chevron that rotates to show collapsed/expanded state.
   bookmarkletsCategoryHeader:
     'flex min-w-0 flex-1 items-center gap-1.5 rounded-tool px-1 py-1.5 text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-800',
+  // Shown while dragging a bookmarklet over a real category — a ring, not a background swap,
+  // so it stays visible over the hover background too.
+  bookmarkletsCategoryHeaderDropTarget: 'ring-2 ring-cyan-500',
   bookmarkletsCategoryChevron:
     'h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform dark:text-gray-500',
   bookmarkletsCategoryChevronOpen: 'rotate-90',

@@ -14,6 +14,7 @@ import {
   deleteTagEverywhere,
   getAllCategories,
   reconcileOrphanBookmarklets,
+  saveBookmarklet,
   type StoredBookmarklet,
   type StoredCategory,
 } from '@/shared/bookmarkletsDb'
@@ -89,6 +90,15 @@ async function onBookmarkletDeleted(id: string): Promise<void> {
   toast.success(chrome.i18n.getMessage('bookmarkletDeleted'))
 }
 
+async function onBookmarkletMoved(id: string, categoryId: string): Promise<void> {
+  const bookmarklet = bookmarklets.value.find((existing) => existing.id === id)
+  if (!bookmarklet || bookmarklet.categoryId === categoryId) return
+
+  const updated = { ...bookmarklet, categoryId, updatedAt: Date.now() }
+  await saveBookmarklet(updated)
+  bookmarklets.value = bookmarklets.value.map((existing) => (existing.id === id ? updated : existing))
+}
+
 async function onCategoryDeleted(id: string): Promise<void> {
   bookmarklets.value = await deleteCategory(id)
   categories.value = categories.value.filter((category) => category.id !== id)
@@ -138,6 +148,7 @@ onMounted(async () => {
         @add="onAddNew"
         @delete="onBookmarkletDeleted"
         @delete-category="onCategoryDeleted"
+        @move="onBookmarkletMoved"
       />
       <div :class="ui.bookmarkletsMain">
         <div :class="ui.bookmarkletsWrapper">

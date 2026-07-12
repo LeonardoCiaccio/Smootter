@@ -17,6 +17,7 @@ const emit = defineEmits<{
   add: []
   delete: [id: string]
   deleteCategory: [id: string]
+  move: [id: string, categoryId: string]
 }>()
 
 const sidebarTitle = chrome.i18n.getMessage('bookmarkletsCategoriesTitle')
@@ -69,6 +70,7 @@ watch(
       @select="(id) => emit('select', id)"
       @delete="(id) => emit('delete', id)"
       @delete-category="(id) => emit('deleteCategory', id)"
+      @move="(id, categoryId) => emit('move', id, categoryId)"
     />
   </div>
 </template>

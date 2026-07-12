@@ -20,7 +20,10 @@ const emit = defineEmits<{
   select: [id: string]
   delete: [id: string]
   deleteCategory: [id: string]
+  move: [id: string, categoryId: string]
 }>()
+
+const DRAG_MIME = 'application/x-smootter-bookmarklet-id'
 
 const deleteLabel = chrome.i18n.getMessage('toolDelete')
 const deleteConfirmLabel = chrome.i18n.getMessage('bookmarkletsDeleteConfirm')
@@ -57,6 +60,36 @@ function faviconFor(url: string): string | undefined {
   return props.faviconsByDomain[hostnameOf(url)]
 }
 
+function onDragStart(id: string, event: DragEvent): void {
+  event.dataTransfer?.setData(DRAG_MIME, id)
+  if (event.dataTransfer) event.dataTransfer.effectAllowed = 'move'
+}
+
+// Only a real category is a valid drop target — dropping on a purely structural path
+// segment (e.g. "AA" when only "AA/BB" was ever created) wouldn't have anywhere to land.
+const isDropTarget = ref(false)
+
+function onDragOver(event: DragEvent): void {
+  if (!props.node.category) return
+  event.preventDefault()
+  if (event.dataTransfer) event.dataTransfer.dropEffect = 'move'
+}
+
+function onDragEnter(): void {
+  if (props.node.category) isDropTarget.value = true
+}
+
+function onDragLeave(): void {
+  isDropTarget.value = false
+}
+
+function onDrop(event: DragEvent): void {
+  isDropTarget.value = false
+  if (!props.node.category) return
+  const id = event.dataTransfer?.getData(DRAG_MIME)
+  if (id) emit('move', id, props.node.category.id)
+}
+
 const confirmingCategory = ref(false)
 let categoryDisarmTimer: ReturnType<typeof setTimeout> | undefined
 
@@ -75,8 +108,19 @@ function onDeleteCategoryClick(): void {
 
 <template>
   <div :class="ui.bookmarkletsCategoryGroup">
-    <div :class="ui.bookmarkletsSidebarRow" :style="indentStyle">
-      <button type="button" :class="ui.bookmarkletsCategoryHeader" @click="collapsed = !collapsed">
+    <div
+      :class="ui.bookmarkletsSidebarRow"
+      :style="indentStyle"
+      @dragover="onDragOver"
+      @dragenter="onDragEnter"
+      @dragleave="onDragLeave"
+      @drop="onDrop"
+    >
+      <button
+        type="button"
+        :class="[ui.bookmarkletsCategoryHeader, isDropTarget && ui.bookmarkletsCategoryHeaderDropTarget]"
+        @click="collapsed = !collapsed"
+      >
         <ChevronRightIcon
           v-if="canExpand"
           :class="[ui.bookmarkletsCategoryChevron, !collapsed && ui.bookmarkletsCategoryChevronOpen]"
@@ -107,6 +151,7 @@ function onDeleteCategoryClick(): void {
         @select="(id) => emit('select', id)"
         @delete="(id) => emit('delete', id)"
         @delete-category="(id) => emit('deleteCategory', id)"
+        @move="(id, categoryId) => emit('move', id, categoryId)"
       />
 
       <div
@@ -117,9 +162,11 @@ function onDeleteCategoryClick(): void {
       >
         <button
           type="button"
+          draggable="true"
           :class="[ui.bookmarkletsSidebarItem, bookmarklet.id === selectedId && ui.bookmarkletsSidebarItemActive]"
           :title="bookmarklet.title"
           @click="emit('select', bookmarklet.id)"
+          @dragstart="onDragStart(bookmarklet.id, $event)"
         >
           <img
             v-if="faviconFor(bookmarklet.url)"
