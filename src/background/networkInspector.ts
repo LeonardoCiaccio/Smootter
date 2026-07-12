@@ -20,11 +20,15 @@ const logsByTab = new Map<number, NetworkEntry[]>()
 let config: NetworkConfig = DEFAULT_NETWORK_CONFIG
 
 // Guards against a malformed or older stored value (e.g. minSizeBytes saved as '' by a past UI
-// bug, or a config saved before mimeCategories existed) silently breaking capture.
+// bug, or a config saved before mimeCategories/blockedMimeTypes existed) silently breaking
+// capture — each field is defended independently rather than rejecting the whole config.
 function normalizeConfig(value: NetworkConfig | undefined): NetworkConfig {
-  if (!value || !Number.isFinite(value.minSizeBytes) || value.minSizeBytes < 0) return DEFAULT_NETWORK_CONFIG
-  if (!Array.isArray(value.mimeCategories)) return { ...value, mimeCategories: DEFAULT_NETWORK_CONFIG.mimeCategories }
-  return value
+  if (!value) return DEFAULT_NETWORK_CONFIG
+  return {
+    minSizeBytes: Number.isFinite(value.minSizeBytes) && value.minSizeBytes >= 0 ? value.minSizeBytes : DEFAULT_NETWORK_CONFIG.minSizeBytes,
+    blockedMimeTypes: Array.isArray(value.blockedMimeTypes) ? value.blockedMimeTypes : DEFAULT_NETWORK_CONFIG.blockedMimeTypes,
+    mimeCategories: Array.isArray(value.mimeCategories) ? value.mimeCategories : DEFAULT_NETWORK_CONFIG.mimeCategories,
+  }
 }
 
 // Rules are checked in the user's order — first match wins. Nothing matching falls into the

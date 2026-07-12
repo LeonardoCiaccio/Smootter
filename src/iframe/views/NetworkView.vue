@@ -49,7 +49,9 @@ onMounted(async () => {
     entries.value = logResponse.entries
   }
   if (configResponse?.type === 'preferenceValue' && configResponse.key === 'networkConfig' && configResponse.value) {
-    mimeCategories.value = configResponse.value.mimeCategories
+    // A config saved before mimeCategories existed (or a hand-edited import) may not have it —
+    // never hand an undefined array to the sidebar, which maps over it unconditionally.
+    mimeCategories.value = configResponse.value.mimeCategories ?? DEFAULT_NETWORK_CONFIG.mimeCategories
   }
 
   unsubscribe = channel?.subscribe((message) => {

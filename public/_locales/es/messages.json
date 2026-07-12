@@ -128,6 +128,17 @@
     "message": "Define las categorías de la barra lateral: una línea \"## Nombre\" seguida de los mimetypes (uno por línea, coincidencia parcial) que pertenecen a ella."
   },
   "networkMimeCategoriesPlaceholder": { "message": "## HTML\ntext/html\n\n## Imágenes\nimage/\n\n## Video\nvideo/" },
+  "networkMimeCategoriesIssueUnnamedHeader": { "message": "Hay una línea \"##\" sin nombre de categoría — se ignorará." },
+  "networkMimeCategoriesIssueEmptyCategory": {
+    "message": "La categoría \"$NAME$\" no tiene ningún mimetype debajo — se ignorará.",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "networkMimeCategoriesIssueDuplicateCategory": {
+    "message": "Categoría duplicada: \"$NAME$\".",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "networkMimeCategoriesIssueStrayLines": { "message": "Hay líneas de mimetype antes de la primera categoría \"## Nombre\" — se ignorarán." },
+  "networkMimeCategoriesIssueNoCategoriesFound": { "message": "No se encontró ninguna categoría — usa líneas \"## Nombre\" para definirlas." },
   "networkConfigSaved": { "message": "Configuración de red guardada" },
   "toolsSearchPlaceholder": { "message": "Buscar herramientas..." },
   "toolsSearchClear": { "message": "Borrar búsqueda" },

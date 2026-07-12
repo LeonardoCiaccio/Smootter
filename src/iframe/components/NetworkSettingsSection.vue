@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { inject, onMounted, reactive, ref } from 'vue'
+import { computed, inject, onMounted, reactive, ref } from 'vue'
 import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { DEFAULT_NETWORK_CONFIG, type NetworkConfig } from '@/shared/preferences'
-import { parseMimeCategories, serializeMimeCategories } from '@/shared/mimeCategories'
+import { parseMimeCategories, serializeMimeCategories, validateMimeCategoriesText, type MimeCategoriesIssue } from '@/shared/mimeCategories'
 import { useToast } from '../plugins/toast'
 
 const channel = inject(channelKey)
@@ -18,9 +18,15 @@ const saving = ref(false)
 onMounted(async () => {
   const response = await channel?.send({ type: 'getPreference', key: 'networkConfig' })
   if (response?.type === 'preferenceValue' && response.key === 'networkConfig' && response.value) {
-    Object.assign(form, response.value)
-    blockedMimeTypesText.value = response.value.blockedMimeTypes.join('\n')
-    mimeCategoriesText.value = serializeMimeCategories(response.value.mimeCategories)
+    // A config saved before a field existed (or a hand-edited import) may be missing it —
+    // never trust the stored shape blindly, same reasoning as networkInspector's normalizeConfig.
+    const blockedMimeTypes = Array.isArray(response.value.blockedMimeTypes) ? response.value.blockedMimeTypes : []
+    const mimeCategories = Array.isArray(response.value.mimeCategories)
+      ? response.value.mimeCategories
+      : DEFAULT_NETWORK_CONFIG.mimeCategories
+    Object.assign(form, response.value, { blockedMimeTypes, mimeCategories })
+    blockedMimeTypesText.value = blockedMimeTypes.join('\n')
+    mimeCategoriesText.value = serializeMimeCategories(mimeCategories)
   }
 })
 
@@ -49,6 +55,25 @@ const mimeCategoriesLabel = chrome.i18n.getMessage('networkMimeCategoriesLabel')
 const mimeCategoriesDescription = chrome.i18n.getMessage('networkMimeCategoriesDescription')
 const mimeCategoriesPlaceholder = chrome.i18n.getMessage('networkMimeCategoriesPlaceholder')
 const saveLabel = chrome.i18n.getMessage('wizardSave')
+
+// Live feedback as the user types — the parser is forgiving (it just drops what's broken),
+// so this is what actually tells them their format doesn't match the "## Name" standard.
+const mimeCategoriesIssues = computed(() => validateMimeCategoriesText(mimeCategoriesText.value))
+
+function issueText(issue: MimeCategoriesIssue): string {
+  switch (issue.type) {
+    case 'unnamedHeader':
+      return chrome.i18n.getMessage('networkMimeCategoriesIssueUnnamedHeader')
+    case 'emptyCategory':
+      return chrome.i18n.getMessage('networkMimeCategoriesIssueEmptyCategory', [issue.name])
+    case 'duplicateCategory':
+      return chrome.i18n.getMessage('networkMimeCategoriesIssueDuplicateCategory', [issue.name])
+    case 'strayLines':
+      return chrome.i18n.getMessage('networkMimeCategoriesIssueStrayLines')
+    case 'noCategoriesFound':
+      return chrome.i18n.getMessage('networkMimeCategoriesIssueNoCategoriesFound')
+  }
+}
 </script>
 
 <template>
@@ -82,6 +107,11 @@ const saveLabel = chrome.i18n.getMessage('wizardSave')
         :class="[ui.input, ui.networkMimeCategoriesTextarea]"
         :placeholder="mimeCategoriesPlaceholder"
       />
+      <ul v-if="mimeCategoriesIssues.length > 0" :class="ui.networkMimeCategoriesIssueList">
+        <li v-for="(issue, index) in mimeCategoriesIssues" :key="index" :class="ui.networkMimeCategoriesIssueItem">
+          {{ issueText(issue) }}
+        </li>
+      </ul>
     </label>
 
     <div :class="ui.optionsSectionActions">

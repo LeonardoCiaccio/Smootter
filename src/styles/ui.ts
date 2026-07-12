@@ -417,6 +417,8 @@ export const ui = {
     'w-full rounded-full border border-gray-300 bg-white py-2 pl-9 pr-8 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',
   // The "## Name" structured format reads best in a monospace font.
   networkMimeCategoriesTextarea: 'font-mono text-xs',
+  networkMimeCategoriesIssueList: 'flex flex-col gap-0.5',
+  networkMimeCategoriesIssueItem: 'text-xs text-amber-600 dark:text-amber-400',
   networkEmpty:
     'flex flex-1 flex-col items-center justify-center gap-3 text-center text-sm text-gray-400 dark:text-gray-500',
   networkEmptyIcon: 'h-10 w-10 text-gray-300 dark:text-gray-700',

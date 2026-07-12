@@ -45,7 +45,7 @@ function iconFor(name: string) {
 
 const options = computed(() => [
   { key: 'all', label: allLabel, icon: ListBulletIcon },
-  ...props.categories.map((rule) => ({ key: rule.name, label: rule.name, icon: iconFor(rule.name) })),
+  ...(props.categories ?? []).map((rule) => ({ key: rule.name, label: rule.name, icon: iconFor(rule.name) })),
   { key: NETWORK_OTHER_CATEGORY, label: otherLabel, icon: CubeIcon },
 ])
 

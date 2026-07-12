@@ -126,6 +126,17 @@
     "message": "Definisci le categorie della sidebar: una riga \"## Nome\" seguita dai mimetype (uno per riga, sottostringa) che vi rientrano."
   },
   "networkMimeCategoriesPlaceholder": { "message": "## HTML\ntext/html\n\n## Immagini\nimage/\n\n## Video\nvideo/" },
+  "networkMimeCategoriesIssueUnnamedHeader": { "message": "C'è una riga \"##\" senza nome categoria — verrà ignorata." },
+  "networkMimeCategoriesIssueEmptyCategory": {
+    "message": "La categoria \"$NAME$\" non ha nessun mimetype sotto — verrà ignorata.",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "networkMimeCategoriesIssueDuplicateCategory": {
+    "message": "Categoria duplicata: \"$NAME$\".",
+    "placeholders": { "name": { "content": "$1" } }
+  },
+  "networkMimeCategoriesIssueStrayLines": { "message": "Ci sono righe di mimetype prima della prima categoria \"## Nome\" — verranno ignorate." },
+  "networkMimeCategoriesIssueNoCategoriesFound": { "message": "Nessuna categoria trovata — usa righe \"## Nome\" per definirle." },
   "networkConfigSaved": { "message": "Impostazioni rete salvate" },
   "toolsSearchPlaceholder": { "message": "Cerca tool..." },
   "toolsSearchClear": { "message": "Cancella ricerca" },
