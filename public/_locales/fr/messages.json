@@ -127,24 +127,6 @@
   "networkGroupTitle": { "message": "Réseau" },
   "networkSettingsDescription": { "message": "Filtrez ce qui est capturé lors de l'inspection du réseau." },
   "networkMinSizeLabel": { "message": "Taille minimale du fichier (octets)" },
-  "networkBlockedMimeTypesLabel": { "message": "Mimetypes à ne jamais enregistrer" },
-  "networkBlockedMimeTypesPlaceholder": { "message": "Un par ligne, ex.\nimage/\nvideo/\napplication/json" },
-  "networkMimeCategoriesLabel": { "message": "Catégories de mimetypes" },
-  "networkMimeCategoriesDescription": {
-    "message": "Définissez les catégories de la barre latérale : une ligne \"## Nom\" suivie des mimetypes (un par ligne, sous-chaîne) qui y appartiennent."
-  },
-  "networkMimeCategoriesPlaceholder": { "message": "## HTML\ntext/html\n\n## Images\nimage/\n\n## Video\nvideo/" },
-  "networkMimeCategoriesIssueUnnamedHeader": { "message": "Il y a une ligne \"##\" sans nom de catégorie — elle sera ignorée." },
-  "networkMimeCategoriesIssueEmptyCategory": {
-    "message": "La catégorie \"$NAME$\" n'a aucun mimetype en dessous — elle sera ignorée.",
-    "placeholders": { "name": { "content": "$1" } }
-  },
-  "networkMimeCategoriesIssueDuplicateCategory": {
-    "message": "Catégorie en double : \"$NAME$\".",
-    "placeholders": { "name": { "content": "$1" } }
-  },
-  "networkMimeCategoriesIssueStrayLines": { "message": "Il y a des lignes de mimetype avant la première catégorie \"## Nom\" — elles seront ignorées." },
-  "networkMimeCategoriesIssueNoCategoriesFound": { "message": "Aucune catégorie trouvée — utilisez des lignes \"## Nom\" pour les définir." },
   "networkConfigSaved": { "message": "Paramètres réseau enregistrés" },
   "toolsSearchPlaceholder": { "message": "Rechercher des outils..." },
   "toolsSearchClear": { "message": "Effacer la recherche" },
@@ -191,7 +173,7 @@
     "placeholders": { "count": { "content": "$1" } }
   },
   "importConfirmLlmConfig": { "message": "Configuration IA (endpoint, modèle — sans la clé)" },
-  "importConfirmNetworkConfig": { "message": "Paramètres réseau (taille minimale, mimetypes bloqués)" },
+  "importConfirmNetworkConfig": { "message": "Paramètres réseau (taille minimale)" },
   "importConfirmButton": { "message": "Importer" },
   "importConfirmCancel": { "message": "Annuler" },
   "networkCategoriesTitle": { "message": "Catégories" },

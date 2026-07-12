@@ -11,15 +11,13 @@ import {
   ListBulletIcon,
   MusicalNoteIcon,
   PhotoIcon,
-  TagIcon,
 } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { NETWORK_OTHER_CATEGORY, type NetworkEntry } from '@/shared/messages'
-import type { MimeCategoryRule } from '@/shared/preferences'
+import { NETWORK_MIME_CATEGORIES } from '@/shared/networkCategories'
 
 const props = defineProps<{
   entries: NetworkEntry[]
-  categories: MimeCategoryRule[]
   selected: string
 }>()
 const emit = defineEmits<{ select: [category: string] }>()
@@ -28,26 +26,28 @@ const titleLabel = chrome.i18n.getMessage('networkCategoriesTitle')
 const allLabel = chrome.i18n.getMessage('networkCategoryAll')
 const otherLabel = chrome.i18n.getMessage('networkCategoryOther')
 
-// Best-effort icon for a user-named category, matched by keyword — falls back to a plain tag
-// for anything custom the user came up with that doesn't hint at a known kind.
-function iconFor(name: string) {
-  const key = name.toLowerCase()
-  if (/image|immagin|photo/.test(key)) return PhotoIcon
-  if (/video/.test(key)) return FilmIcon
-  if (/audio|music/.test(key)) return MusicalNoteIcon
-  if (/pdf|doc/.test(key)) return DocumentTextIcon
-  if (/font/.test(key)) return LanguageIcon
-  if (/wasm|webassembly/.test(key)) return CpuChipIcon
-  if (/archiv|zip|rar|compress/.test(key)) return ArchiveBoxIcon
-  if (/html|css|javascript|json|xml|script/.test(key)) return CodeBracketIcon
-  return TagIcon
+// Fixed set, fixed icons — direct lookup, no guessing needed.
+const ICON_BY_CATEGORY: Record<string, typeof CodeBracketIcon> = {
+  HTML: CodeBracketIcon,
+  CSS: CodeBracketIcon,
+  JavaScript: CodeBracketIcon,
+  JSON: CodeBracketIcon,
+  XML: CodeBracketIcon,
+  Images: PhotoIcon,
+  Video: FilmIcon,
+  Audio: MusicalNoteIcon,
+  PDF: DocumentTextIcon,
+  Documents: DocumentTextIcon,
+  Fonts: LanguageIcon,
+  WebAssembly: CpuChipIcon,
+  Archives: ArchiveBoxIcon,
 }
 
-const options = computed(() => [
+const options = [
   { key: 'all', label: allLabel, icon: ListBulletIcon },
-  ...(props.categories ?? []).map((rule) => ({ key: rule.name, label: rule.name, icon: iconFor(rule.name) })),
+  ...NETWORK_MIME_CATEGORIES.map((rule) => ({ key: rule.name, label: rule.name, icon: ICON_BY_CATEGORY[rule.name] ?? CubeIcon })),
   { key: NETWORK_OTHER_CATEGORY, label: otherLabel, icon: CubeIcon },
-])
+]
 
 const countFor = computed(() => {
   const counts: Record<string, number> = { all: props.entries.length }

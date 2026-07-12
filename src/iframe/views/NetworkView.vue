@@ -8,14 +8,11 @@ import NetworkEntryRow from '../components/NetworkEntryRow.vue'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { fileExtensionOf } from '@/shared/url'
 import type { NetworkEntry } from '@/shared/messages'
-import { DEFAULT_NETWORK_CONFIG, type MimeCategoryRule } from '@/shared/preferences'
-import { sanitizeMimeCategories } from '@/shared/mimeCategories'
 
 const channel = inject(channelKey)
 
 const tabId = ref<number | null>(null)
 const entries = ref<NetworkEntry[]>([])
-const mimeCategories = ref<MimeCategoryRule[]>(DEFAULT_NETWORK_CONFIG.mimeCategories)
 const selectedCategory = ref<string>('all')
 const query = ref('')
 // Preloaded: the sidebar and list only ever paint once with their real data — never an
@@ -45,19 +42,11 @@ let unsubscribe: (() => void) | undefined
 
 onMounted(async () => {
   try {
-    const [logResponse, configResponse] = await Promise.all([
-      channel?.send({ type: 'getNetworkLog' }),
-      channel?.send({ type: 'getPreference', key: 'networkConfig' }),
-    ])
+    const logResponse = await channel?.send({ type: 'getNetworkLog' })
 
     if (logResponse?.type === 'networkLogResult') {
       tabId.value = logResponse.tabId
       entries.value = logResponse.entries
-    }
-    if (configResponse?.type === 'preferenceValue' && configResponse.key === 'networkConfig' && configResponse.value) {
-      // A config saved before mimeCategories existed, or with a corrupted rule inside it, falls
-      // back to the built-in defaults here too — same reasoning as networkInspector's normalizeConfig.
-      mimeCategories.value = sanitizeMimeCategories(configResponse.value.mimeCategories)
     }
 
     unsubscribe = channel?.subscribe((message) => {
@@ -86,12 +75,7 @@ onUnmounted(() => {
     </div>
 
     <div v-else :class="ui.networkLayout">
-      <NetworkCategorySidebar
-        :entries="entries"
-        :categories="mimeCategories"
-        :selected="selectedCategory"
-        @select="selectedCategory = $event"
-      />
+      <NetworkCategorySidebar :entries="entries" :selected="selectedCategory" @select="selectedCategory = $event" />
 
       <div :class="ui.networkMain">
         <div :class="ui.networkSearchRow">

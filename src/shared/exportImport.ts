@@ -15,7 +15,6 @@ import {
   type BookmarkletImportCandidate,
 } from './bookmarkletsTransfer'
 import { getPreference, setPreference, type NetworkConfig } from './preferences'
-import { sanitizeMimeCategories } from './mimeCategories'
 import { isLocalLlmEndpoint } from './llmEndpoint'
 
 interface Bundle {
@@ -49,19 +48,10 @@ function isExportedLlmConfig(value: unknown): value is ExportedLlmConfig {
   )
 }
 
-// mimeCategories isn't checked here at all — whatever shape it's in (missing, corrupted rules,
-// from before the field existed), sanitizeMimeCategories in applyParsedImport below filters or
-// falls back to defaults. Rejecting the whole networkConfig over one bad rule would be worse.
 function isNetworkConfig(value: unknown): value is NetworkConfig {
   if (typeof value !== 'object' || value === null) return false
   const record = value as Record<string, unknown>
-  return (
-    typeof record.minSizeBytes === 'number' &&
-    Number.isInteger(record.minSizeBytes) &&
-    record.minSizeBytes >= 0 &&
-    Array.isArray(record.blockedMimeTypes) &&
-    record.blockedMimeTypes.every((entry) => typeof entry === 'string')
-  )
+  return typeof record.minSizeBytes === 'number' && Number.isInteger(record.minSizeBytes) && record.minSizeBytes >= 0
 }
 
 /**
@@ -191,8 +181,7 @@ export async function applyParsedImport(parsed: ParsedImport, selection: ImportS
   }
 
   if (selection.networkConfig && parsed.networkConfig) {
-    const mimeCategories = sanitizeMimeCategories(parsed.networkConfig.mimeCategories)
-    await setPreference('networkConfig', { ...parsed.networkConfig, mimeCategories })
+    await setPreference('networkConfig', parsed.networkConfig)
     networkConfigImported = true
   }
 

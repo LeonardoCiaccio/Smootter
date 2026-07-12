@@ -8,7 +8,7 @@
  */
 import { NETWORK_OTHER_CATEGORY, type NetworkEntry } from '@/shared/messages'
 import { getPreference, preferenceStorageKey, DEFAULT_NETWORK_CONFIG, type NetworkConfig } from '@/shared/preferences'
-import { sanitizeMimeCategories } from '@/shared/mimeCategories'
+import { NETWORK_MIME_CATEGORIES } from '@/shared/networkCategories'
 
 const MAX_ENTRIES_PER_TAB = 500
 
@@ -21,26 +21,19 @@ const logsByTab = new Map<number, NetworkEntry[]>()
 let config: NetworkConfig = DEFAULT_NETWORK_CONFIG
 
 // Guards against a malformed or older stored value (e.g. minSizeBytes saved as '' by a past UI
-// bug, or a config saved before mimeCategories/blockedMimeTypes existed) silently breaking
-// capture — each field is defended independently rather than rejecting the whole config.
-// mimeCategories goes through sanitizeMimeCategories, which also drops individual corrupted
-// rules (not just a non-array field) — a single bad rule's `.some()` would otherwise throw on
-// every captured request, not just once.
+// bug) silently breaking capture — each field is defended independently rather than rejecting
+// the whole config.
 function normalizeConfig(value: NetworkConfig | undefined): NetworkConfig {
-  if (!value) return DEFAULT_NETWORK_CONFIG
-  return {
-    minSizeBytes: Number.isFinite(value.minSizeBytes) && value.minSizeBytes >= 0 ? value.minSizeBytes : DEFAULT_NETWORK_CONFIG.minSizeBytes,
-    blockedMimeTypes: Array.isArray(value.blockedMimeTypes) ? value.blockedMimeTypes : DEFAULT_NETWORK_CONFIG.blockedMimeTypes,
-    mimeCategories: sanitizeMimeCategories(value.mimeCategories),
-  }
+  if (!value || !Number.isFinite(value.minSizeBytes) || value.minSizeBytes < 0) return DEFAULT_NETWORK_CONFIG
+  return value
 }
 
-// Rules are checked in the user's order — first match wins. Nothing matching falls into the
-// fixed "other" bucket. Fully data-driven: see MimeCategoryRule in shared/preferences.ts.
+// Fixed, system-defined rules — checked in order, first match wins. Nothing matching falls
+// into the fixed "other" bucket. See shared/networkCategories.ts.
 function classify(contentType: string): string {
   const type = contentType.toLowerCase()
-  for (const rule of config.mimeCategories) {
-    if (rule.mimeTypes.some((mime) => mime.trim() !== '' && type.includes(mime.trim().toLowerCase()))) return rule.name
+  for (const rule of NETWORK_MIME_CATEGORIES) {
+    if (rule.mimeTypes.some((mime) => type.includes(mime.toLowerCase()))) return rule.name
   }
   return NETWORK_OTHER_CATEGORY
 }
@@ -49,13 +42,6 @@ function classify(contentType: string): string {
 // below doesn't apply to them: a 40-byte JSON response can be exactly what an investigation needs.
 function isDataCall(contentType: string): boolean {
   return /json|xml|text\/(plain|csv|html)/.test(contentType.toLowerCase())
-}
-
-// User-defined denylist, e.g. "image/" to silence every image, or "application/json" for a
-// specific one — a plain substring match on the lowercased content-type.
-function isBlockedByUser(contentType: string): boolean {
-  const type = contentType.toLowerCase()
-  return config.blockedMimeTypes.some((blocked) => blocked.trim() !== '' && type.includes(blocked.trim().toLowerCase()))
 }
 
 function readHeaders(headers: chrome.webRequest.HttpHeader[] | undefined): { contentType: string; size: number } {
@@ -115,7 +101,6 @@ export function registerNetworkInspector(): void {
       // No content-length AND no content-type: not a real payload either (redirects,
       // sendBeacon pings, empty acks) — junk regardless of type.
       if (size === 0 && contentType === '') return
-      if (isBlockedByUser(contentType)) return
       // The size floor only applies to actual file downloads (media/binary "other") — small
       // data calls (json/xml/html/text) are kept regardless of size, see isDataCall above.
       if (!isDataCall(contentType) && size > 0 && size < config.minSizeBytes) return

@@ -121,24 +121,6 @@
   "networkGroupTitle": { "message": "Network" },
   "networkSettingsDescription": { "message": "Filter what gets captured while inspecting the network." },
   "networkMinSizeLabel": { "message": "Minimum file size (bytes)" },
-  "networkBlockedMimeTypesLabel": { "message": "Mimetypes to never record" },
-  "networkBlockedMimeTypesPlaceholder": { "message": "One per line, e.g.\nimage/\nvideo/\napplication/json" },
-  "networkMimeCategoriesLabel": { "message": "Mime categories" },
-  "networkMimeCategoriesDescription": {
-    "message": "Define the sidebar categories: a \"## Name\" line followed by the mimetypes (one per line, substring match) that fall under it."
-  },
-  "networkMimeCategoriesPlaceholder": { "message": "## HTML\ntext/html\n\n## Images\nimage/\n\n## Video\nvideo/" },
-  "networkMimeCategoriesIssueUnnamedHeader": { "message": "There's a \"##\" line with no category name — it will be ignored." },
-  "networkMimeCategoriesIssueEmptyCategory": {
-    "message": "Category \"$NAME$\" has no mimetypes under it — it will be ignored.",
-    "placeholders": { "name": { "content": "$1" } }
-  },
-  "networkMimeCategoriesIssueDuplicateCategory": {
-    "message": "Duplicate category: \"$NAME$\".",
-    "placeholders": { "name": { "content": "$1" } }
-  },
-  "networkMimeCategoriesIssueStrayLines": { "message": "There are mimetype lines before the first \"## Name\" category — they'll be ignored." },
-  "networkMimeCategoriesIssueNoCategoriesFound": { "message": "No categories found — use \"## Name\" lines to define them." },
   "networkConfigSaved": { "message": "Network settings saved" },
   "toolsSearchPlaceholder": { "message": "Search tools..." },
   "toolsSearchClear": { "message": "Clear search" },
@@ -185,7 +167,7 @@
     "placeholders": { "count": { "content": "$1" } }
   },
   "importConfirmLlmConfig": { "message": "AI configuration (endpoint, model — no key)" },
-  "importConfirmNetworkConfig": { "message": "Network settings (size floor, blocked mimetypes)" },
+  "importConfirmNetworkConfig": { "message": "Network settings (minimum size floor)" },
   "importConfirmButton": { "message": "Import" },
   "importConfirmCancel": { "message": "Cancel" },
   "networkCategoriesTitle": { "message": "Categories" },

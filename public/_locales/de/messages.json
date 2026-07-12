@@ -127,24 +127,6 @@
   "networkGroupTitle": { "message": "Netzwerk" },
   "networkSettingsDescription": { "message": "Filtere, was bei der Netzwerkuntersuchung erfasst wird." },
   "networkMinSizeLabel": { "message": "Mindestdateigröße (Byte)" },
-  "networkBlockedMimeTypesLabel": { "message": "Mimetypes, die nie erfasst werden sollen" },
-  "networkBlockedMimeTypesPlaceholder": { "message": "Einer pro Zeile, z. B.\nimage/\nvideo/\napplication/json" },
-  "networkMimeCategoriesLabel": { "message": "Mime-Kategorien" },
-  "networkMimeCategoriesDescription": {
-    "message": "Definiere die Kategorien der Seitenleiste: eine Zeile \"## Name\" gefolgt von den Mimetypes (einer pro Zeile, Teilstring), die dazu gehören."
-  },
-  "networkMimeCategoriesPlaceholder": { "message": "## HTML\ntext/html\n\n## Bilder\nimage/\n\n## Video\nvideo/" },
-  "networkMimeCategoriesIssueUnnamedHeader": { "message": "Es gibt eine \"##\"-Zeile ohne Kategoriename — sie wird ignoriert." },
-  "networkMimeCategoriesIssueEmptyCategory": {
-    "message": "Die Kategorie \"$NAME$\" hat keine Mimetypes darunter — sie wird ignoriert.",
-    "placeholders": { "name": { "content": "$1" } }
-  },
-  "networkMimeCategoriesIssueDuplicateCategory": {
-    "message": "Doppelte Kategorie: \"$NAME$\".",
-    "placeholders": { "name": { "content": "$1" } }
-  },
-  "networkMimeCategoriesIssueStrayLines": { "message": "Es gibt Mimetype-Zeilen vor der ersten Kategorie \"## Name\" — sie werden ignoriert." },
-  "networkMimeCategoriesIssueNoCategoriesFound": { "message": "Keine Kategorien gefunden — verwende \"## Name\"-Zeilen, um sie zu definieren." },
   "networkConfigSaved": { "message": "Netzwerkeinstellungen gespeichert" },
   "toolsSearchPlaceholder": { "message": "Tools durchsuchen..." },
   "toolsSearchClear": { "message": "Suche löschen" },
@@ -191,7 +173,7 @@
     "placeholders": { "count": { "content": "$1" } }
   },
   "importConfirmLlmConfig": { "message": "KI-Konfiguration (Endpoint, Modell — ohne Key)" },
-  "importConfirmNetworkConfig": { "message": "Netzwerkeinstellungen (Mindestgröße, blockierte Mimetypes)" },
+  "importConfirmNetworkConfig": { "message": "Netzwerkeinstellungen (Mindestgröße)" },
   "importConfirmButton": { "message": "Importieren" },
   "importConfirmCancel": { "message": "Abbrechen" },
   "networkCategoriesTitle": { "message": "Kategorien" },

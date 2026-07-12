@@ -310,20 +310,17 @@ export const ui = {
   wizardOptionText: 'flex flex-col gap-0.5',
   wizardOptionTitle: 'text-sm font-semibold text-gray-900 dark:text-gray-100',
   wizardOptionDescription: 'text-xs text-gray-500 dark:text-gray-400',
-  // Toast notifications: stacked, top-centered, one variant per type
+  // Toast notifications: stacked bottom-right, one neutral card style — the variant colors
+  // only the icon (plus a thin left accent), not the whole card. Calmer than a fully-tinted box.
   toastContainer:
-    'pointer-events-none fixed inset-x-0 top-4 z-50 flex flex-col items-center gap-2 px-4',
+    'pointer-events-none fixed inset-x-0 bottom-4 z-50 flex flex-col items-end gap-2 px-4 sm:inset-x-auto sm:right-4',
   toast:
-    'pointer-events-auto flex max-w-sm items-start gap-2 rounded-xl border px-4 py-3 text-sm shadow-lg',
+    'pointer-events-auto flex max-w-sm items-start gap-2 rounded-xl border border-l-4 border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200',
   toastIcon: 'h-5 w-5 flex-shrink-0',
-  toastInfo:
-    'border-sky-200 bg-sky-50 text-sky-800 dark:border-sky-800 dark:bg-sky-950 dark:text-sky-200',
-  toastSuccess:
-    'border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-800 dark:bg-emerald-950 dark:text-emerald-200',
-  toastWarning:
-    'border-violet-200 bg-violet-50 text-violet-800 dark:border-violet-800 dark:bg-violet-950 dark:text-violet-200',
-  toastError:
-    'border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-800 dark:bg-rose-950 dark:text-rose-200',
+  toastInfo: 'border-l-sky-400 dark:border-l-sky-500 [&>svg]:text-sky-500 dark:[&>svg]:text-sky-400',
+  toastSuccess: 'border-l-emerald-400 dark:border-l-emerald-500 [&>svg]:text-emerald-500 dark:[&>svg]:text-emerald-400',
+  toastWarning: 'border-l-amber-400 dark:border-l-amber-500 [&>svg]:text-amber-500 dark:[&>svg]:text-amber-400',
+  toastError: 'border-l-rose-400 dark:border-l-rose-500 [&>svg]:text-rose-500 dark:[&>svg]:text-rose-400',
   // Capability banner (e.g. "Allow User Scripts" not enabled yet)
   banner:
     'mx-6 mt-8 flex items-start gap-3 rounded-2xl border border-gray-200 bg-gray-50 p-4 text-left dark:border-gray-800 dark:bg-gray-800/50',
@@ -415,10 +412,6 @@ export const ui = {
     'pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-gray-500',
   networkSearchInput:
     'w-full rounded-full border border-gray-300 bg-white py-2 pl-9 pr-8 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',
-  // The "## Name" structured format reads best in a monospace font.
-  networkMimeCategoriesTextarea: 'font-mono text-xs',
-  networkMimeCategoriesIssueList: 'flex flex-col gap-0.5',
-  networkMimeCategoriesIssueItem: 'text-xs text-amber-600 dark:text-amber-400',
   networkEmpty:
     'flex flex-1 flex-col items-center justify-center gap-3 text-center text-sm text-gray-400 dark:text-gray-500',
   networkEmptyIcon: 'h-10 w-10 text-gray-300 dark:text-gray-700',
