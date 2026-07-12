@@ -6,7 +6,7 @@
  * category (e.g. "Work" when only "Work/Projects" was ever created) become
  * structural nodes — grouping only, not selectable or deletable.
  */
-import type { StoredCategory } from './bookmarkletsDb'
+import { UNCATEGORIZED_CATEGORY_ID, type StoredCategory } from './bookmarkletsDb'
 
 export interface CategoryTreeNode {
   segment: string
@@ -56,5 +56,11 @@ export function buildCategoryTree(categories: StoredCategory[]): CategoryTreeNod
     if (node) node.category = category
   }
 
-  return roots
+  // "Uncategorized" is the catch-all — always last, never mixed in among real categories
+  // (IndexedDB.getAll returns rows in an arbitrary key order otherwise).
+  return roots.sort((a, b) => {
+    const aIsUncategorized = a.category?.id === UNCATEGORIZED_CATEGORY_ID
+    const bIsUncategorized = b.category?.id === UNCATEGORIZED_CATEGORY_ID
+    return aIsUncategorized === bIsUncategorized ? 0 : aIsUncategorized ? 1 : -1
+  })
 }

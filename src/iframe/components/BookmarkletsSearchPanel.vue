@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { MagnifyingGlassIcon } from '@heroicons/vue/24/outline'
+import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import type { StoredBookmarklet, StoredCategory } from '@/shared/bookmarkletsDb'
 import BookmarkletsResultsList from './BookmarkletsResultsList.vue'
@@ -12,6 +12,7 @@ const props = defineProps<{
 const emit = defineEmits<{ select: [id: string] }>()
 
 const searchPlaceholder = chrome.i18n.getMessage('bookmarkletsSearchPlaceholder')
+const searchClearLabel = chrome.i18n.getMessage('bookmarkletsSearchClear')
 const noResultsText = chrome.i18n.getMessage('bookmarkletsSearchNoResults')
 
 const query = ref('')
@@ -34,6 +35,15 @@ const results = computed(() => {
     <div :class="ui.bookmarkletsSearchInputWrapper">
       <MagnifyingGlassIcon :class="ui.bookmarkletsSearchInputIcon" />
       <input v-model="query" type="text" autofocus :class="ui.bookmarkletsSearchInput" :placeholder="searchPlaceholder" />
+      <button
+        v-if="query !== ''"
+        type="button"
+        :class="ui.toolsSearchClear"
+        :aria-label="searchClearLabel"
+        @click="query = ''"
+      >
+        <XMarkIcon :class="ui.toolsSearchClearIcon" />
+      </button>
     </div>
 
     <BookmarkletsResultsList

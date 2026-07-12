@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { ChevronRightIcon, FolderIcon, GlobeAltIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import { ArrowTopRightOnSquareIcon, ChevronRightIcon, FolderIcon, GlobeAltIcon, TrashIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { UNCATEGORIZED_CATEGORY_ID, type StoredBookmarklet } from '@/shared/bookmarkletsDb'
 import type { CategoryTreeNode } from '@/shared/categoryTree'
@@ -28,6 +28,7 @@ const emit = defineEmits<{
 const DRAG_MIME = 'application/x-smootter-bookmarklet-id'
 
 const deleteLabel = chrome.i18n.getMessage('toolDelete')
+const openInNewTabLabel = chrome.i18n.getMessage('bookmarkletsOpenInNewTab')
 const deleteConfirmLabel = chrome.i18n.getMessage('bookmarkletsDeleteConfirm')
 const categoryDeleteConfirmLabel = chrome.i18n.getMessage('bookmarkletsCategoryDeleteConfirm')
 
@@ -183,6 +184,16 @@ function onDeleteCategoryClick(): void {
           <GlobeAltIcon v-else :class="ui.bookmarkletsSidebarItemFaviconFallback" />
           <span :class="ui.bookmarkletsSidebarItemText">{{ bookmarklet.title }}</span>
         </button>
+        <a
+          :href="bookmarklet.url"
+          target="_blank"
+          rel="noopener noreferrer"
+          :class="[ui.toolCardActionButton, ui.bookmarkletsRowDelete]"
+          :title="openInNewTabLabel"
+          @click.stop
+        >
+          <ArrowTopRightOnSquareIcon :class="ui.toolCardIcon" />
+        </a>
         <button
           type="button"
           :class="[confirmingId === bookmarklet.id ? ui.toolCardDeleteConfirm : ui.toolCardActionButton, ui.bookmarkletsRowDelete]"

@@ -150,6 +150,7 @@
   "bookmarkletsAddNew": { "message": "Add page" },
   "bookmarkletsSearch": { "message": "Search" },
   "bookmarkletsSearchPlaceholder": { "message": "Search by title, description, link or tag..." },
+  "bookmarkletsSearchClear": { "message": "Clear search" },
   "bookmarkletsSearchNoResults": { "message": "No bookmarklet matches your search." },
   "bookmarkletsOpenInNewTab": { "message": "Open in a new tab" },
   "bookmarkletsTagsTitle": { "message": "Tags" },

@@ -156,6 +156,7 @@
   "bookmarkletsAddNew": { "message": "Ajouter la page" },
   "bookmarkletsSearch": { "message": "Rechercher" },
   "bookmarkletsSearchPlaceholder": { "message": "Rechercher par titre, description, lien ou tag..." },
+  "bookmarkletsSearchClear": { "message": "Effacer la recherche" },
   "bookmarkletsSearchNoResults": { "message": "Aucun bookmarklet ne correspond à la recherche." },
   "bookmarkletsOpenInNewTab": { "message": "Ouvrir dans un nouvel onglet" },
   "bookmarkletsTagsTitle": { "message": "Tags" },
