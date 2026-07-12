@@ -49,6 +49,17 @@ export interface UserScriptsStatusResponse {
   enabled: boolean
 }
 
+export interface GetCurrentPageRequest {
+  type: 'getCurrentPage'
+}
+
+/** Reply to getCurrentPage: the tab the iframe is embedded in, straight from chrome.tabs.Tab. */
+export interface CurrentPageResponse {
+  type: 'currentPage'
+  url?: string
+  title?: string
+}
+
 /** Reply to getPreference: value is undefined when not stored. */
 export type PreferenceValue = {
   [K in keyof Preferences]: { type: 'preferenceValue'; key: K; value?: Preferences[K] }
@@ -150,6 +161,7 @@ export type ChannelRequest =
   | RemovePreferenceRequest
   | CloseModalSignal
   | GetUserScriptsStatusRequest
+  | GetCurrentPageRequest
   | TestCodeRequest
   | TestLlmConfigRequest
   | GenerateCodeRequest
@@ -161,6 +173,7 @@ export type ChannelResponse =
   | PreferenceSaved
   | CloseModalSignal
   | UserScriptsStatusResponse
+  | CurrentPageResponse
   | TestCodeResult
   | TestLlmConfigResult
   | GenerateCodeResult

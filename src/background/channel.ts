@@ -116,6 +116,20 @@ grip.hook('getUserScriptsStatus', {
 })
 
 grip.register({
+  name: 'getCurrentPage',
+  validate() {},
+  business(_args: unknown, context?: object) {
+    const tab = (context as Context | undefined)?.sender.tab
+    return { type: 'currentPage', url: tab?.url, title: tab?.title }
+  },
+})
+grip.hook('getCurrentPage', {
+  after({ result }, context: Context) {
+    if (result.isSuccess) context.sendResponse(result.result)
+  },
+})
+
+grip.register({
   name: 'testCode',
   validate(args: TestCodeRequest) {
     if (typeof args.code !== 'string' || args.code.trim() === '') {

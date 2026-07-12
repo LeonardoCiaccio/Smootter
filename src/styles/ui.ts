@@ -30,6 +30,10 @@ export const ui = {
   toolbarAppName: 'text-sm font-semibold',
   toolbarAppVersion: 'text-xs opacity-60',
   toolbarAccessories: 'flex items-center gap-2 justify-self-center',
+  // Accessory tools stand out from the plain-gray actions on the right: bigger, accent-colored.
+  toolbarAccessoryButton:
+    'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-cyan-600 transition-colors hover:bg-cyan-50 dark:text-cyan-400 dark:hover:bg-cyan-950',
+  toolbarAccessoryIcon: 'h-6 w-6',
   toolbarActions: 'flex items-center gap-2 justify-self-end',
   toolbarIconButton:
     'flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100',
@@ -51,9 +55,12 @@ export const ui = {
   // Decorative blurred blobs behind the whole app (all views) — fixed to appShell's own box,
   // so nothing (like layoutCenter's overflow-hidden) can clip the blur bleed.
   heroGlow: 'pointer-events-none absolute inset-0 -z-10',
-  heroGlowBlobA: 'absolute left-10 -top-10 h-64 w-64 rounded-full bg-violet-500 opacity-20 blur-3xl dark:opacity-25',
-  heroGlowBlobB: 'absolute right-10 top-6 h-56 w-56 rounded-full bg-cyan-400 opacity-20 blur-3xl dark:opacity-20',
-  heroGlowBlobC: 'absolute left-1/3 top-72 h-56 w-56 rounded-full bg-fuchsia-400 opacity-10 blur-3xl dark:opacity-15',
+  heroGlowBlobA:
+    'absolute left-10 -top-10 h-64 w-64 rounded-full bg-violet-500 opacity-20 blur-3xl dark:opacity-25',
+  heroGlowBlobB:
+    'absolute right-10 top-6 h-56 w-56 rounded-full bg-cyan-400 opacity-20 blur-3xl dark:opacity-20',
+  heroGlowBlobC:
+    'absolute left-1/3 top-72 h-56 w-56 rounded-full bg-fuchsia-400 opacity-10 blur-3xl dark:opacity-15',
   // Home hero: pushed toward the top (the toolbar above is a normal in-flow element now)
   heroWrapper: 'flex flex-col items-center gap-4 px-6 pt-20 text-center',
   heroHeader:
@@ -70,14 +77,16 @@ export const ui = {
   toolsSearchWrapper: 'relative mb-6 w-full max-w-sm flex-shrink-0',
   toolsSearchInput:
     'w-full rounded-full border border-gray-300 bg-white py-2 pl-9 pr-8 text-sm text-gray-900 focus:outline-none focus:ring-2 focus:ring-cyan-500 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',
-  toolsSearchIcon: 'pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-gray-500',
+  toolsSearchIcon:
+    'pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-gray-500',
   toolsSearchClear:
     'absolute right-2.5 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200',
   toolsSearchClearIcon: 'h-3.5 w-3.5',
   toolsNoResults: 'w-full py-10 text-center text-sm text-gray-400 dark:text-gray-500',
   // Fixed vh height + its own scroll — a percentage-height chain up through the app shell
   // doesn't reliably contain this content, so it's sized independently instead (like the wizard chat grid).
-  toolsScrollArea: 'flex max-h-[58vh] w-full justify-center overflow-y-auto px-6 pb-10 [scrollbar-gutter:stable]',
+  toolsScrollArea:
+    'flex max-h-[58vh] w-full justify-center overflow-y-auto px-6 pb-10 [scrollbar-gutter:stable]',
   // Saved tools: 4-column grid, one card per tool (whole card is the click target)
   toolsList: 'grid w-full grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4',
   toolCard:
@@ -87,7 +96,8 @@ export const ui = {
   toolCardMetaRow: 'flex items-center justify-between gap-2',
   toolCardMeta: 'min-w-0 flex-1 truncate text-[11px] text-gray-400 dark:text-gray-500',
   // Enable/disable switch, right after the dates.
-  switchTrack: 'relative inline-flex h-5 w-9 flex-shrink-0 items-center rounded-full transition-colors',
+  switchTrack:
+    'relative inline-flex h-5 w-9 flex-shrink-0 items-center rounded-full transition-colors',
   switchTrackOff: 'bg-gray-300 dark:bg-gray-600',
   switchTrackOn: 'bg-cyan-600 dark:bg-cyan-500',
   switchThumb: 'inline-block h-3.5 w-3.5 translate-x-1 rounded-full bg-white transition-transform',
@@ -107,8 +117,86 @@ export const ui = {
   // Non-home views: a fixed breadcrumb on top, content filling the rest.
   viewShell: 'flex h-full flex-col',
   viewContent: 'flex flex-1 items-center justify-center',
+  // Bookmarklets: empty state is just the centered form; once there's at least one category
+  // or bookmarklet, a sidebar appears alongside a main area (detail or, by default, the form).
+  bookmarkletsWrapper:
+    'mx-auto flex w-full max-w-xl flex-1 flex-col gap-8 overflow-y-auto px-6 pb-10 pt-10',
+  bookmarkletsHeaderGroup: 'mb-2 flex flex-col gap-1.5',
+  bookmarkletsHeader: 'font-heading text-2xl font-bold text-gray-900 dark:text-gray-100',
+  bookmarkletsSubheader: 'font-subheading text-sm text-gray-500 dark:text-gray-400 pb-4',
+  bookmarkletsForm: 'flex flex-col gap-4',
+  bookmarkletsAlreadySavedNotice:
+    'mb-4 rounded-tool border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs font-medium text-cyan-700 dark:border-cyan-900 dark:bg-cyan-950 dark:text-cyan-300',
+  bookmarkletsLayout: 'flex min-h-0 flex-1',
+  bookmarkletsSidebar:
+    'flex w-56 flex-shrink-0 flex-col gap-4 overflow-y-auto border-r border-gray-200 px-4 pb-6 pt-10 dark:border-gray-800',
+  bookmarkletsSidebarHeader: 'flex items-center justify-between',
+  bookmarkletsSidebarTitle:
+    'text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500',
+  bookmarkletsCategoryGroup: 'flex flex-col gap-0.5',
+  // Category header: distinct from items on purpose — bold, dark, its own row with a folder icon
+  // and a chevron that rotates to show collapsed/expanded state.
+  bookmarkletsCategoryHeader:
+    'flex min-w-0 flex-1 items-center gap-1.5 rounded-tool px-1 py-1.5 text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-800',
+  bookmarkletsCategoryChevron:
+    'h-3.5 w-3.5 flex-shrink-0 text-gray-400 transition-transform dark:text-gray-500',
+  bookmarkletsCategoryChevronOpen: 'rotate-90',
+  bookmarkletsCategoryIcon: 'h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-400',
+  bookmarkletsCategoryName: 'truncate text-sm font-semibold text-gray-900 dark:text-gray-100',
+  bookmarkletsSidebarRow: 'group flex items-center gap-1',
+  bookmarkletsSidebarItem:
+    'min-w-0 flex-1 truncate rounded-tool py-1.5 pl-8 pr-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800',
+  bookmarkletsSidebarItemActive: 'bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300',
+  bookmarkletsMain: 'flex flex-1 overflow-y-auto',
+  // Right sidebar: every tag across all bookmarklets, deletable (strips it everywhere it's used).
+  bookmarkletsTagsSidebar:
+    'flex w-56 flex-shrink-0 flex-col gap-4 overflow-y-auto border-l border-gray-200 px-4 pb-6 pt-10 dark:border-gray-800',
+  bookmarkletsTagsList: 'flex flex-col gap-0.5',
+  bookmarkletsTagRow: 'flex items-center gap-1',
+  bookmarkletsTagButton:
+    'min-w-0 flex-1 truncate rounded-tool px-2 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800',
+  // Detailed results when a tag is clicked: a sorted, scannable list of every matching bookmarklet.
+  bookmarkletsTagResultsHeader: 'mb-6 font-heading text-xl font-bold text-gray-900 dark:text-gray-100',
+  bookmarkletsTagResultsList: 'flex flex-col gap-3',
+  bookmarkletsTagResultRecord:
+    'flex cursor-pointer flex-col gap-1 rounded-tool border border-gray-200 p-4 text-left transition-colors hover:border-cyan-500 dark:border-gray-800 dark:hover:border-cyan-400',
+  bookmarkletsTagResultCategory:
+    'w-fit rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:bg-gray-800 dark:text-gray-400',
+  bookmarkletsTagResultTitle: 'text-sm font-semibold text-gray-900 dark:text-gray-100',
+  bookmarkletsTagResultDescription: 'text-xs text-gray-500 dark:text-gray-400',
+  bookmarkletDetailLink: 'block truncate text-sm text-cyan-600 hover:underline dark:text-cyan-400',
+  inputReadonly:
+    'w-full truncate rounded-tool border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-800/50 dark:text-gray-400',
+  // Category combobox: a custom trigger+menu (native <select> can't be themed) plus a
+  // compact "+" icon button that swaps in a name input.
+  categoryCombobox: 'flex flex-col gap-1.5 text-left',
+  categoryComboboxRow: 'flex items-center gap-2',
+  categoryComboboxAnchor: 'relative min-w-0 flex-1',
+  categoryComboboxTrigger:
+    'flex w-full items-center justify-between gap-2 rounded-tool border border-gray-300 bg-white px-3 py-2 text-left text-sm text-gray-900 transition-colors hover:border-cyan-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:hover:border-cyan-400',
+  categoryComboboxTriggerText: 'truncate',
+  categoryComboboxChevron: 'h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500',
+  // Shared dropdown menu look — also used by the tag input's suggestion list.
+  categoryComboboxMenu:
+    'absolute left-0 right-0 top-full z-20 mt-1 max-h-48 overflow-y-auto rounded-tool border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-800',
+  categoryComboboxOption:
+    'block w-full truncate px-3 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700',
+  categoryComboboxOptionActive: 'bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300',
+  categoryAddButton:
+    'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-tool border border-gray-300 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100',
+  // Tags: chip input with a themed custom suggestion dropdown (reuses the combobox menu look).
+  tagsInputAnchor: 'relative',
+  tagsInputWrapper:
+    'flex flex-wrap items-center gap-1.5 rounded-tool border border-gray-300 bg-white px-2 py-1.5 focus-within:ring-2 focus-within:ring-cyan-500 dark:border-gray-700 dark:bg-gray-800',
+  tagChip:
+    'flex items-center gap-1 rounded-full bg-cyan-50 px-2 py-0.5 text-xs font-medium text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300',
+  tagChipRemove:
+    'text-cyan-500 transition-colors hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-200',
+  tagsInput:
+    'min-w-[6rem] flex-1 border-none bg-transparent p-0.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-0 dark:text-gray-100',
   // Options: no sidebar (too few settings), sections centered in the page, fields left-aligned within.
-  optionsContent: 'flex flex-1 flex-row flex-wrap items-stretch justify-center gap-8 overflow-y-auto px-8 py-6',
+  optionsContent:
+    'flex flex-1 flex-row flex-wrap items-stretch justify-center gap-8 overflow-y-auto px-8 py-6',
   // Vertical divider between option sections (row layout) — stretches to the taller section.
   // Hidden below `lg`: that's roughly where the two max-w-md sections stop fitting
   // side by side and flex-wrap stacks them — a divider between stacked boxes reads wrong.
@@ -119,7 +207,8 @@ export const ui = {
   optionsSectionActions: 'flex items-center justify-between gap-3',
   creditsList: 'flex flex-col divide-y divide-gray-100 dark:divide-gray-800',
   creditsItem: 'flex items-center justify-between py-2 text-sm',
-  creditsLink: 'text-gray-700 transition-colors hover:text-cyan-600 hover:underline dark:text-gray-300 dark:hover:text-cyan-400',
+  creditsLink:
+    'text-gray-700 transition-colors hover:text-cyan-600 hover:underline dark:text-gray-300 dark:hover:text-cyan-400',
   creditsVersion: 'text-xs text-gray-400 dark:text-gray-500',
   breadcrumb: 'flex items-center gap-1.5 self-start px-6 pt-6 text-sm font-medium',
   breadcrumbHome:
@@ -127,7 +216,8 @@ export const ui = {
   breadcrumbSeparator: 'text-gray-300 dark:text-gray-600',
   breadcrumbCurrent: 'text-gray-900 dark:text-gray-100',
   // Quick save (edit mode only): styled as a breadcrumb segment, colored to stand out from the plain trail.
-  breadcrumbSaveAction: 'font-semibold text-cyan-600 transition-colors hover:text-cyan-500 dark:text-cyan-400 dark:hover:text-cyan-300',
+  breadcrumbSaveAction:
+    'font-semibold text-cyan-600 transition-colors hover:text-cyan-500 dark:text-cyan-400 dark:hover:text-cyan-300',
   // Wizard viewport: centers the wizard both ways within the view
   wizardViewport: 'flex flex-1 items-center justify-center px-6 pb-6 pt-6',
   // Wizard: fixed 3-row layout (header / body / dots), 78% of the viewport height.
@@ -183,8 +273,10 @@ export const ui = {
   wizardOptionTitle: 'text-sm font-semibold text-gray-900 dark:text-gray-100',
   wizardOptionDescription: 'text-xs text-gray-500 dark:text-gray-400',
   // Toast notifications: stacked, top-centered, one variant per type
-  toastContainer: 'pointer-events-none fixed inset-x-0 top-4 z-50 flex flex-col items-center gap-2 px-4',
-  toast: 'pointer-events-auto flex max-w-sm items-start gap-2 rounded-xl border px-4 py-3 text-sm shadow-lg',
+  toastContainer:
+    'pointer-events-none fixed inset-x-0 top-4 z-50 flex flex-col items-center gap-2 px-4',
+  toast:
+    'pointer-events-auto flex max-w-sm items-start gap-2 rounded-xl border px-4 py-3 text-sm shadow-lg',
   toastIcon: 'h-5 w-5 flex-shrink-0',
   toastInfo:
     'border-sky-200 bg-sky-50 text-sky-800 dark:border-sky-800 dark:bg-sky-950 dark:text-sky-200',
@@ -202,7 +294,8 @@ export const ui = {
   bannerTitle: 'text-sm font-semibold text-gray-900 dark:text-gray-100',
   bannerDescription: 'text-xs text-gray-600 dark:text-gray-400',
   // Code editor (CodeMirror mounts here; its own theme mirrors these colors)
-  codeEditor: 'h-full min-h-[16rem] w-full overflow-hidden rounded-xl border border-gray-200 text-sm dark:border-gray-800',
+  codeEditor:
+    'h-full min-h-[16rem] w-full overflow-hidden rounded-xl border border-gray-200 text-sm dark:border-gray-800',
   // Wraps the code editor so the floating action buttons (clear, AI) can overlay its bottom-right corner.
   codeEditorWrapper: 'relative min-h-0 w-full flex-1',
   codeEditorActions: 'absolute bottom-3 right-6 z-10 flex items-center gap-1.5',
@@ -224,8 +317,10 @@ export const ui = {
   wizardChatHeader: 'flex flex-col gap-1 pb-1',
   wizardChatTitle: 'font-heading font-extrabold text-lg text-gray-900 dark:text-gray-100',
   wizardChatSubtitle: 'font-sans text-xs text-gray-500 dark:text-gray-400',
-  wizardChatMessages: 'flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pr-1 [scrollbar-gutter:stable]',
-  wizardChatEmpty: 'flex flex-1 items-center justify-center px-4 text-center text-xs text-gray-400 dark:text-gray-500',
+  wizardChatMessages:
+    'flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pr-1 [scrollbar-gutter:stable]',
+  wizardChatEmpty:
+    'flex flex-1 items-center justify-center px-4 text-center text-xs text-gray-400 dark:text-gray-500',
   wizardChatBubbleUser:
     'max-w-[85%] flex-shrink-0 break-words self-end rounded-2xl rounded-br-sm bg-cyan-600 px-3.5 py-2 text-sm text-white',
   wizardChatBubbleAssistant:
@@ -240,7 +335,8 @@ export const ui = {
   wizardTesterBody: 'flex w-full flex-col items-center gap-6 text-center',
   // Processing animation: a spinning ring around a pulsing icon.
   wizardTesterSpinnerWrapper: 'relative flex h-16 w-16 items-center justify-center',
-  wizardTesterSpinnerTrack: 'absolute inset-0 rounded-full border-4 border-cyan-100 dark:border-cyan-950',
+  wizardTesterSpinnerTrack:
+    'absolute inset-0 rounded-full border-4 border-cyan-100 dark:border-cyan-950',
   wizardTesterSpinnerArc:
     'absolute inset-0 animate-spin rounded-full border-4 border-transparent border-t-cyan-500 dark:border-t-cyan-400',
   wizardTesterSpinnerIcon: 'h-6 w-6 animate-pulse text-cyan-500 dark:text-cyan-400',
@@ -250,7 +346,8 @@ export const ui = {
   wizardTesterActions: 'flex items-center gap-3',
   // Generic modal: dim overlay + centered panel, reused by the LLM config popup.
   modalOverlay: 'fixed inset-0 z-50 flex items-center justify-center bg-black/40 px-6',
-  modalPanel: 'flex w-full max-w-md flex-col gap-5 rounded-tool bg-white p-6 text-left shadow-xl dark:bg-gray-900',
+  modalPanel:
+    'flex w-full max-w-md flex-col gap-5 rounded-tool bg-white p-6 text-left shadow-xl dark:bg-gray-900',
   modalHeader: 'flex items-center justify-between',
   modalTitle: 'text-lg font-semibold text-gray-900 dark:text-gray-100',
   modalActions: 'flex items-center justify-end gap-3',

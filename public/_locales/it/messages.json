@@ -127,5 +127,37 @@
     "placeholders": { "count": { "content": "$1" } }
   },
   "toolsImportError": { "message": "Impossibile importare il file — verifica che sia un export valido." },
-  "toolsDropHint": { "message": "Rilascia per importare" }
+  "toolsDropHint": { "message": "Rilascia per importare" },
+  "bookmarkletsHeader": { "message": "Salva questa pagina" },
+  "bookmarkletsEditHeader": { "message": "Modifica questa pagina" },
+  "bookmarkletsSubheader": { "message": "Organizza i link utili per dominio, con tag e categorie." },
+  "bookmarkletsFormTitleLabel": { "message": "Titolo" },
+  "bookmarkletsFormTitlePlaceholder": { "message": "Titolo della pagina" },
+  "bookmarkletsFormLinkLabel": { "message": "Link" },
+  "bookmarkletsFormDescriptionLabel": { "message": "Descrizione" },
+  "bookmarkletsFormDescriptionPlaceholder": { "message": "es. Perché ti serve questo link" },
+  "bookmarkletsFormTagsLabel": { "message": "Tag" },
+  "bookmarkletsFormTagsPlaceholder": { "message": "Aggiungi un tag e premi invio" },
+  "bookmarkletsFormCategoryLabel": { "message": "Categoria" },
+  "bookmarkletsCategoryNewOption": { "message": "+ Nuova categoria" },
+  "bookmarkletsCategoryNewPlaceholder": { "message": "Nome categoria" },
+  "bookmarkletsSave": { "message": "Salva" },
+  "bookmarkletsSaved": { "message": "Bookmarklet salvato" },
+  "bookmarkletsCategoriesTitle": { "message": "Categorie" },
+  "bookmarkletsAddNew": { "message": "Aggiungi pagina" },
+  "bookmarkletsTagsTitle": { "message": "Tag" },
+  "bookmarkletsTagDeleteConfirm": { "message": "Clicca di nuovo per eliminare ovunque" },
+  "bookmarkletsDeleteConfirm": { "message": "Clicca di nuovo per eliminare" },
+  "bookmarkletDeleted": { "message": "Bookmarklet eliminato" },
+  "bookmarkletsUncategorized": { "message": "Senza categoria" },
+  "bookmarkletsCategoryDeleteConfirm": { "message": "Clicca di nuovo per eliminare la categoria" },
+  "bookmarkletCategoryDeleted": { "message": "Categoria eliminata" },
+  "bookmarkletsTagResultsHeader": {
+    "message": "Bookmarklet con il tag \"$TAG$\"",
+    "placeholders": { "tag": { "content": "$1" } }
+  },
+  "bookmarkletsAlreadySaved": {
+    "message": "Avevi già salvato questa pagina il $DATE$ — modifica e salva per aggiornarla.",
+    "placeholders": { "date": { "content": "$1" } }
+  }
 }

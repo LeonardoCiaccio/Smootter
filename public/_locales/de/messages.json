@@ -135,5 +135,37 @@
     "placeholders": { "count": { "content": "$1" } }
   },
   "toolsImportError": { "message": "Datei konnte nicht importiert werden — ist es ein gültiger Tool-Export?" },
-  "toolsDropHint": { "message": "Zum Importieren ablegen" }
+  "toolsDropHint": { "message": "Zum Importieren ablegen" },
+  "bookmarkletsHeader": { "message": "Diese Seite speichern" },
+  "bookmarkletsEditHeader": { "message": "Diese Seite bearbeiten" },
+  "bookmarkletsSubheader": { "message": "Organisiere nützliche Links nach Domain, mit Tags und Kategorien." },
+  "bookmarkletsFormTitleLabel": { "message": "Titel" },
+  "bookmarkletsFormTitlePlaceholder": { "message": "Seitentitel" },
+  "bookmarkletsFormLinkLabel": { "message": "Link" },
+  "bookmarkletsFormDescriptionLabel": { "message": "Beschreibung" },
+  "bookmarkletsFormDescriptionPlaceholder": { "message": "z. B. Warum du diesen Link brauchst" },
+  "bookmarkletsFormTagsLabel": { "message": "Tags" },
+  "bookmarkletsFormTagsPlaceholder": { "message": "Tag hinzufügen und Enter drücken" },
+  "bookmarkletsFormCategoryLabel": { "message": "Kategorie" },
+  "bookmarkletsCategoryNewOption": { "message": "+ Neue Kategorie" },
+  "bookmarkletsCategoryNewPlaceholder": { "message": "Kategoriename" },
+  "bookmarkletsSave": { "message": "Speichern" },
+  "bookmarkletsSaved": { "message": "Bookmarklet gespeichert" },
+  "bookmarkletsCategoriesTitle": { "message": "Kategorien" },
+  "bookmarkletsAddNew": { "message": "Seite hinzufügen" },
+  "bookmarkletsTagsTitle": { "message": "Tags" },
+  "bookmarkletsTagDeleteConfirm": { "message": "Erneut klicken, um überall zu löschen" },
+  "bookmarkletsDeleteConfirm": { "message": "Erneut klicken zum Löschen" },
+  "bookmarkletDeleted": { "message": "Bookmarklet gelöscht" },
+  "bookmarkletsUncategorized": { "message": "Ohne Kategorie" },
+  "bookmarkletsCategoryDeleteConfirm": { "message": "Erneut klicken, um die Kategorie zu löschen" },
+  "bookmarkletCategoryDeleted": { "message": "Kategorie gelöscht" },
+  "bookmarkletsTagResultsHeader": {
+    "message": "Bookmarklets mit dem Tag „$TAG$“",
+    "placeholders": { "tag": { "content": "$1" } }
+  },
+  "bookmarkletsAlreadySaved": {
+    "message": "Du hast diese Seite bereits am $DATE$ gespeichert — bearbeiten und speichern, um sie zu aktualisieren.",
+    "placeholders": { "date": { "content": "$1" } }
+  }
 }

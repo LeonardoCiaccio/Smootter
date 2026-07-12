@@ -129,5 +129,37 @@
     "placeholders": { "count": { "content": "$1" } }
   },
   "toolsImportError": { "message": "Couldn't import that file — check it's a valid tool export." },
-  "toolsDropHint": { "message": "Drop to import" }
+  "toolsDropHint": { "message": "Drop to import" },
+  "bookmarkletsHeader": { "message": "Save this page" },
+  "bookmarkletsEditHeader": { "message": "Edit this page" },
+  "bookmarkletsSubheader": { "message": "Organize useful links by domain, with tags and categories." },
+  "bookmarkletsFormTitleLabel": { "message": "Title" },
+  "bookmarkletsFormTitlePlaceholder": { "message": "Page title" },
+  "bookmarkletsFormLinkLabel": { "message": "Link" },
+  "bookmarkletsFormDescriptionLabel": { "message": "Description" },
+  "bookmarkletsFormDescriptionPlaceholder": { "message": "e.g. Why you need this link" },
+  "bookmarkletsFormTagsLabel": { "message": "Tags" },
+  "bookmarkletsFormTagsPlaceholder": { "message": "Add a tag and press enter" },
+  "bookmarkletsFormCategoryLabel": { "message": "Category" },
+  "bookmarkletsCategoryNewOption": { "message": "+ New category" },
+  "bookmarkletsCategoryNewPlaceholder": { "message": "Category name" },
+  "bookmarkletsSave": { "message": "Save" },
+  "bookmarkletsSaved": { "message": "Bookmarklet saved" },
+  "bookmarkletsCategoriesTitle": { "message": "Categories" },
+  "bookmarkletsAddNew": { "message": "Add page" },
+  "bookmarkletsTagsTitle": { "message": "Tags" },
+  "bookmarkletsTagDeleteConfirm": { "message": "Click again to delete everywhere" },
+  "bookmarkletsDeleteConfirm": { "message": "Click again to delete" },
+  "bookmarkletDeleted": { "message": "Bookmarklet deleted" },
+  "bookmarkletsUncategorized": { "message": "Uncategorized" },
+  "bookmarkletsCategoryDeleteConfirm": { "message": "Click again to delete the category" },
+  "bookmarkletCategoryDeleted": { "message": "Category deleted" },
+  "bookmarkletsTagResultsHeader": {
+    "message": "Bookmarklets tagged \"$TAG$\"",
+    "placeholders": { "tag": { "content": "$1" } }
+  },
+  "bookmarkletsAlreadySaved": {
+    "message": "You already saved this page on $DATE$ — edit and save to update it.",
+    "placeholders": { "date": { "content": "$1" } }
+  }
 }

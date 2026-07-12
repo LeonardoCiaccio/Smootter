@@ -63,8 +63,8 @@ async function onImportFileChange(event: Event): Promise<void> {
     </div>
 
     <div :class="ui.toolbarAccessories">
-      <RouterLink to="/bookmarklets" :class="ui.toolbarIconButton" :title="bookmarkletsLabel">
-        <FolderIcon :class="ui.toolbarIcon" />
+      <RouterLink to="/bookmarklets" :class="ui.toolbarAccessoryButton" :title="bookmarkletsLabel">
+        <FolderIcon :class="ui.toolbarAccessoryIcon" />
       </RouterLink>
     </div>
 
