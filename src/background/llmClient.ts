@@ -367,13 +367,17 @@ function buildBookmarkletSystemPrompt(url: string, existingTags: string[], exist
   ]
 
   parts.push(
-    'Categories can be nested into subcategories by writing a path with "/" as the separator, e.g. "Work/Projects/2026" — each segment between slashes becomes one level of folder in the sidebar. Use nesting when the page is a specific case of a broader existing category (e.g. if "Work/Projects" already exists and this page is about one particular project, propose "Work/Projects/<ProjectName>" rather than a new unrelated top-level category). Do not nest needlessly — a flat, single-segment category is fine when there is no meaningful broader group to nest it under.',
+    '`category` is the primary way pages get organized here — a real folder hierarchy the user browses, not a second tag. Tags are for short, cross-cutting labels; `category` is for structure, and building that structure well matters. Actively look for a subcategory opportunity before settling on a flat, top-level one.',
+  )
+
+  parts.push(
+    'Categories nest into subcategories by writing a path with "/" as the separator, e.g. "Work/Projects/2026" — each segment becomes one level of folder in the sidebar. Whenever the page is a specific instance of a broader topic, nest it: prefer "Cooking/Desserts/Tiramisu" over just "Cooking" or just "Desserts". A flat, single-segment category should be the exception, used only when the page is genuinely broad and no meaningful parent/child structure applies to it — do not default to flat out of laziness.',
   )
 
   parts.push(
     existingCategories.length > 0
-      ? `Existing categories already in use: ${existingCategories.join(', ')}. Strongly prefer reusing one of these exactly (same spelling, same nesting) for \`category\` if it reasonably fits, or nesting a new subcategory under one of them — only propose a fully new top-level category when none of these fit at all.`
-      : 'No categories exist yet — propose a single, sensible one (nested only if the page itself suggests a natural hierarchy, e.g. "Recipes/Desserts").',
+      ? `Existing categories already in use: ${existingCategories.join(', ')}. Before proposing anything new, check whether one of these is (or should become) the parent of a new subcategory for this page — e.g. if "Work/Projects" exists and this page is about one particular project, propose "Work/Projects/<ProjectName>". Reuse an existing full path exactly (same spelling, same nesting) when it already fits this page precisely; extend it with a new segment when it's the right parent but too broad; only propose a fully unrelated new top-level category when nothing existing is even a plausible parent.`
+      : 'No categories exist yet — this is your chance to start a sensible hierarchy. If the page suggests a natural parent/child relationship (e.g. a specific recipe under a cuisine or course), propose a nested path like "Recipes/Desserts" rather than a single flat category.',
   )
 
   parts.push(
