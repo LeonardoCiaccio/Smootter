@@ -20,13 +20,24 @@ export interface StoredCategory {
   name: string
 }
 
+/**
+ * A favicon, keyed by domain (not per-bookmarklet) since several saved pages
+ * often share the same site and therefore the same icon — one base64 copy
+ * per domain instead of duplicating it on every bookmarklet.
+ */
+export interface StoredFavicon {
+  domain: string
+  dataUrl: string
+}
+
 /** Always present, never deletable — the catch-all category bookmarklets fall back to. */
 export const UNCATEGORIZED_CATEGORY_ID = 'uncategorized'
 
 const DB_NAME = chrome.runtime.getManifest().short_name + '_bookmarklets'
-const DB_VERSION = 1
+const DB_VERSION = 2
 const BOOKMARKLETS_STORE = 'bookmarklets'
 const CATEGORIES_STORE = 'categories'
+const FAVICONS_STORE = 'favicons'
 
 function openDb(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
@@ -38,6 +49,9 @@ function openDb(): Promise<IDBDatabase> {
       }
       if (!db.objectStoreNames.contains(CATEGORIES_STORE)) {
         db.createObjectStore(CATEGORIES_STORE, { keyPath: 'id' })
+      }
+      if (!db.objectStoreNames.contains(FAVICONS_STORE)) {
+        db.createObjectStore(FAVICONS_STORE, { keyPath: 'domain' })
       }
     }
     request.onsuccess = () => resolve(request.result)
@@ -117,6 +131,60 @@ export async function deleteTagEverywhere(tag: string): Promise<StoredBookmarkle
       .map((bookmarklet) => saveBookmarklet(bookmarklet)),
   )
   return updated
+}
+
+/** Insert or update a domain's cached favicon. */
+async function saveFavicon(favicon: StoredFavicon): Promise<void> {
+  const db = await openDb()
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(FAVICONS_STORE, 'readwrite')
+    transaction.objectStore(FAVICONS_STORE).put(favicon)
+    transaction.oncomplete = () => resolve()
+    transaction.onerror = () => reject(transaction.error)
+  })
+}
+
+/** The cached favicon for `domain`, as a base64 data URL — undefined if none is cached. */
+async function getFavicon(domain: string): Promise<string | undefined> {
+  const db = await openDb()
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(FAVICONS_STORE, 'readonly')
+    const request = transaction.objectStore(FAVICONS_STORE).get(domain)
+    request.onsuccess = () => resolve((request.result as StoredFavicon | undefined)?.dataUrl)
+    request.onerror = () => reject(request.error)
+  })
+}
+
+function blobToDataUrl(blob: Blob): Promise<string> {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader()
+    reader.onload = () => resolve(reader.result as string)
+    reader.onerror = () => reject(reader.error)
+    reader.readAsDataURL(blob)
+  })
+}
+
+/**
+ * Returns the cached favicon for `domain` as a base64 data URL. If nothing's
+ * cached yet and `liveFaviconUrl` is given (the browser's own resolved
+ * favIconUrl for the tab, only meaningful when `domain` is the page
+ * currently open), fetches and caches it. Undefined when there's nothing
+ * cached and nothing fetchable — the caller falls back to a generic icon.
+ */
+export async function ensureFavicon(domain: string, liveFaviconUrl?: string): Promise<string | undefined> {
+  const cached = await getFavicon(domain)
+  if (cached) return cached
+  if (!liveFaviconUrl) return undefined
+
+  try {
+    const response = await fetch(liveFaviconUrl)
+    if (!response.ok) return undefined
+    const dataUrl = await blobToDataUrl(await response.blob())
+    await saveFavicon({ domain, dataUrl })
+    return dataUrl
+  } catch {
+    return undefined
+  }
 }
 
 /** Insert or update a category. */

@@ -125,6 +125,11 @@ export const ui = {
   bookmarkletsHeader: 'font-heading text-2xl font-bold text-gray-900 dark:text-gray-100',
   bookmarkletsSubheader: 'font-subheading text-sm text-gray-500 dark:text-gray-400 pb-4',
   bookmarkletsForm: 'flex flex-col gap-4',
+  bookmarkletsTitleRow: 'flex items-center gap-2',
+  bookmarkletsFavicon:
+    'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-tool border border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-800',
+  bookmarkletsFaviconImage: 'h-4 w-4',
+  bookmarkletsFaviconFallback: 'h-4 w-4 text-gray-400 dark:text-gray-500',
   bookmarkletsAlreadySavedNotice:
     'mb-4 rounded-tool border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs font-medium text-cyan-700 dark:border-cyan-900 dark:bg-cyan-950 dark:text-cyan-300',
   bookmarkletsLayout: 'flex min-h-0 flex-1',
@@ -145,8 +150,11 @@ export const ui = {
   bookmarkletsCategoryName: 'truncate text-sm font-semibold text-gray-900 dark:text-gray-100',
   bookmarkletsSidebarRow: 'group flex items-center gap-1',
   bookmarkletsSidebarItem:
-    'min-w-0 flex-1 truncate rounded-tool py-1.5 pl-8 pr-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800',
+    'flex min-w-0 flex-1 items-center gap-1.5 rounded-tool py-1.5 pl-8 pr-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800',
   bookmarkletsSidebarItemActive: 'bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300',
+  bookmarkletsSidebarItemText: 'truncate',
+  bookmarkletsSidebarItemFavicon: 'h-3.5 w-3.5 flex-shrink-0',
+  bookmarkletsSidebarItemFaviconFallback: 'h-3.5 w-3.5 flex-shrink-0 text-gray-400 dark:text-gray-500',
   bookmarkletsMain: 'flex flex-1 overflow-y-auto',
   // Right sidebar: every tag across all bookmarklets, deletable (strips it everywhere it's used).
   bookmarkletsTagsSidebar:

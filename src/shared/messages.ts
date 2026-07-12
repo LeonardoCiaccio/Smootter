@@ -58,6 +58,7 @@ export interface CurrentPageResponse {
   type: 'currentPage'
   url?: string
   title?: string
+  favIconUrl?: string
 }
 
 /** Reply to getPreference: value is undefined when not stored. */

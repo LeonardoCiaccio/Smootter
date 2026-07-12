@@ -140,7 +140,7 @@
   "bookmarkletsFormTagsPlaceholder": { "message": "Aggiungi un tag e premi invio" },
   "bookmarkletsFormCategoryLabel": { "message": "Categoria" },
   "bookmarkletsCategoryNewOption": { "message": "+ Nuova categoria" },
-  "bookmarkletsCategoryNewPlaceholder": { "message": "Nome categoria" },
+  "bookmarkletsCategoryNewPlaceholder": { "message": "Nome categoria, es. AA/BB/CC per sottocategorie" },
   "bookmarkletsSave": { "message": "Salva" },
   "bookmarkletsSaved": { "message": "Bookmarklet salvato" },
   "bookmarkletsCategoriesTitle": { "message": "Categorie" },

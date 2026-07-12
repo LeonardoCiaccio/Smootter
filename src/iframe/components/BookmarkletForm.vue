@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
+import { GlobeAltIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import CategoryCombobox from './CategoryCombobox.vue'
 import TagsInput from './TagsInput.vue'
-import { saveBookmarklet, type StoredBookmarklet, type StoredCategory } from '@/shared/bookmarkletsDb'
+import { ensureFavicon, saveBookmarklet, type StoredBookmarklet, type StoredCategory } from '@/shared/bookmarkletsDb'
+import { hostnameOf } from '@/shared/url'
 
 const props = defineProps<{
   currentUrl: string
@@ -13,6 +15,9 @@ const props = defineProps<{
   // Set when currentUrl matches an already-saved bookmarklet — the form edits it in place
   // instead of creating a duplicate, and prefills what was saved before.
   existingBookmarklet: StoredBookmarklet | null
+  // The live tab's own resolved favicon URL — only usable to fetch a fresh favicon when
+  // editing the current page itself (an arbitrary past bookmarklet has no live tab to ask).
+  faviconUrl?: string
 }>()
 const emit = defineEmits<{
   saved: [bookmarklet: StoredBookmarklet]
@@ -51,6 +56,25 @@ watch(() => props.existingBookmarklet, resetFrom)
 // Editing a bookmarklet selected from the sidebar/tag results keeps its own URL, which may
 // not be the page currently open — only a brand-new entry uses the live current page's URL.
 const linkUrl = computed(() => props.existingBookmarklet?.url ?? props.currentUrl)
+
+const currentDomain = computed(() => hostnameOf(props.currentUrl))
+
+// Favicons are cached per domain (bookmarkletsDb.ensureFavicon), not per bookmarklet — several
+// saved pages on the same site share one. Falls back to a generic icon when nothing's cached
+// and there's no live tab to fetch a fresh one from (editing a past bookmarklet on another site).
+const faviconDataUrl = ref<string | null>(null)
+
+watch(
+  linkUrl,
+  async (url) => {
+    faviconDataUrl.value = null
+    const domain = hostnameOf(url)
+    if (domain === '') return
+    const liveFaviconUrl = domain === currentDomain.value ? props.faviconUrl : undefined
+    faviconDataUrl.value = (await ensureFavicon(domain, liveFaviconUrl)) ?? null
+  },
+  { immediate: true },
+)
 
 const canSave = computed(() => title.value.trim() !== '' && categoryId.value !== '')
 
@@ -91,7 +115,13 @@ async function onSubmit(): Promise<void> {
     <form :class="ui.bookmarkletsForm" @submit.prevent="onSubmit">
       <label :class="ui.wizardField">
         <span :class="ui.wizardFieldLabel">{{ titleLabel }}</span>
-        <input v-model="title" type="text" :class="ui.input" :placeholder="titlePlaceholder" />
+        <div :class="ui.bookmarkletsTitleRow">
+          <input v-model="title" type="text" :class="ui.input" :placeholder="titlePlaceholder" />
+          <span :class="ui.bookmarkletsFavicon">
+            <img v-if="faviconDataUrl" :src="faviconDataUrl" :class="ui.bookmarkletsFaviconImage" alt="" />
+            <GlobeAltIcon v-else :class="ui.bookmarkletsFaviconFallback" />
+          </span>
+        </div>
       </label>
 
       <label :class="ui.wizardField">

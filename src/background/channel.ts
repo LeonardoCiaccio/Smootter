@@ -120,7 +120,7 @@ grip.register({
   validate() {},
   business(_args: unknown, context?: object) {
     const tab = (context as Context | undefined)?.sender.tab
-    return { type: 'currentPage', url: tab?.url, title: tab?.title }
+    return { type: 'currentPage', url: tab?.url, title: tab?.title, favIconUrl: tab?.favIconUrl }
   },
 })
 grip.hook('getCurrentPage', {

@@ -23,6 +23,7 @@ const toast = useToast()
 
 const currentUrl = ref('')
 const pageTitle = ref('')
+const pageFaviconUrl = ref<string | undefined>(undefined)
 const bookmarklets = ref<StoredBookmarklet[]>([])
 const categories = ref<StoredCategory[]>([])
 const selectedId = ref<string | null>(null)
@@ -103,6 +104,7 @@ onMounted(async () => {
   if (pageResponse?.type === 'currentPage') {
     currentUrl.value = pageResponse.url ?? ''
     pageTitle.value = pageResponse.title ?? ''
+    pageFaviconUrl.value = pageResponse.favIconUrl
   }
   categories.value = allCategories
   // Needs categories first — it reassigns any bookmarklet with an unknown categoryId to "uncategorized".
@@ -121,6 +123,7 @@ onMounted(async () => {
         :categories="categories"
         :tag-suggestions="tagSuggestions"
         :existing-bookmarklet="existingForCurrentUrl"
+        :favicon-url="pageFaviconUrl"
         @saved="onSaved"
         @category-created="onCategoryCreated"
       />
@@ -152,6 +155,7 @@ onMounted(async () => {
             :categories="categories"
             :tag-suggestions="tagSuggestions"
             :existing-bookmarklet="formExistingBookmarklet"
+            :favicon-url="pageFaviconUrl"
             @saved="onSaved"
             @category-created="onCategoryCreated"
           />

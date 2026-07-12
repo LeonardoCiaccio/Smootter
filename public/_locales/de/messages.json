@@ -148,7 +148,7 @@
   "bookmarkletsFormTagsPlaceholder": { "message": "Tag hinzufügen und Enter drücken" },
   "bookmarkletsFormCategoryLabel": { "message": "Kategorie" },
   "bookmarkletsCategoryNewOption": { "message": "+ Neue Kategorie" },
-  "bookmarkletsCategoryNewPlaceholder": { "message": "Kategoriename" },
+  "bookmarkletsCategoryNewPlaceholder": { "message": "Kategoriename, z. B. AA/BB/CC für Unterkategorien" },
   "bookmarkletsSave": { "message": "Speichern" },
   "bookmarkletsSaved": { "message": "Bookmarklet gespeichert" },
   "bookmarkletsCategoriesTitle": { "message": "Kategorien" },
