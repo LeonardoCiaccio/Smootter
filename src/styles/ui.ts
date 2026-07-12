@@ -153,9 +153,14 @@ export const ui = {
   bookmarkletsCategoryChevronOpen: 'rotate-90',
   bookmarkletsCategoryIcon: 'h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-400',
   bookmarkletsCategoryName: 'truncate text-sm font-semibold text-gray-900 dark:text-gray-100',
-  bookmarkletsSidebarRow: 'group flex items-center gap-1',
-  // Delete icons only earn their place on hover — always-on trash cans everywhere read as clutter.
-  bookmarkletsRowDelete: 'opacity-0 transition-opacity group-hover:opacity-100',
+  bookmarkletsSidebarRow: 'group flex items-center',
+  // Action icons only earn their place on hover — collapsed to zero width the rest of the
+  // time (not just opacity-0), so the title gets the full row width instead of always leaving
+  // room for buttons nobody's looking at.
+  bookmarkletsRowActionButton:
+    'flex h-6 w-0 flex-shrink-0 items-center justify-center overflow-hidden rounded-tool text-gray-400 opacity-0 transition-all group-hover:ml-1 group-hover:w-6 group-hover:opacity-100 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200',
+  bookmarkletsRowActionButtonDeleteConfirm:
+    'flex h-6 w-0 flex-shrink-0 items-center justify-center overflow-hidden rounded-tool text-rose-500 opacity-0 transition-all group-hover:ml-1 group-hover:w-6 group-hover:opacity-100 hover:bg-rose-50 dark:hover:bg-rose-950',
   bookmarkletsSidebarItem:
     'flex min-w-0 flex-1 items-center gap-1.5 rounded-tool py-1.5 pl-8 pr-2 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-800',
   bookmarkletsSidebarItemActive: 'bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300',
