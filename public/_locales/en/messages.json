@@ -152,6 +152,18 @@
   "bookmarkletsSearchPlaceholder": { "message": "Search by title, description, link or tag..." },
   "bookmarkletsSearchClear": { "message": "Clear search" },
   "bookmarkletsAiSearch": { "message": "Search with AI" },
+  "importConfirmTitle": { "message": "What do you want to import?" },
+  "importConfirmTools": {
+    "message": "Tools ($COUNT$)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "importConfirmBookmarklets": {
+    "message": "Bookmarklets ($COUNT$)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "importConfirmLlmConfig": { "message": "AI configuration (endpoint, model — no key)" },
+  "importConfirmButton": { "message": "Import" },
+  "importConfirmCancel": { "message": "Cancel" },
   "llmApiKeyReminderTitle": { "message": "An API key is needed" },
   "llmApiKeyReminderMessage": {
     "message": "You imported an AI configuration that isn't a local runtime (like Ollama) — this provider needs an API key. Go to Options to enter it."

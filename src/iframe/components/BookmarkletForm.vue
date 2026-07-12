@@ -69,6 +69,16 @@ resetFrom(props.existingBookmarklet)
 // re-sync the form each time so it keeps reflecting the right existing-or-blank state.
 watch(() => props.existingBookmarklet, resetFrom)
 
+// initialTitle arrives asynchronously (BookmarkletsView fetches it via a message after mount),
+// so it's often still '' the moment resetFrom first runs — pick it up once it resolves, but
+// only for a brand-new entry (editing an existing bookmarklet keeps its own saved title).
+watch(
+  () => props.initialTitle,
+  (value) => {
+    if (!props.existingBookmarklet) title.value = value
+  },
+)
+
 // Editing a bookmarklet selected from the sidebar/tag results keeps its own URL, which may
 // not be the page currently open — only a brand-new entry uses the live current page's URL.
 const linkUrl = computed(() => props.existingBookmarklet?.url ?? props.currentUrl)

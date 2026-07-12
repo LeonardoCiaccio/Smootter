@@ -158,6 +158,18 @@
   "bookmarkletsSearchPlaceholder": { "message": "Suche nach Titel, Beschreibung, Link oder Tag..." },
   "bookmarkletsSearchClear": { "message": "Suche löschen" },
   "bookmarkletsAiSearch": { "message": "Mit KI suchen" },
+  "importConfirmTitle": { "message": "Was möchtest du importieren?" },
+  "importConfirmTools": {
+    "message": "Tools ($COUNT$)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "importConfirmBookmarklets": {
+    "message": "Bookmarklets ($COUNT$)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "importConfirmLlmConfig": { "message": "KI-Konfiguration (Endpoint, Modell — ohne Key)" },
+  "importConfirmButton": { "message": "Importieren" },
+  "importConfirmCancel": { "message": "Abbrechen" },
   "llmApiKeyReminderTitle": { "message": "Ein API-Schlüssel wird benötigt" },
   "llmApiKeyReminderMessage": {
     "message": "Du hast eine KI-Konfiguration importiert, die keine lokale Laufzeitumgebung ist (wie Ollama) — dieser Anbieter benötigt einen API-Schlüssel. Gehe zu den Optionen, um ihn einzugeben."

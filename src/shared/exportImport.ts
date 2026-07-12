@@ -1,14 +1,19 @@
 /**
- * exportImport — the app's two general export/import actions (toolbar buttons, and the
- * Home drop zone): one file, tools and bookmarklets together. Delegates the actual
- * parsing/normalizing to toolsTransfer.ts and bookmarkletsTransfer.ts; this module only
- * owns the combined file shape and the fallback for older, tools-only exported files
- * (from before bookmarklets existed).
+ * exportImport — the app's two general export/import actions (toolbar buttons, and drag &
+ * drop anywhere in the app): one file, tools and bookmarklets together. Import is split into
+ * parse (parseImportFiles — reads every file, saves nothing) and apply (applyParsedImport —
+ * actually writes the selected sections) so the caller can show a confirmation step in
+ * between for anything beyond a plain tools-only file (see needsImportConfirmation).
  */
-import { getAllTools, saveTool } from './toolsDb'
+import { getAllTools, saveTool, type StoredTool } from './toolsDb'
 import { getAllBookmarklets, getAllCategories } from './bookmarkletsDb'
 import { downloadJson, parseToolsValue, toolToExportable } from './toolsTransfer'
-import { bookmarkletToExportable, parseBookmarkletsValue, saveImportedBookmarklets } from './bookmarkletsTransfer'
+import {
+  bookmarkletToExportable,
+  parseBookmarkletsValue,
+  saveImportedBookmarklets,
+  type BookmarkletImportCandidate,
+} from './bookmarkletsTransfer'
 import { getPreference, setPreference } from './preferences'
 import { isLocalLlmEndpoint } from './llmEndpoint'
 
@@ -23,7 +28,7 @@ function isBundle(value: unknown): value is Bundle {
 }
 
 /** The LLM connection settings minus the API key — never exported, never carried by an import. */
-interface ExportedLlmConfig {
+export interface ExportedLlmConfig {
   endpoint: string
   model: string
   maxOutputTokens: number
@@ -59,6 +64,67 @@ export async function exportEverything(): Promise<void> {
   })
 }
 
+export interface ParsedImport {
+  tools: StoredTool[]
+  bookmarkletCandidates: BookmarkletImportCandidate[]
+  llmConfig: ExportedLlmConfig | null
+  /** Files (or bundle sections) that failed to parse — reported once, upfront. */
+  failed: number
+}
+
+/** Reads and normalizes every file — saves nothing yet. */
+export async function parseImportFiles(files: File[]): Promise<ParsedImport> {
+  const tools: StoredTool[] = []
+  const bookmarkletCandidates: BookmarkletImportCandidate[] = []
+  let llmConfig: ExportedLlmConfig | null = null
+  let failed = 0
+
+  for (const file of files) {
+    try {
+      const parsed: unknown = JSON.parse(await file.text())
+
+      if (isBundle(parsed)) {
+        // Each section is independent — an empty array is legitimate (nothing of that kind
+        // yet), and a problem in one section must never prevent the others from parsing.
+        if (parsed.tools !== undefined && !(Array.isArray(parsed.tools) && parsed.tools.length === 0)) {
+          try {
+            tools.push(...parseToolsValue(parsed.tools))
+          } catch {
+            failed++
+          }
+        }
+        if (parsed.bookmarklets !== undefined && !(Array.isArray(parsed.bookmarklets) && parsed.bookmarklets.length === 0)) {
+          try {
+            bookmarkletCandidates.push(...parseBookmarkletsValue(parsed.bookmarklets))
+          } catch {
+            failed++
+          }
+        }
+        if (isExportedLlmConfig(parsed.llmConfig)) llmConfig = parsed.llmConfig
+        continue
+      }
+
+      // Legacy shape: a bare tool or array of tools, from before bookmarklets existed.
+      tools.push(...parseToolsValue(parsed))
+    } catch {
+      failed++
+    }
+  }
+
+  return { tools, bookmarkletCandidates, llmConfig, failed }
+}
+
+/** A file that's just tools — the common case — skips the confirmation step entirely. */
+export function needsImportConfirmation(parsed: ParsedImport): boolean {
+  return parsed.bookmarkletCandidates.length > 0 || parsed.llmConfig !== null
+}
+
+export interface ImportSelection {
+  tools: boolean
+  bookmarklets: boolean
+  llmConfig: boolean
+}
+
 export interface ImportSummary {
   toolsImported: number
   bookmarkletsImported: number
@@ -66,53 +132,32 @@ export interface ImportSummary {
   // True when the imported endpoint isn't a local runtime (Ollama, LM Studio, ...) — those
   // need an API key, which imports never carry, so the caller should prompt for one.
   llmConfigNeedsApiKey: boolean
-  failed: number
 }
 
-/** Parses and saves every file (toolbar file picker or a drop), tallying failures per file. */
-export async function importEverythingFromFiles(files: File[]): Promise<ImportSummary> {
+/** Saves whichever sections `selection` keeps, from an already-parsed import. */
+export async function applyParsedImport(parsed: ParsedImport, selection: ImportSelection): Promise<ImportSummary> {
   let toolsImported = 0
   let bookmarkletsImported = 0
   let llmConfigImported = false
   let llmConfigNeedsApiKey = false
-  let failed = 0
 
-  // Shared across the whole batch so newly created categories / just-updated bookmarklets
-  // stay consistent across multiple files in the same import.
-  const categoryCache = new Map((await getAllCategories()).map((category) => [category.name, category]))
-  const bookmarkletsByUrl = new Map((await getAllBookmarklets()).map((bookmarklet) => [bookmarklet.url, bookmarklet]))
-
-  for (const file of files) {
-    try {
-      const parsed: unknown = JSON.parse(await file.text())
-
-      if (isBundle(parsed)) {
-        if (parsed.tools !== undefined) {
-          const tools = parseToolsValue(parsed.tools)
-          for (const tool of tools) await saveTool(tool)
-          toolsImported += tools.length
-        }
-        if (parsed.bookmarklets !== undefined) {
-          const candidates = parseBookmarkletsValue(parsed.bookmarklets)
-          bookmarkletsImported += await saveImportedBookmarklets(candidates, categoryCache, bookmarkletsByUrl)
-        }
-        if (isExportedLlmConfig(parsed.llmConfig)) {
-          // New endpoint/model likely need a different key — always cleared, the user re-enters it.
-          await setPreference('llmConfig', { ...parsed.llmConfig, apiKey: '' })
-          llmConfigImported = true
-          if (!isLocalLlmEndpoint(parsed.llmConfig.endpoint)) llmConfigNeedsApiKey = true
-        }
-        continue
-      }
-
-      // Legacy shape: a bare tool or array of tools, from before bookmarklets existed.
-      const tools = parseToolsValue(parsed)
-      for (const tool of tools) await saveTool(tool)
-      toolsImported += tools.length
-    } catch {
-      failed++
-    }
+  if (selection.tools && parsed.tools.length > 0) {
+    for (const tool of parsed.tools) await saveTool(tool)
+    toolsImported = parsed.tools.length
   }
 
-  return { toolsImported, bookmarkletsImported, llmConfigImported, llmConfigNeedsApiKey, failed }
+  if (selection.bookmarklets && parsed.bookmarkletCandidates.length > 0) {
+    const categoryCache = new Map((await getAllCategories()).map((category) => [category.name, category]))
+    const bookmarkletsByUrl = new Map((await getAllBookmarklets()).map((bookmarklet) => [bookmarklet.url, bookmarklet]))
+    bookmarkletsImported = await saveImportedBookmarklets(parsed.bookmarkletCandidates, categoryCache, bookmarkletsByUrl)
+  }
+
+  if (selection.llmConfig && parsed.llmConfig) {
+    // New endpoint/model likely need a different key — always cleared, the user re-enters it.
+    await setPreference('llmConfig', { ...parsed.llmConfig, apiKey: '' })
+    llmConfigImported = true
+    if (!isLocalLlmEndpoint(parsed.llmConfig.endpoint)) llmConfigNeedsApiKey = true
+  }
+
+  return { toolsImported, bookmarkletsImported, llmConfigImported, llmConfigNeedsApiKey }
 }

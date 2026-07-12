@@ -39,7 +39,8 @@ export function bookmarkletToExportable(bookmarklet: StoredBookmarklet, categori
   }
 }
 
-type ImportCandidate = Partial<ExportedBookmarklet> & { url: string }
+export type BookmarkletImportCandidate = Partial<ExportedBookmarklet> & { url: string }
+type ImportCandidate = BookmarkletImportCandidate
 
 function isImportCandidate(value: unknown): value is ImportCandidate {
   if (typeof value !== 'object' || value === null) return false

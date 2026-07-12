@@ -158,6 +158,18 @@
   "bookmarkletsSearchPlaceholder": { "message": "Rechercher par titre, description, lien ou tag..." },
   "bookmarkletsSearchClear": { "message": "Effacer la recherche" },
   "bookmarkletsAiSearch": { "message": "Rechercher avec l'IA" },
+  "importConfirmTitle": { "message": "Que voulez-vous importer ?" },
+  "importConfirmTools": {
+    "message": "Outils ($COUNT$)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "importConfirmBookmarklets": {
+    "message": "Bookmarklets ($COUNT$)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "importConfirmLlmConfig": { "message": "Configuration IA (endpoint, modèle — sans la clé)" },
+  "importConfirmButton": { "message": "Importer" },
+  "importConfirmCancel": { "message": "Annuler" },
   "llmApiKeyReminderTitle": { "message": "Une clé API est nécessaire" },
   "llmApiKeyReminderMessage": {
     "message": "Vous avez importé une configuration IA qui n'est pas un runtime local (comme Ollama) — ce fournisseur nécessite une clé API. Rendez-vous dans les Options pour la saisir."
