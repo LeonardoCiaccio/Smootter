@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import {
+  ArchiveBoxIcon,
   CodeBracketIcon,
+  CpuChipIcon,
   CubeIcon,
   DocumentTextIcon,
   FilmIcon,
+  LanguageIcon,
   ListBulletIcon,
   MusicalNoteIcon,
   PhotoIcon,
@@ -33,6 +36,9 @@ function iconFor(name: string) {
   if (/video/.test(key)) return FilmIcon
   if (/audio|music/.test(key)) return MusicalNoteIcon
   if (/pdf|doc/.test(key)) return DocumentTextIcon
+  if (/font/.test(key)) return LanguageIcon
+  if (/wasm|webassembly/.test(key)) return CpuChipIcon
+  if (/archiv|zip|rar|compress/.test(key)) return ArchiveBoxIcon
   if (/html|css|javascript|json|xml|script/.test(key)) return CodeBracketIcon
   return TagIcon
 }
