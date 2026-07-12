@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, inject, ref } from 'vue'
-import { ArrowDownTrayIcon, ArrowUpTrayIcon, Cog6ToothIcon, FolderIcon, MoonIcon, SignalIcon, SunIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { ArrowDownTrayIcon, ArrowUpTrayIcon, Cog6ToothIcon, FolderIcon, HomeIcon, MoonIcon, SignalIcon, SunIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { useTheme } from '@/shared/vuePlugins/theme'
@@ -13,6 +13,7 @@ const appVersion = 'v' + manifest.version
 const logoUrl = chrome.runtime.getURL('icons/icon-32.png')
 
 const channel = inject(channelKey)
+const homeLabel = chrome.i18n.getMessage('home')
 const bookmarkletsLabel = chrome.i18n.getMessage('bookmarklets')
 const networkLabel = chrome.i18n.getMessage('network')
 
@@ -53,6 +54,9 @@ async function onImportFileChange(event: Event): Promise<void> {
     </div>
 
     <div :class="ui.toolbarAccessories">
+      <RouterLink to="/" :class="ui.toolbarAccessoryButton" :title="homeLabel">
+        <HomeIcon :class="ui.toolbarAccessoryIcon" />
+      </RouterLink>
       <RouterLink to="/bookmarklets" :class="ui.toolbarAccessoryButton" :title="bookmarkletsLabel">
         <FolderIcon :class="ui.toolbarAccessoryIcon" />
       </RouterLink>
