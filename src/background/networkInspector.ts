@@ -35,8 +35,11 @@ function appendEntry(tabId: number, entry: NetworkEntry): void {
   log.push(entry)
   if (log.length > MAX_ENTRIES_PER_TAB) log.splice(0, log.length - MAX_ENTRIES_PER_TAB)
   logsByTab.set(tabId, log)
-  // Best-effort live push to any open NetworkView — a no-op if nothing is listening.
-  void chrome.runtime.sendMessage({ type: 'networkEntryCaptured', tabId, entry })
+  // Best-effort live push to any open NetworkView. Unlike other broadcasts in this codebase
+  // (e.g. broadcastPreference), this one fires on every single captured request — with no
+  // NetworkView open, chrome.runtime.sendMessage rejects ("Receiving end does not exist") every
+  // time, so the rejection must be swallowed here instead of left as an unhandled promise.
+  chrome.runtime.sendMessage({ type: 'networkEntryCaptured', tabId, entry }).catch(() => {})
 }
 
 /** Returns the in-memory log for a tab, oldest first. Never mutated by the caller. */
