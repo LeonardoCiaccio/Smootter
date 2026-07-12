@@ -56,6 +56,9 @@ const existingForCurrentUrl = computed(
 // A bookmarklet picked from the sidebar/tag results always opens straight into edit mode;
 // with nothing picked, the form falls back to whatever's already saved for the live page.
 const formExistingBookmarklet = computed(() => selectedBookmarklet.value ?? existingForCurrentUrl.value)
+// The sidebar highlight must follow the same fallback — otherwise the form silently opens in
+// edit mode (current page already saved) while the sidebar shows nothing selected.
+const highlightedId = computed(() => selectedId.value ?? existingForCurrentUrl.value?.id ?? null)
 
 function onSaved(bookmarklet: StoredBookmarklet): void {
   const index = bookmarklets.value.findIndex((existing) => existing.id === bookmarklet.id)
@@ -174,7 +177,7 @@ watch(bookmarkletsRefreshSignal, reloadData)
       <BookmarkletsSidebar
         :categories="categories"
         :bookmarklets="bookmarklets"
-        :selected-id="selectedId"
+        :selected-id="highlightedId"
         @select="onSelectBookmarklet"
         @add="onAddNew"
         @search="onSearchOpened"
