@@ -4,8 +4,8 @@ import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { DEFAULT_NETWORK_CONFIG, type NetworkConfig } from '@/shared/preferences'
 import {
+  filterWellFormedMimeCategories,
   parseMimeCategories,
-  sanitizeMimeCategories,
   serializeMimeCategories,
   validateMimeCategoriesText,
   type MimeCategoriesIssue,
@@ -25,11 +25,12 @@ onMounted(async () => {
   const response = await channel?.send({ type: 'getPreference', key: 'networkConfig' })
   if (response?.type === 'preferenceValue' && response.key === 'networkConfig' && response.value) {
     // A config saved before a field existed, or with a corrupted rule inside mimeCategories
-    // (from an earlier bug or a hand-edited import), never trusted blindly — same reasoning as
-    // networkInspector's normalizeConfig. A corrupted/empty mimeCategories falls back to the
-    // built-in defaults, same as the actual capture behavior, so the form reflects what's live.
+    // (from an earlier bug or a hand-edited import), never trusted blindly. Unlike the runtime
+    // capture path (sanitizeMimeCategories), this only drops corrupted rules — it does NOT fall
+    // back to defaults on an empty list, so a deliberately-cleared-and-saved list shows as
+    // empty here, not silently repopulated.
     const blockedMimeTypes = Array.isArray(response.value.blockedMimeTypes) ? response.value.blockedMimeTypes : []
-    const mimeCategories = sanitizeMimeCategories(response.value.mimeCategories)
+    const mimeCategories = filterWellFormedMimeCategories(response.value.mimeCategories)
     Object.assign(form, response.value, { blockedMimeTypes, mimeCategories })
     blockedMimeTypesText.value = blockedMimeTypes.join('\n')
     mimeCategoriesText.value = serializeMimeCategories(mimeCategories)

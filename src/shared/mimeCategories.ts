@@ -17,12 +17,23 @@ function isWellFormedRule(value: unknown): value is MimeCategoryRule {
  * Filters out any rule that isn't shaped as expected — a single corrupted rule (e.g. a stray
  * `mimeTypes` saved as something other than an array, from an earlier bug or a hand-edited
  * import) would otherwise throw on every `.some()`/`.join()` call downstream, on every single
- * captured request. Falls back to the built-in defaults when nothing valid is left, so an
- * emptied/corrupted config never means "everything falls into Other" — it means "sensible
- * defaults", same as the pre-mimeCategories behavior.
+ * captured request. Does NOT fall back to defaults on its own — an empty result here can mean
+ * either "nothing valid was there" or "the user genuinely emptied it", and those two cases must
+ * stay distinguishable (see sanitizeMimeCategories vs this, below).
+ */
+export function filterWellFormedMimeCategories(value: unknown): MimeCategoryRule[] {
+  return Array.isArray(value) ? value.filter(isWellFormedRule) : []
+}
+
+/**
+ * Same filtering, but also falls back to the built-in defaults when nothing valid is left — for
+ * the runtime capture/sidebar, where "no categories" must never silently become "everything
+ * falls into Other". NOT used for the settings form's own load: that one shows the user exactly
+ * what they saved, including a genuinely empty list, via filterWellFormedMimeCategories above —
+ * otherwise clearing the field and saving would look like it never took effect.
  */
 export function sanitizeMimeCategories(value: unknown): MimeCategoryRule[] {
-  const wellFormed = Array.isArray(value) ? value.filter(isWellFormedRule) : []
+  const wellFormed = filterWellFormedMimeCategories(value)
   return wellFormed.length > 0 ? wellFormed : DEFAULT_MIME_CATEGORIES
 }
 
