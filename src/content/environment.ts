@@ -88,6 +88,10 @@ function getMaxZIndex(): number {
 function buildIframe(route: string): HTMLIFrameElement {
   const iframe = document.createElement('iframe')
   iframe.src = `${iframeUrl}#${route}`
+  // Without this, navigator.clipboard.writeText() inside the iframe (a different origin from
+  // the host page) is silently blocked by the Permissions Policy — "Copy URL" in NetworkView
+  // would fail with no visible error, leaving whatever was already on the clipboard untouched.
+  iframe.allow = 'clipboard-write'
   iframe.style.display = 'block'
   iframe.style.width = '100%'
   iframe.style.height = '100%'
@@ -122,8 +126,15 @@ function openAtRoute(route: string): void {
     return
   }
   const iframe = modal.querySelector('iframe')
-  if (iframe) iframe.src = `${iframeUrl}#${route}`
-  show()
+  if (!iframe) {
+    show()
+    return
+  }
+  // Reusing an already-loaded iframe: changing only the hash is a same-document navigation
+  // (no reload), and Vue Router resolves + re-renders it asynchronously. Showing immediately
+  // would flash the previous route for a frame or two — wait for it to actually settle first.
+  iframe.src = `${iframeUrl}#${route}`
+  requestAnimationFrame(() => requestAnimationFrame(show))
 }
 
 // ---- Controller: handle one injection (one toolbar click, or one context menu click) ----

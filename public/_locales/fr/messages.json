@@ -186,6 +186,7 @@
   "networkCopyUrl": { "message": "Copier l'URL" },
   "networkOpenInNewTab": { "message": "Ouvrir dans un nouvel onglet" },
   "networkUrlCopied": { "message": "URL copiée" },
+  "networkCopyUrlError": { "message": "Impossible de copier l'URL." },
   "networkDownload": { "message": "Télécharger le fichier" },
   "networkDownloadError": { "message": "Impossible de télécharger le fichier." },
   "llmApiKeyReminderTitle": { "message": "Une clé API est nécessaire" },
