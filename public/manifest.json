@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "Smootter",
+  "name": "__MSG_extensionName__",
   "short_name": "smootter",
   "version": "0.1.0",
   "description": "__MSG_appDescription__",
@@ -31,11 +31,5 @@
       "matches": ["<all_urls>"],
       "resources": ["src/iframe/index.html"]
     }
-  ],
-  "browser_specific_settings": {
-    "gecko": {
-      "id": "leonardo.ciaccio+smootter@gmail.com",
-      "strict_min_version": "115.0"
-    }
-  }
+  ]
 }

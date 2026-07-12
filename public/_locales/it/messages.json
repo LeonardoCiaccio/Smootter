@@ -1,6 +1,7 @@
 {
+  "extensionName": { "message": "Smootter" },
   "appDescription": {
-    "message": "Fabbrica di tool nel browser: crea strumenti su misura, a costo zero all'uso."
+    "message": "Basta abbonamenti: descrivi il tool che ti serve, l'AI lo scrive, tu lo usi. Il tuo browser, piegato alla tua volontà."
   },
   "topMessage": {
     "message": "Puoi costruire qualsiasi tool tu voglia"

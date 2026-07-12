@@ -1,4 +1,5 @@
 {
+  "extensionName": { "message": "Smootter" },
   "appDescription": {
     "message": "Werkzeugfabrik im Browser: Erstelle maßgeschneiderte Tools, zu null Kosten pro Nutzung."
   },
