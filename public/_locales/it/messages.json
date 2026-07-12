@@ -121,6 +121,11 @@
   "networkMinSizeLabel": { "message": "Dimensione minima file (byte)" },
   "networkBlockedMimeTypesLabel": { "message": "Mimetype da non registrare" },
   "networkBlockedMimeTypesPlaceholder": { "message": "Uno per riga, es.\nimage/\nvideo/\napplication/json" },
+  "networkMimeCategoriesLabel": { "message": "Categorie mimetype" },
+  "networkMimeCategoriesDescription": {
+    "message": "Definisci le categorie della sidebar: una riga \"## Nome\" seguita dai mimetype (uno per riga, sottostringa) che vi rientrano."
+  },
+  "networkMimeCategoriesPlaceholder": { "message": "## HTML\ntext/html\n\n## Immagini\nimage/\n\n## Video\nvideo/" },
   "networkConfigSaved": { "message": "Impostazioni rete salvate" },
   "toolsSearchPlaceholder": { "message": "Cerca tool..." },
   "toolsSearchClear": { "message": "Cancella ricerca" },
@@ -172,8 +177,6 @@
   "importConfirmCancel": { "message": "Annulla" },
   "networkCategoriesTitle": { "message": "Categorie" },
   "networkCategoryAll": { "message": "Tutti" },
-  "networkCategoryMedia": { "message": "Media" },
-  "networkCategoryDocuments": { "message": "Documenti" },
   "networkCategoryOther": { "message": "Altro" },
   "networkSearchPlaceholder": { "message": "Cerca per url, tipo di file, mimetype..." },
   "networkSearchClear": { "message": "Cancella ricerca" },

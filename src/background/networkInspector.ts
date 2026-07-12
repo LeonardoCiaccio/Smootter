@@ -6,7 +6,7 @@
  * and on tab close. This is what NetworkView reads from, not a store the
  * user edits — pure observation, matching the "replace devtools" use case.
  */
-import type { NetworkEntry, NetworkEntryCategory } from '@/shared/messages'
+import { NETWORK_OTHER_CATEGORY, type NetworkEntry } from '@/shared/messages'
 import { getPreference, preferenceStorageKey, DEFAULT_NETWORK_CONFIG, type NetworkConfig } from '@/shared/preferences'
 
 const MAX_ENTRIES_PER_TAB = 500
@@ -19,18 +19,22 @@ const logsByTab = new Map<number, NetworkEntry[]>()
 // simpler and more reliable than threading an explicit update call through every writer.
 let config: NetworkConfig = DEFAULT_NETWORK_CONFIG
 
-// Guards against a malformed stored value (e.g. minSizeBytes saved as '' by a past UI bug)
-// silently breaking every size comparison below.
+// Guards against a malformed or older stored value (e.g. minSizeBytes saved as '' by a past UI
+// bug, or a config saved before mimeCategories existed) silently breaking capture.
 function normalizeConfig(value: NetworkConfig | undefined): NetworkConfig {
   if (!value || !Number.isFinite(value.minSizeBytes) || value.minSizeBytes < 0) return DEFAULT_NETWORK_CONFIG
+  if (!Array.isArray(value.mimeCategories)) return { ...value, mimeCategories: DEFAULT_NETWORK_CONFIG.mimeCategories }
   return value
 }
 
-function classify(contentType: string): NetworkEntryCategory {
+// Rules are checked in the user's order — first match wins. Nothing matching falls into the
+// fixed "other" bucket. Fully data-driven: see MimeCategoryRule in shared/preferences.ts.
+function classify(contentType: string): string {
   const type = contentType.toLowerCase()
-  if (type.startsWith('image/') || type.startsWith('video/') || type.startsWith('audio/')) return 'media'
-  if (/pdf|msword|officedocument|rtf|json|xml|text\/(plain|csv|html)/.test(type)) return 'document'
-  return 'other'
+  for (const rule of config.mimeCategories) {
+    if (rule.mimeTypes.some((mime) => mime.trim() !== '' && type.includes(mime.trim().toLowerCase()))) return rule.name
+  }
+  return NETWORK_OTHER_CATEGORY
 }
 
 // Textual data calls (API responses, config, auth) — not a "file" download, so the size floor

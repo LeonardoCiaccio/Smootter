@@ -1,27 +1,51 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { CubeIcon, DocumentTextIcon, ListBulletIcon, PhotoIcon } from '@heroicons/vue/24/outline'
+import {
+  CodeBracketIcon,
+  CubeIcon,
+  DocumentTextIcon,
+  FilmIcon,
+  ListBulletIcon,
+  MusicalNoteIcon,
+  PhotoIcon,
+  TagIcon,
+} from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
-import type { NetworkEntry, NetworkEntryCategory } from '@/shared/messages'
+import { NETWORK_OTHER_CATEGORY, type NetworkEntry } from '@/shared/messages'
+import type { MimeCategoryRule } from '@/shared/preferences'
 
 const props = defineProps<{
   entries: NetworkEntry[]
-  selected: NetworkEntryCategory | 'all'
+  categories: MimeCategoryRule[]
+  selected: string
 }>()
-const emit = defineEmits<{ select: [category: NetworkEntryCategory | 'all'] }>()
+const emit = defineEmits<{ select: [category: string] }>()
 
 const titleLabel = chrome.i18n.getMessage('networkCategoriesTitle')
+const allLabel = chrome.i18n.getMessage('networkCategoryAll')
+const otherLabel = chrome.i18n.getMessage('networkCategoryOther')
 
-const options = [
-  { key: 'all' as const, label: chrome.i18n.getMessage('networkCategoryAll'), icon: ListBulletIcon },
-  { key: 'media' as const, label: chrome.i18n.getMessage('networkCategoryMedia'), icon: PhotoIcon },
-  { key: 'document' as const, label: chrome.i18n.getMessage('networkCategoryDocuments'), icon: DocumentTextIcon },
-  { key: 'other' as const, label: chrome.i18n.getMessage('networkCategoryOther'), icon: CubeIcon },
-]
+// Best-effort icon for a user-named category, matched by keyword — falls back to a plain tag
+// for anything custom the user came up with that doesn't hint at a known kind.
+function iconFor(name: string) {
+  const key = name.toLowerCase()
+  if (/image|immagin|photo/.test(key)) return PhotoIcon
+  if (/video/.test(key)) return FilmIcon
+  if (/audio|music/.test(key)) return MusicalNoteIcon
+  if (/pdf|doc/.test(key)) return DocumentTextIcon
+  if (/html|css|javascript|json|xml|script/.test(key)) return CodeBracketIcon
+  return TagIcon
+}
+
+const options = computed(() => [
+  { key: 'all', label: allLabel, icon: ListBulletIcon },
+  ...props.categories.map((rule) => ({ key: rule.name, label: rule.name, icon: iconFor(rule.name) })),
+  { key: NETWORK_OTHER_CATEGORY, label: otherLabel, icon: CubeIcon },
+])
 
 const countFor = computed(() => {
-  const counts: Record<string, number> = { all: props.entries.length, media: 0, document: 0, other: 0 }
-  for (const entry of props.entries) counts[entry.category]++
+  const counts: Record<string, number> = { all: props.entries.length }
+  for (const entry of props.entries) counts[entry.category] = (counts[entry.category] ?? 0) + 1
   return counts
 })
 </script>
@@ -39,7 +63,7 @@ const countFor = computed(() => {
     >
       <component :is="option.icon" :class="ui.networkCategoryIcon" />
       <span :class="ui.networkCategoryLabel">{{ option.label }}</span>
-      <span :class="ui.networkCategoryCount">{{ countFor[option.key] }}</span>
+      <span :class="ui.networkCategoryCount">{{ countFor[option.key] ?? 0 }}</span>
     </button>
   </div>
 </template>

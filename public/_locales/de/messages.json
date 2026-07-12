@@ -129,6 +129,11 @@
   "networkMinSizeLabel": { "message": "Mindestdateigröße (Byte)" },
   "networkBlockedMimeTypesLabel": { "message": "Mimetypes, die nie erfasst werden sollen" },
   "networkBlockedMimeTypesPlaceholder": { "message": "Einer pro Zeile, z. B.\nimage/\nvideo/\napplication/json" },
+  "networkMimeCategoriesLabel": { "message": "Mime-Kategorien" },
+  "networkMimeCategoriesDescription": {
+    "message": "Definiere die Kategorien der Seitenleiste: eine Zeile \"## Name\" gefolgt von den Mimetypes (einer pro Zeile, Teilstring), die dazu gehören."
+  },
+  "networkMimeCategoriesPlaceholder": { "message": "## HTML\ntext/html\n\n## Bilder\nimage/\n\n## Video\nvideo/" },
   "networkConfigSaved": { "message": "Netzwerkeinstellungen gespeichert" },
   "toolsSearchPlaceholder": { "message": "Tools durchsuchen..." },
   "toolsSearchClear": { "message": "Suche löschen" },
@@ -180,8 +185,6 @@
   "importConfirmCancel": { "message": "Abbrechen" },
   "networkCategoriesTitle": { "message": "Kategorien" },
   "networkCategoryAll": { "message": "Alle" },
-  "networkCategoryMedia": { "message": "Medien" },
-  "networkCategoryDocuments": { "message": "Dokumente" },
   "networkCategoryOther": { "message": "Andere" },
   "networkSearchPlaceholder": { "message": "Suche nach URL, Dateityp, Mimetype..." },
   "networkSearchClear": { "message": "Suche löschen" },

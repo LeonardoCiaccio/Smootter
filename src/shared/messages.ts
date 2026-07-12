@@ -211,19 +211,24 @@ export interface SearchBookmarkletsResult {
 }
 
 /**
- * A single captured network response, read-only metadata from headers only
- * (never the body). `category` is the coarse bucket NetworkView's sidebar
- * filters on.
+ * The fixed fallback bucket for a response that matches none of the user's mime category
+ * rules (see MimeCategoryRule in shared/preferences.ts) — always present in the sidebar,
+ * never one of the user-defined names.
  */
-export type NetworkEntryCategory = 'media' | 'document' | 'other'
+export const NETWORK_OTHER_CATEGORY = 'other'
 
+/**
+ * A single captured network response, read-only metadata from headers only (never the body).
+ * `category` is the name of the mime category rule it matched at capture time (or
+ * NETWORK_OTHER_CATEGORY) — a plain string since categories are fully user-defined.
+ */
 export interface NetworkEntry {
   id: string
   url: string
   method: string
   status: number
   contentType: string
-  category: NetworkEntryCategory
+  category: string
   size: number
   timestamp: number
 }

@@ -27,17 +27,60 @@ export interface LlmConfig {
 }
 
 /**
+ * One sidebar bucket in NetworkView: `name` is shown as-is (fully user-editable, not
+ * translated), `mimeTypes` are content-type substrings that route a response into it. Rules
+ * are checked in order — the first match wins. Anything matching none of them falls into the
+ * fixed "other" bucket (see NETWORK_OTHER_CATEGORY in shared/messages.ts).
+ */
+export interface MimeCategoryRule {
+  name: string
+  mimeTypes: string[]
+}
+
+export const DEFAULT_MIME_CATEGORIES: MimeCategoryRule[] = [
+  { name: 'HTML', mimeTypes: ['text/html'] },
+  { name: 'CSS', mimeTypes: ['text/css'] },
+  { name: 'JavaScript', mimeTypes: ['javascript'] },
+  { name: 'JSON', mimeTypes: ['json'] },
+  { name: 'Images', mimeTypes: ['image/'] },
+  // 'video/' catches the standard cases; the rest are streaming/legacy container types that
+  // don't carry a video/ prefix (HLS playlists, old Flash-based video) — content, not
+  // technique, aligned with GrabAnyMedia's own mimetype list.
+  {
+    name: 'Video',
+    mimeTypes: [
+      'video/',
+      'vnd.apple.mpegurl',
+      'x-mpegurl',
+      'f4m+xml',
+      'shockwave-flash',
+      'futuresplash',
+      'vnd.rn-realflash',
+    ],
+  },
+  { name: 'Audio', mimeTypes: ['audio/'] },
+  { name: 'PDF', mimeTypes: ['application/pdf'] },
+  { name: 'Documents', mimeTypes: ['msword', 'officedocument', 'rtf', 'text/plain', 'text/csv'] },
+]
+
+/**
  * Network inspector capture filter, user-tunable from Options: `minSizeBytes` is the size
  * floor below which a file/media response isn't captured at all (data calls — json/xml/html/
  * text — are exempt, see networkInspector.ts); `blockedMimeTypes` are content-type substrings
- * the user never wants recorded, one per line in the UI.
+ * the user never wants recorded, one per line in the UI; `mimeCategories` define the sidebar's
+ * buckets, fully user-configurable, seeded with a sensible default set.
  */
 export interface NetworkConfig {
   minSizeBytes: number
   blockedMimeTypes: string[]
+  mimeCategories: MimeCategoryRule[]
 }
 
-export const DEFAULT_NETWORK_CONFIG: NetworkConfig = { minSizeBytes: 100, blockedMimeTypes: [] }
+export const DEFAULT_NETWORK_CONFIG: NetworkConfig = {
+  minSizeBytes: 100,
+  blockedMimeTypes: [],
+  mimeCategories: DEFAULT_MIME_CATEGORIES,
+}
 
 export interface Preferences {
   theme: 'light' | 'dark'

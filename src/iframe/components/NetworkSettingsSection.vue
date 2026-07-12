@@ -3,14 +3,16 @@ import { inject, onMounted, reactive, ref } from 'vue'
 import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { DEFAULT_NETWORK_CONFIG, type NetworkConfig } from '@/shared/preferences'
+import { parseMimeCategories, serializeMimeCategories } from '@/shared/mimeCategories'
 import { useToast } from '../plugins/toast'
 
 const channel = inject(channelKey)
 const toast = useToast()
 
 const form = reactive<NetworkConfig>({ ...DEFAULT_NETWORK_CONFIG })
-// The textarea is the editable surface — one mimetype (or substring) per line.
+// Both textareas are the editable surface — parsed/serialized on load and save.
 const blockedMimeTypesText = ref('')
+const mimeCategoriesText = ref(serializeMimeCategories(DEFAULT_NETWORK_CONFIG.mimeCategories))
 const saving = ref(false)
 
 onMounted(async () => {
@@ -18,6 +20,7 @@ onMounted(async () => {
   if (response?.type === 'preferenceValue' && response.key === 'networkConfig' && response.value) {
     Object.assign(form, response.value)
     blockedMimeTypesText.value = response.value.blockedMimeTypes.join('\n')
+    mimeCategoriesText.value = serializeMimeCategories(response.value.mimeCategories)
   }
 })
 
@@ -28,10 +31,11 @@ async function save(): Promise<void> {
     .split('\n')
     .map((line) => line.trim())
     .filter((line) => line !== '')
+  const mimeCategories = parseMimeCategories(mimeCategoriesText.value)
   // An emptied number input leaves v-model.number holding '' (not 0) — never send that through.
   const minSizeBytes = Number.isFinite(form.minSizeBytes) && form.minSizeBytes >= 0 ? Math.floor(form.minSizeBytes) : 0
   form.minSizeBytes = minSizeBytes
-  await channel.send({ type: 'setPreference', key: 'networkConfig', value: { minSizeBytes, blockedMimeTypes } })
+  await channel.send({ type: 'setPreference', key: 'networkConfig', value: { minSizeBytes, blockedMimeTypes, mimeCategories } })
   saving.value = false
   toast.success(chrome.i18n.getMessage('networkConfigSaved'))
 }
@@ -41,6 +45,9 @@ const sectionDescription = chrome.i18n.getMessage('networkSettingsDescription')
 const minSizeLabel = chrome.i18n.getMessage('networkMinSizeLabel')
 const blockedMimeTypesLabel = chrome.i18n.getMessage('networkBlockedMimeTypesLabel')
 const blockedMimeTypesPlaceholder = chrome.i18n.getMessage('networkBlockedMimeTypesPlaceholder')
+const mimeCategoriesLabel = chrome.i18n.getMessage('networkMimeCategoriesLabel')
+const mimeCategoriesDescription = chrome.i18n.getMessage('networkMimeCategoriesDescription')
+const mimeCategoriesPlaceholder = chrome.i18n.getMessage('networkMimeCategoriesPlaceholder')
 const saveLabel = chrome.i18n.getMessage('wizardSave')
 </script>
 
@@ -63,6 +70,17 @@ const saveLabel = chrome.i18n.getMessage('wizardSave')
         rows="4"
         :class="ui.input"
         :placeholder="blockedMimeTypesPlaceholder"
+      />
+    </label>
+
+    <label :class="ui.wizardField">
+      <span :class="ui.wizardFieldLabel">{{ mimeCategoriesLabel }}</span>
+      <span :class="ui.optionsSectionDescription">{{ mimeCategoriesDescription }}</span>
+      <textarea
+        v-model="mimeCategoriesText"
+        rows="12"
+        :class="[ui.input, ui.networkMimeCategoriesTextarea]"
+        :placeholder="mimeCategoriesPlaceholder"
       />
     </label>
 

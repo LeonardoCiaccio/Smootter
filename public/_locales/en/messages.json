@@ -123,6 +123,11 @@
   "networkMinSizeLabel": { "message": "Minimum file size (bytes)" },
   "networkBlockedMimeTypesLabel": { "message": "Mimetypes to never record" },
   "networkBlockedMimeTypesPlaceholder": { "message": "One per line, e.g.\nimage/\nvideo/\napplication/json" },
+  "networkMimeCategoriesLabel": { "message": "Mime categories" },
+  "networkMimeCategoriesDescription": {
+    "message": "Define the sidebar categories: a \"## Name\" line followed by the mimetypes (one per line, substring match) that fall under it."
+  },
+  "networkMimeCategoriesPlaceholder": { "message": "## HTML\ntext/html\n\n## Images\nimage/\n\n## Video\nvideo/" },
   "networkConfigSaved": { "message": "Network settings saved" },
   "toolsSearchPlaceholder": { "message": "Search tools..." },
   "toolsSearchClear": { "message": "Clear search" },
@@ -174,8 +179,6 @@
   "importConfirmCancel": { "message": "Cancel" },
   "networkCategoriesTitle": { "message": "Categories" },
   "networkCategoryAll": { "message": "All" },
-  "networkCategoryMedia": { "message": "Media" },
-  "networkCategoryDocuments": { "message": "Documents" },
   "networkCategoryOther": { "message": "Other" },
   "networkSearchPlaceholder": { "message": "Search by url, file type, mimetype..." },
   "networkSearchClear": { "message": "Clear search" },

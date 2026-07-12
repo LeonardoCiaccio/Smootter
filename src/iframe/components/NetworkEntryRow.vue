@@ -26,12 +26,12 @@ const downloadLabel = chrome.i18n.getMessage('networkDownload')
 const isImage = computed(() => props.entry.contentType.startsWith('image/'))
 
 const RowIcon = computed(() => {
-  const type = props.entry.contentType
+  const type = props.entry.contentType.toLowerCase()
   if (type.startsWith('video/')) return FilmIcon
   if (type.startsWith('audio/')) return MusicalNoteIcon
   if (type.startsWith('image/')) return PhotoIcon
   if (type === 'application/pdf') return DocumentTextIcon
-  if (props.entry.category === 'document') return DocumentIcon
+  if (/msword|officedocument|rtf|text\/(plain|csv|html)/.test(type)) return DocumentIcon
   return CubeIcon
 })
 

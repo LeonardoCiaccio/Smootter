@@ -14,7 +14,7 @@ import {
   saveImportedBookmarklets,
   type BookmarkletImportCandidate,
 } from './bookmarkletsTransfer'
-import { getPreference, setPreference, type NetworkConfig } from './preferences'
+import { getPreference, setPreference, DEFAULT_NETWORK_CONFIG, type MimeCategoryRule, type NetworkConfig } from './preferences'
 import { isLocalLlmEndpoint } from './llmEndpoint'
 
 interface Bundle {
@@ -48,7 +48,19 @@ function isExportedLlmConfig(value: unknown): value is ExportedLlmConfig {
   )
 }
 
-/** Minimal shape check — same reasoning as isExportedLlmConfig. */
+function isMimeCategoryRule(value: unknown): value is MimeCategoryRule {
+  if (typeof value !== 'object' || value === null) return false
+  const record = value as Record<string, unknown>
+  return (
+    typeof record.name === 'string' &&
+    record.name.trim() !== '' &&
+    Array.isArray(record.mimeTypes) &&
+    record.mimeTypes.every((entry) => typeof entry === 'string')
+  )
+}
+
+// mimeCategories is optional here — an export from before this field existed is still a valid
+// networkConfig, defaulted in applyParsedImport rather than rejected outright.
 function isNetworkConfig(value: unknown): value is NetworkConfig {
   if (typeof value !== 'object' || value === null) return false
   const record = value as Record<string, unknown>
@@ -57,7 +69,8 @@ function isNetworkConfig(value: unknown): value is NetworkConfig {
     Number.isInteger(record.minSizeBytes) &&
     record.minSizeBytes >= 0 &&
     Array.isArray(record.blockedMimeTypes) &&
-    record.blockedMimeTypes.every((entry) => typeof entry === 'string')
+    record.blockedMimeTypes.every((entry) => typeof entry === 'string') &&
+    (record.mimeCategories === undefined || (Array.isArray(record.mimeCategories) && record.mimeCategories.every(isMimeCategoryRule)))
   )
 }
 
@@ -188,7 +201,8 @@ export async function applyParsedImport(parsed: ParsedImport, selection: ImportS
   }
 
   if (selection.networkConfig && parsed.networkConfig) {
-    await setPreference('networkConfig', parsed.networkConfig)
+    const mimeCategories = parsed.networkConfig.mimeCategories ?? DEFAULT_NETWORK_CONFIG.mimeCategories
+    await setPreference('networkConfig', { ...parsed.networkConfig, mimeCategories })
     networkConfigImported = true
   }
 

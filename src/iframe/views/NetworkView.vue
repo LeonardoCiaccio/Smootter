@@ -7,13 +7,15 @@ import NetworkCategorySidebar from '../components/NetworkCategorySidebar.vue'
 import NetworkEntryRow from '../components/NetworkEntryRow.vue'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { fileExtensionOf } from '@/shared/url'
-import type { NetworkEntry, NetworkEntryCategory } from '@/shared/messages'
+import type { NetworkEntry } from '@/shared/messages'
+import { DEFAULT_NETWORK_CONFIG, type MimeCategoryRule } from '@/shared/preferences'
 
 const channel = inject(channelKey)
 
 const tabId = ref<number | null>(null)
 const entries = ref<NetworkEntry[]>([])
-const selectedCategory = ref<NetworkEntryCategory | 'all'>('all')
+const mimeCategories = ref<MimeCategoryRule[]>(DEFAULT_NETWORK_CONFIG.mimeCategories)
+const selectedCategory = ref<string>('all')
 const query = ref('')
 
 const emptyText = chrome.i18n.getMessage('networkEmpty')
@@ -37,10 +39,17 @@ const visibleEntries = computed(() => {
 let unsubscribe: (() => void) | undefined
 
 onMounted(async () => {
-  const response = await channel?.send({ type: 'getNetworkLog' })
-  if (response?.type === 'networkLogResult') {
-    tabId.value = response.tabId
-    entries.value = response.entries
+  const [logResponse, configResponse] = await Promise.all([
+    channel?.send({ type: 'getNetworkLog' }),
+    channel?.send({ type: 'getPreference', key: 'networkConfig' }),
+  ])
+
+  if (logResponse?.type === 'networkLogResult') {
+    tabId.value = logResponse.tabId
+    entries.value = logResponse.entries
+  }
+  if (configResponse?.type === 'preferenceValue' && configResponse.key === 'networkConfig' && configResponse.value) {
+    mimeCategories.value = configResponse.value.mimeCategories
   }
 
   unsubscribe = channel?.subscribe((message) => {
@@ -59,7 +68,12 @@ onUnmounted(() => {
     <Breadcrumb view-key="network" />
 
     <div :class="ui.networkLayout">
-      <NetworkCategorySidebar :entries="entries" :selected="selectedCategory" @select="selectedCategory = $event" />
+      <NetworkCategorySidebar
+        :entries="entries"
+        :categories="mimeCategories"
+        :selected="selectedCategory"
+        @select="selectedCategory = $event"
+      />
 
       <div :class="ui.networkMain">
         <div :class="ui.networkSearchRow">
