@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import {
+  ArrowDownTrayIcon,
   ArrowTopRightOnSquareIcon,
   ClipboardDocumentIcon,
   CubeIcon,
@@ -20,6 +21,7 @@ const props = defineProps<{ entry: NetworkEntry }>()
 const toast = useToast()
 const copyLabel = chrome.i18n.getMessage('networkCopyUrl')
 const openLabel = chrome.i18n.getMessage('networkOpenInNewTab')
+const downloadLabel = chrome.i18n.getMessage('networkDownload')
 
 const isImage = computed(() => props.entry.contentType.startsWith('image/'))
 
@@ -46,6 +48,14 @@ const formattedTime = computed(() => new Date(props.entry.timestamp).toLocaleTim
 async function onCopyUrl(): Promise<void> {
   await navigator.clipboard.writeText(props.entry.url)
   toast.success(chrome.i18n.getMessage('networkUrlCopied'))
+}
+
+async function onDownload(): Promise<void> {
+  try {
+    await chrome.downloads.download({ url: props.entry.url, saveAs: false })
+  } catch {
+    toast.error(chrome.i18n.getMessage('networkDownloadError'))
+  }
 }
 </script>
 
@@ -74,6 +84,9 @@ async function onCopyUrl(): Promise<void> {
       <a :href="entry.url" target="_blank" rel="noopener noreferrer" :class="ui.networkRowActionButton" :title="openLabel">
         <ArrowTopRightOnSquareIcon :class="ui.networkRowActionIcon" />
       </a>
+      <button type="button" :class="ui.networkRowActionButton" :title="downloadLabel" @click="onDownload">
+        <ArrowDownTrayIcon :class="ui.networkRowActionIcon" />
+      </button>
     </div>
   </div>
 </template>

@@ -176,6 +176,8 @@
   "networkCopyUrl": { "message": "Copy URL" },
   "networkOpenInNewTab": { "message": "Open in a new tab" },
   "networkUrlCopied": { "message": "URL copied" },
+  "networkDownload": { "message": "Download file" },
+  "networkDownloadError": { "message": "Couldn't download the file." },
   "llmApiKeyReminderTitle": { "message": "An API key is needed" },
   "llmApiKeyReminderMessage": {
     "message": "You imported an AI configuration that isn't a local runtime (like Ollama) — this provider needs an API key. Go to Options to enter it."

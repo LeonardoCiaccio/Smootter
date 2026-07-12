@@ -182,6 +182,8 @@
   "networkCopyUrl": { "message": "URL kopieren" },
   "networkOpenInNewTab": { "message": "In neuem Tab öffnen" },
   "networkUrlCopied": { "message": "URL kopiert" },
+  "networkDownload": { "message": "Datei herunterladen" },
+  "networkDownloadError": { "message": "Datei konnte nicht heruntergeladen werden." },
   "llmApiKeyReminderTitle": { "message": "Ein API-Schlüssel wird benötigt" },
   "llmApiKeyReminderMessage": {
     "message": "Du hast eine KI-Konfiguration importiert, die keine lokale Laufzeitumgebung ist (wie Ollama) — dieser Anbieter benötigt einen API-Schlüssel. Gehe zu den Optionen, um ihn einzugeben."
