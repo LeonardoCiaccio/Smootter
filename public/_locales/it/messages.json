@@ -168,6 +168,8 @@
   "networkCategoryMedia": { "message": "Media" },
   "networkCategoryDocuments": { "message": "Documenti" },
   "networkCategoryOther": { "message": "Altro" },
+  "networkSearchPlaceholder": { "message": "Cerca per url, tipo di file, mimetype..." },
+  "networkSearchClear": { "message": "Cancella ricerca" },
   "networkEmpty": { "message": "Nessuna richiesta registrata per questa pagina." },
   "networkCopyUrl": { "message": "Copia URL" },
   "networkOpenInNewTab": { "message": "Apri in una nuova scheda" },

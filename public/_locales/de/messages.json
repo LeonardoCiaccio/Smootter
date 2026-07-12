@@ -176,6 +176,8 @@
   "networkCategoryMedia": { "message": "Medien" },
   "networkCategoryDocuments": { "message": "Dokumente" },
   "networkCategoryOther": { "message": "Andere" },
+  "networkSearchPlaceholder": { "message": "Suche nach URL, Dateityp, Mimetype..." },
+  "networkSearchClear": { "message": "Suche löschen" },
   "networkEmpty": { "message": "Für diese Seite wurden noch keine Anfragen erfasst." },
   "networkCopyUrl": { "message": "URL kopieren" },
   "networkOpenInNewTab": { "message": "In neuem Tab öffnen" },

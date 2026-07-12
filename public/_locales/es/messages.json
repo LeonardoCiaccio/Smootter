@@ -170,6 +170,8 @@
   "networkCategoryMedia": { "message": "Multimedia" },
   "networkCategoryDocuments": { "message": "Documentos" },
   "networkCategoryOther": { "message": "Otros" },
+  "networkSearchPlaceholder": { "message": "Buscar por url, tipo de archivo, mimetype..." },
+  "networkSearchClear": { "message": "Borrar búsqueda" },
   "networkEmpty": { "message": "Aún no se ha capturado ninguna solicitud para esta página." },
   "networkCopyUrl": { "message": "Copiar URL" },
   "networkOpenInNewTab": { "message": "Abrir en una nueva pestaña" },

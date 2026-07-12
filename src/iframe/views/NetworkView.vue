@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { computed, inject, onMounted, onUnmounted, ref } from 'vue'
-import { SignalIcon } from '@heroicons/vue/24/outline'
+import { MagnifyingGlassIcon, SignalIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import Breadcrumb from '../components/Breadcrumb.vue'
 import NetworkCategorySidebar from '../components/NetworkCategorySidebar.vue'
 import NetworkEntryRow from '../components/NetworkEntryRow.vue'
 import { channelKey } from '@/shared/vuePlugins/messaging'
+import { fileExtensionOf } from '@/shared/url'
 import type { NetworkEntry, NetworkEntryCategory } from '@/shared/messages'
 
 const channel = inject(channelKey)
@@ -13,12 +14,25 @@ const channel = inject(channelKey)
 const tabId = ref<number | null>(null)
 const entries = ref<NetworkEntry[]>([])
 const selectedCategory = ref<NetworkEntryCategory | 'all'>('all')
+const query = ref('')
 
 const emptyText = chrome.i18n.getMessage('networkEmpty')
+const searchPlaceholder = chrome.i18n.getMessage('networkSearchPlaceholder')
+const searchClearLabel = chrome.i18n.getMessage('networkSearchClear')
 
-const visibleEntries = computed(() =>
-  selectedCategory.value === 'all' ? entries.value : entries.value.filter((entry) => entry.category === selectedCategory.value),
-)
+// Omni-search: matches the url, its file extension, the content-type, method and status —
+// whatever the user might remember about a request.
+function matchesQuery(entry: NetworkEntry, needle: string): boolean {
+  const haystack = `${entry.url} ${fileExtensionOf(entry.url)} ${entry.contentType} ${entry.method} ${entry.status}`.toLowerCase()
+  return haystack.includes(needle)
+}
+
+const visibleEntries = computed(() => {
+  const byCategory =
+    selectedCategory.value === 'all' ? entries.value : entries.value.filter((entry) => entry.category === selectedCategory.value)
+  const needle = query.value.trim().toLowerCase()
+  return needle === '' ? byCategory : byCategory.filter((entry) => matchesQuery(entry, needle))
+})
 
 let unsubscribe: (() => void) | undefined
 
@@ -48,6 +62,22 @@ onUnmounted(() => {
       <NetworkCategorySidebar :entries="entries" :selected="selectedCategory" @select="selectedCategory = $event" />
 
       <div :class="ui.networkMain">
+        <div :class="ui.networkSearchRow">
+          <div :class="ui.networkSearchInputWrapper">
+            <MagnifyingGlassIcon :class="ui.networkSearchInputIcon" />
+            <input v-model="query" type="text" :class="ui.networkSearchInput" :placeholder="searchPlaceholder" />
+            <button
+              v-if="query !== ''"
+              type="button"
+              :class="ui.toolsSearchClear"
+              :aria-label="searchClearLabel"
+              @click="query = ''"
+            >
+              <XMarkIcon :class="ui.toolsSearchClearIcon" />
+            </button>
+          </div>
+        </div>
+
         <div v-if="visibleEntries.length === 0" :class="ui.networkEmpty">
           <SignalIcon :class="ui.networkEmptyIcon" />
           <p>{{ emptyText }}</p>
