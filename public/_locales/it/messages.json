@@ -123,7 +123,7 @@
   "toolbarExportAll": { "message": "Esporta tutti i tool" },
   "toolbarImport": { "message": "Importa tool" },
   "toolsImportSuccess": {
-    "message": "$COUNT$ tool importati",
+    "message": "$COUNT$ elementi importati",
     "placeholders": { "count": { "content": "$1" } }
   },
   "toolsImportError": { "message": "Impossibile importare il file — verifica che sia un export valido." },
@@ -150,6 +150,11 @@
   "bookmarkletsSearchPlaceholder": { "message": "Cerca per titolo, descrizione, link o tag..." },
   "bookmarkletsSearchClear": { "message": "Cancella ricerca" },
   "bookmarkletsAiSearch": { "message": "Cerca con AI" },
+  "llmApiKeyReminderTitle": { "message": "Serve una API key" },
+  "llmApiKeyReminderMessage": {
+    "message": "Hai importato una configurazione AI che non è un runtime locale (come Ollama) — questo provider richiede una API key. Vai nelle Opzioni per inserirla."
+  },
+  "llmApiKeyReminderOk": { "message": "Ho capito" },
   "bookmarkletsAiSearchResultsHeader": {
     "message": "Risultati AI per \"$QUERY$\"",
     "placeholders": { "query": { "content": "$1" } }

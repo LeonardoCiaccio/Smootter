@@ -5,8 +5,10 @@ import { ui } from '@/styles/ui'
 import ToolsPanel from '../components/ToolsPanel.vue'
 import UserScriptsBanner from '../components/UserScriptsBanner.vue'
 import { useToast } from '../plugins/toast'
-import { importToolsFromFiles } from '@/shared/toolsTransfer'
+import { importEverythingFromFiles } from '@/shared/exportImport'
 import { notifyToolsChanged } from '../composables/toolsRefresh'
+import { notifyBookmarkletsChanged } from '../composables/bookmarkletsRefresh'
+import { showLlmApiKeyReminder } from '../composables/llmApiKeyReminder'
 
 const headerText = chrome.i18n.getMessage('homeHeader')
 const subheaderText = chrome.i18n.getMessage('homeSubheader')
@@ -33,12 +35,13 @@ async function onDrop(event: DragEvent): Promise<void> {
   const files = Array.from(event.dataTransfer?.files ?? [])
   if (files.length === 0) return
 
-  const { imported, failed } = await importToolsFromFiles(files)
-  if (imported > 0) {
-    notifyToolsChanged()
-    toast.success(chrome.i18n.getMessage('toolsImportSuccess', [String(imported)]))
-  }
+  const { toolsImported, bookmarkletsImported, llmConfigNeedsApiKey, failed } = await importEverythingFromFiles(files)
+  if (toolsImported > 0) notifyToolsChanged()
+  if (bookmarkletsImported > 0) notifyBookmarkletsChanged()
+  const imported = toolsImported + bookmarkletsImported
+  if (imported > 0) toast.success(chrome.i18n.getMessage('toolsImportSuccess', [String(imported)]))
   if (failed > 0) toast.error(chrome.i18n.getMessage('toolsImportError'))
+  if (llmConfigNeedsApiKey) showLlmApiKeyReminder()
 }
 </script>
 

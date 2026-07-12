@@ -3,6 +3,7 @@ import { ui } from '@/styles/ui'
 import AppToolbar from './components/AppToolbar.vue'
 import AppFooter from './components/AppFooter.vue'
 import ToastContainer from './components/ToastContainer.vue'
+import LlmApiKeyReminderModal from './components/LlmApiKeyReminderModal.vue'
 </script>
 
 <template>
@@ -13,6 +14,7 @@ import ToastContainer from './components/ToastContainer.vue'
       <div :class="ui.heroGlowBlobC" />
     </div>
     <ToastContainer />
+    <LlmApiKeyReminderModal />
     <AppToolbar />
     <div :class="ui.layoutRoot">
       <div :class="ui.layoutSide" />

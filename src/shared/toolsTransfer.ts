@@ -1,9 +1,10 @@
 /**
- * toolsTransfer — export tools to JSON files and import them back.
- * Import auto-detects a single tool object vs. a collection (array) in the
- * same file, and fills in anything missing so older/partial exports still load.
+ * toolsTransfer — export tools to JSON and import them back. The parsing/normalizing half
+ * (parseToolsValue/parseToolsText) is also reused by the default-tools seed and by
+ * exportImport.ts's combined tools+bookmarklets bundle — saving to the DB is left to the
+ * caller so those different entry points can each tally their own results.
  */
-import { saveTool, type StoredTool } from './toolsDb'
+import type { StoredTool } from './toolsDb'
 
 /** UTF-8-safe base64 encode — btoa alone chokes on non-Latin1 characters. */
 function encodeBase64(text: string): string {
@@ -24,7 +25,8 @@ function slugify(name: string): string {
   return slug === '' ? 'tool' : slug
 }
 
-function downloadJson(filename: string, data: unknown): void {
+/** Triggers a browser download of `data` as pretty-printed JSON — shared by every exporter. */
+export function downloadJson(filename: string, data: unknown): void {
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
   const link = document.createElement('a')
@@ -39,17 +41,13 @@ function downloadJson(filename: string, data: unknown): void {
  * `enabled` is dropped entirely: imported tools always start disabled (see normalizeTool),
  * so carrying the exporter's own on/off state over would just be misleading.
  */
-function toExportable(tool: StoredTool): Omit<StoredTool, 'enabled'> {
+export function toolToExportable(tool: StoredTool): Omit<StoredTool, 'enabled'> {
   const { enabled: _enabled, ...rest } = tool
   return { ...rest, code: encodeBase64(tool.code) }
 }
 
 export function exportTool(tool: StoredTool): void {
-  downloadJson(`${slugify(tool.name)}.json`, toExportable(tool))
-}
-
-export function exportAllTools(tools: StoredTool[]): void {
-  downloadJson(`smootter-tools-${new Date().toISOString().slice(0, 10)}.json`, tools.map(toExportable))
+  downloadJson(`${slugify(tool.name)}.json`, toolToExportable(tool))
 }
 
 type ImportCandidate = Partial<StoredTool> & { name: string; code: string }
@@ -88,6 +86,14 @@ function normalizeTool(raw: ImportCandidate): StoredTool {
   }
 }
 
+/** Normalizes an already-JSON.parsed value as either a single tool or a collection. */
+export function parseToolsValue(parsed: unknown): StoredTool[] {
+  const candidates = Array.isArray(parsed) ? parsed : [parsed]
+  const valid = candidates.filter(isImportCandidate)
+  if (valid.length === 0) throw new Error('invalidShape')
+  return valid.map(normalizeTool)
+}
+
 /**
  * Parses raw JSON text as either a single tool or a collection of tools — the core of
  * import, shared by the file-picker/drag-and-drop import path and the default-tools seed.
@@ -99,38 +105,5 @@ export function parseToolsText(text: string): StoredTool[] {
   } catch {
     throw new Error('invalidJson')
   }
-
-  const candidates = Array.isArray(parsed) ? parsed : [parsed]
-  const valid = candidates.filter(isImportCandidate)
-  if (valid.length === 0) throw new Error('invalidShape')
-
-  return valid.map(normalizeTool)
-}
-
-/** Parses a file's content as either a single tool or a collection of tools. */
-export async function parseToolsFile(file: File): Promise<StoredTool[]> {
-  return parseToolsText(await file.text())
-}
-
-export interface ImportSummary {
-  imported: number
-  failed: number
-}
-
-/** Parses and saves every file (toolbar file picker or a drag-and-drop drop), tallying failures. */
-export async function importToolsFromFiles(files: File[]): Promise<ImportSummary> {
-  let imported = 0
-  let failed = 0
-
-  for (const file of files) {
-    try {
-      const tools = await parseToolsFile(file)
-      for (const tool of tools) await saveTool(tool)
-      imported += tools.length
-    } catch {
-      failed++
-    }
-  }
-
-  return { imported, failed }
+  return parseToolsValue(parsed)
 }

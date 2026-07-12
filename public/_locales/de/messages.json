@@ -131,7 +131,7 @@
   "toolbarExportAll": { "message": "Alle Tools exportieren" },
   "toolbarImport": { "message": "Tools importieren" },
   "toolsImportSuccess": {
-    "message": "$COUNT$ Tool(s) importiert",
+    "message": "$COUNT$ Element(e) importiert",
     "placeholders": { "count": { "content": "$1" } }
   },
   "toolsImportError": { "message": "Datei konnte nicht importiert werden — ist es ein gültiger Tool-Export?" },
@@ -158,6 +158,11 @@
   "bookmarkletsSearchPlaceholder": { "message": "Suche nach Titel, Beschreibung, Link oder Tag..." },
   "bookmarkletsSearchClear": { "message": "Suche löschen" },
   "bookmarkletsAiSearch": { "message": "Mit KI suchen" },
+  "llmApiKeyReminderTitle": { "message": "Ein API-Schlüssel wird benötigt" },
+  "llmApiKeyReminderMessage": {
+    "message": "Du hast eine KI-Konfiguration importiert, die keine lokale Laufzeitumgebung ist (wie Ollama) — dieser Anbieter benötigt einen API-Schlüssel. Gehe zu den Optionen, um ihn einzugeben."
+  },
+  "llmApiKeyReminderOk": { "message": "Verstanden" },
   "bookmarkletsAiSearchResultsHeader": {
     "message": "KI-Ergebnisse für „$QUERY$“",
     "placeholders": { "query": { "content": "$1" } }

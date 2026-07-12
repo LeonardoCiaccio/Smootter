@@ -125,7 +125,7 @@
   "toolbarExportAll": { "message": "Export all tools" },
   "toolbarImport": { "message": "Import tools" },
   "toolsImportSuccess": {
-    "message": "Imported $COUNT$ tool(s)",
+    "message": "Imported $COUNT$ item(s)",
     "placeholders": { "count": { "content": "$1" } }
   },
   "toolsImportError": { "message": "Couldn't import that file — check it's a valid tool export." },
@@ -152,6 +152,11 @@
   "bookmarkletsSearchPlaceholder": { "message": "Search by title, description, link or tag..." },
   "bookmarkletsSearchClear": { "message": "Clear search" },
   "bookmarkletsAiSearch": { "message": "Search with AI" },
+  "llmApiKeyReminderTitle": { "message": "An API key is needed" },
+  "llmApiKeyReminderMessage": {
+    "message": "You imported an AI configuration that isn't a local runtime (like Ollama) — this provider needs an API key. Go to Options to enter it."
+  },
+  "llmApiKeyReminderOk": { "message": "Got it" },
   "bookmarkletsAiSearchResultsHeader": {
     "message": "AI results for \"$QUERY$\"",
     "placeholders": { "query": { "content": "$1" } }

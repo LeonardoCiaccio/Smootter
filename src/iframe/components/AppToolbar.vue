@@ -5,9 +5,10 @@ import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { useTheme } from '@/shared/vuePlugins/theme'
 import { useToast } from '../plugins/toast'
-import { getAllTools } from '@/shared/toolsDb'
-import { exportAllTools, importToolsFromFiles } from '@/shared/toolsTransfer'
+import { exportEverything, importEverythingFromFiles } from '@/shared/exportImport'
 import { notifyToolsChanged } from '../composables/toolsRefresh'
+import { notifyBookmarkletsChanged } from '../composables/bookmarkletsRefresh'
+import { showLlmApiKeyReminder } from '../composables/llmApiKeyReminder'
 
 const manifest = chrome.runtime.getManifest()
 const appName = manifest.name
@@ -29,8 +30,7 @@ const exportAllLabel = chrome.i18n.getMessage('toolbarExportAll')
 const importLabel = chrome.i18n.getMessage('toolbarImport')
 
 async function onExportAllClick(): Promise<void> {
-  const tools = await getAllTools()
-  exportAllTools(tools)
+  await exportEverything()
 }
 
 const importInput = ref<HTMLInputElement>()
@@ -45,12 +45,13 @@ async function onImportFileChange(event: Event): Promise<void> {
   input.value = '' // lets the same file be re-selected later
   if (files.length === 0) return
 
-  const { imported, failed } = await importToolsFromFiles(files)
-  if (imported > 0) {
-    notifyToolsChanged()
-    toast.success(chrome.i18n.getMessage('toolsImportSuccess', [String(imported)]))
-  }
+  const { toolsImported, bookmarkletsImported, llmConfigNeedsApiKey, failed } = await importEverythingFromFiles(files)
+  if (toolsImported > 0) notifyToolsChanged()
+  if (bookmarkletsImported > 0) notifyBookmarkletsChanged()
+  const imported = toolsImported + bookmarkletsImported
+  if (imported > 0) toast.success(chrome.i18n.getMessage('toolsImportSuccess', [String(imported)]))
   if (failed > 0) toast.error(chrome.i18n.getMessage('toolsImportError'))
+  if (llmConfigNeedsApiKey) showLlmApiKeyReminder()
 }
 </script>
 

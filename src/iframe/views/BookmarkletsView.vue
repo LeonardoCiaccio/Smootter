@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, onMounted, ref } from 'vue'
+import { computed, inject, onMounted, ref, watch } from 'vue'
 import { ui } from '@/styles/ui'
 import Breadcrumb from '../components/Breadcrumb.vue'
 import BookmarkletForm from '../components/BookmarkletForm.vue'
@@ -20,6 +20,7 @@ import {
   type StoredBookmarklet,
   type StoredCategory,
 } from '@/shared/bookmarkletsDb'
+import { bookmarkletsRefreshSignal } from '../composables/bookmarkletsRefresh'
 
 const channel = inject(channelKey)
 const toast = useToast()
@@ -131,21 +132,25 @@ async function onCategoryDeleted(id: string): Promise<void> {
   toast.success(chrome.i18n.getMessage('bookmarkletCategoryDeleted'))
 }
 
+async function reloadData(): Promise<void> {
+  const allCategories = await getAllCategories()
+  categories.value = allCategories
+  // Needs categories first — it reassigns any bookmarklet with an unknown categoryId to "uncategorized".
+  bookmarklets.value = await reconcileOrphanBookmarklets(allCategories)
+}
+
 onMounted(async () => {
-  const [pageResponse, allCategories] = await Promise.all([
-    channel?.send({ type: 'getCurrentPage' }),
-    getAllCategories(),
-  ])
+  const [pageResponse] = await Promise.all([channel?.send({ type: 'getCurrentPage' }), reloadData()])
 
   if (pageResponse?.type === 'currentPage') {
     currentUrl.value = pageResponse.url ?? ''
     pageTitle.value = pageResponse.title ?? ''
     pageFaviconUrl.value = pageResponse.favIconUrl
   }
-  categories.value = allCategories
-  // Needs categories first — it reassigns any bookmarklet with an unknown categoryId to "uncategorized".
-  bookmarklets.value = await reconcileOrphanBookmarklets(allCategories)
 })
+
+// Imports can happen from the toolbar or Home's drop zone (both always mounted elsewhere).
+watch(bookmarkletsRefreshSignal, reloadData)
 </script>
 
 <template>

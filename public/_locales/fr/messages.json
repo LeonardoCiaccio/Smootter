@@ -131,7 +131,7 @@
   "toolbarExportAll": { "message": "Exporter tous les outils" },
   "toolbarImport": { "message": "Importer des outils" },
   "toolsImportSuccess": {
-    "message": "$COUNT$ outil(s) importé(s)",
+    "message": "$COUNT$ élément(s) importé(s)",
     "placeholders": { "count": { "content": "$1" } }
   },
   "toolsImportError": { "message": "Impossible d'importer ce fichier — vérifiez qu'il s'agit d'un export valide." },
@@ -158,6 +158,11 @@
   "bookmarkletsSearchPlaceholder": { "message": "Rechercher par titre, description, lien ou tag..." },
   "bookmarkletsSearchClear": { "message": "Effacer la recherche" },
   "bookmarkletsAiSearch": { "message": "Rechercher avec l'IA" },
+  "llmApiKeyReminderTitle": { "message": "Une clé API est nécessaire" },
+  "llmApiKeyReminderMessage": {
+    "message": "Vous avez importé une configuration IA qui n'est pas un runtime local (comme Ollama) — ce fournisseur nécessite une clé API. Rendez-vous dans les Options pour la saisir."
+  },
+  "llmApiKeyReminderOk": { "message": "Compris" },
   "bookmarkletsAiSearchResultsHeader": {
     "message": "Résultats IA pour « $QUERY$ »",
     "placeholders": { "query": { "content": "$1" } }

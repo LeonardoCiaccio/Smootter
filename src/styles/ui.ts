@@ -384,6 +384,7 @@ export const ui = {
   modalHeader: 'flex items-center justify-between',
   modalTitle: 'text-lg font-semibold text-gray-900 dark:text-gray-100',
   modalActions: 'flex items-center justify-end gap-3',
+  modalBodyText: 'text-sm text-gray-600 dark:text-gray-400',
   modalStatusOk: 'break-words text-sm font-medium text-emerald-600 dark:text-emerald-400',
   modalStatusError: 'break-words text-sm font-medium text-rose-600 dark:text-rose-400',
 } as const
