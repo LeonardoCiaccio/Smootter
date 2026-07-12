@@ -9,6 +9,25 @@
 import { NETWORK_OTHER_CATEGORY, type NetworkEntry } from '@/shared/messages'
 import { getPreference, preferenceStorageKey, DEFAULT_NETWORK_CONFIG, type NetworkConfig } from '@/shared/preferences'
 import { NETWORK_MIME_CATEGORIES } from '@/shared/networkCategories'
+import { fileExtensionOf } from '@/shared/url'
+
+// Cache hits (and some opaque cross-origin responses) often arrive via webRequest with no
+// content-type header at all, even though the resource is real — without this fallback those
+// get dropped by the "no headers = junk" check below and silently vanish from the log.
+const EXTENSION_CONTENT_TYPES: Record<string, string> = {
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  png: 'image/png',
+  gif: 'image/gif',
+  webp: 'image/webp',
+  avif: 'image/avif',
+  svg: 'image/svg+xml',
+  ico: 'image/x-icon',
+  bmp: 'image/bmp',
+  mp4: 'video/mp4',
+  webm: 'video/webm',
+  mp3: 'audio/mpeg',
+}
 
 const MAX_ENTRIES_PER_TAB = 500
 
@@ -97,13 +116,20 @@ export function registerNetworkInspector(): void {
       if (details.method === 'OPTIONS') return
       if (details.statusCode === 204 || details.statusCode === 304 || details.statusCode === 101) return
 
-      const { contentType, size } = readHeaders(details.responseHeaders)
-      // No content-length AND no content-type: not a real payload either (redirects,
-      // sendBeacon pings, empty acks) — junk regardless of type.
+      const { contentType: headerContentType, size } = readHeaders(details.responseHeaders)
+      const contentType = headerContentType || EXTENSION_CONTENT_TYPES[fileExtensionOf(details.url)] || ''
+      // No content-length AND no content-type (even after the extension fallback above): not a
+      // real payload either (redirects, sendBeacon pings, empty acks) — junk regardless of type.
       if (size === 0 && contentType === '') return
+      // AJAX/fetch calls (details.type is 'xmlhttprequest' for both) are exempt from the size
+      // floor outright, regardless of content-type — a tiny API response with no content-type
+      // set is still exactly the kind of call an investigation cares about, not junk. Nested
+      // iframes need no special handling: webRequest already reports every frame in the tab
+      // (details.frameId identifies which), not just the top one.
+      const isXhr = details.type === 'xmlhttprequest'
       // The size floor only applies to actual file downloads (media/binary "other") — small
-      // data calls (json/xml/html/text) are kept regardless of size, see isDataCall above.
-      if (!isDataCall(contentType) && size > 0 && size < config.minSizeBytes) return
+      // data calls (json/xml/html/text, or any XHR/fetch response) are kept regardless of size.
+      if (!isXhr && !isDataCall(contentType) && size > 0 && size < config.minSizeBytes) return
 
       const entry: NetworkEntry = {
         id: crypto.randomUUID(),
