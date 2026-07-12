@@ -39,7 +39,13 @@ export interface ExportedLlmConfig {
 function isExportedLlmConfig(value: unknown): value is ExportedLlmConfig {
   if (typeof value !== 'object' || value === null) return false
   const record = value as Record<string, unknown>
-  return typeof record.endpoint === 'string' && typeof record.model === 'string' && typeof record.maxOutputTokens === 'number'
+  return (
+    typeof record.endpoint === 'string' &&
+    typeof record.model === 'string' &&
+    typeof record.maxOutputTokens === 'number' &&
+    Number.isInteger(record.maxOutputTokens) &&
+    record.maxOutputTokens >= 1
+  )
 }
 
 /** Minimal shape check — same reasoning as isExportedLlmConfig. */
@@ -48,6 +54,8 @@ function isNetworkConfig(value: unknown): value is NetworkConfig {
   const record = value as Record<string, unknown>
   return (
     typeof record.minSizeBytes === 'number' &&
+    Number.isInteger(record.minSizeBytes) &&
+    record.minSizeBytes >= 0 &&
     Array.isArray(record.blockedMimeTypes) &&
     record.blockedMimeTypes.every((entry) => typeof entry === 'string')
   )

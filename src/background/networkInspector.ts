@@ -19,6 +19,13 @@ const logsByTab = new Map<number, NetworkEntry[]>()
 // simpler and more reliable than threading an explicit update call through every writer.
 let config: NetworkConfig = DEFAULT_NETWORK_CONFIG
 
+// Guards against a malformed stored value (e.g. minSizeBytes saved as '' by a past UI bug)
+// silently breaking every size comparison below.
+function normalizeConfig(value: NetworkConfig | undefined): NetworkConfig {
+  if (!value || !Number.isFinite(value.minSizeBytes) || value.minSizeBytes < 0) return DEFAULT_NETWORK_CONFIG
+  return value
+}
+
 function classify(contentType: string): NetworkEntryCategory {
   const type = contentType.toLowerCase()
   if (type.startsWith('image/') || type.startsWith('video/') || type.startsWith('audio/')) return 'media'
@@ -74,13 +81,13 @@ function clearLog(tabId: number): void {
 /** Starts always-on capture. Independent of any NetworkView being open. */
 export function registerNetworkInspector(): void {
   void getPreference('networkConfig').then((saved) => {
-    if (saved) config = saved
+    config = normalizeConfig(saved)
   })
 
   const networkConfigKey = preferenceStorageKey('networkConfig')
   chrome.storage.onChanged.addListener((changes, area) => {
     if (area !== 'local' || !(networkConfigKey in changes)) return
-    config = (changes[networkConfigKey].newValue as NetworkConfig | undefined) ?? DEFAULT_NETWORK_CONFIG
+    config = normalizeConfig(changes[networkConfigKey].newValue as NetworkConfig | undefined)
   })
 
   chrome.webRequest.onResponseStarted.addListener(

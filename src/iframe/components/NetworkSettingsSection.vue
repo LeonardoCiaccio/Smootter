@@ -28,7 +28,10 @@ async function save(): Promise<void> {
     .split('\n')
     .map((line) => line.trim())
     .filter((line) => line !== '')
-  await channel.send({ type: 'setPreference', key: 'networkConfig', value: { ...form, blockedMimeTypes } })
+  // An emptied number input leaves v-model.number holding '' (not 0) — never send that through.
+  const minSizeBytes = Number.isFinite(form.minSizeBytes) && form.minSizeBytes >= 0 ? Math.floor(form.minSizeBytes) : 0
+  form.minSizeBytes = minSizeBytes
+  await channel.send({ type: 'setPreference', key: 'networkConfig', value: { minSizeBytes, blockedMimeTypes } })
   saving.value = false
   toast.success(chrome.i18n.getMessage('networkConfigSaved'))
 }
