@@ -3,7 +3,28 @@
  * textarea: "## Name" starts a category, the non-empty lines under it are its mimetype
  * substrings, until the next "## " or end of text.
  */
-import type { MimeCategoryRule } from './preferences'
+import { DEFAULT_MIME_CATEGORIES, type MimeCategoryRule } from './preferences'
+
+function isWellFormedRule(value: unknown): value is MimeCategoryRule {
+  if (typeof value !== 'object' || value === null) return false
+  const record = value as Record<string, unknown>
+  return (
+    typeof record.name === 'string' && Array.isArray(record.mimeTypes) && record.mimeTypes.every((entry) => typeof entry === 'string')
+  )
+}
+
+/**
+ * Filters out any rule that isn't shaped as expected — a single corrupted rule (e.g. a stray
+ * `mimeTypes` saved as something other than an array, from an earlier bug or a hand-edited
+ * import) would otherwise throw on every `.some()`/`.join()` call downstream, on every single
+ * captured request. Falls back to the built-in defaults when nothing valid is left, so an
+ * emptied/corrupted config never means "everything falls into Other" — it means "sensible
+ * defaults", same as the pre-mimeCategories behavior.
+ */
+export function sanitizeMimeCategories(value: unknown): MimeCategoryRule[] {
+  const wellFormed = Array.isArray(value) ? value.filter(isWellFormedRule) : []
+  return wellFormed.length > 0 ? wellFormed : DEFAULT_MIME_CATEGORIES
+}
 
 export function serializeMimeCategories(rules: MimeCategoryRule[]): string {
   return rules.map((rule) => `## ${rule.name}\n${rule.mimeTypes.join('\n')}`).join('\n\n')

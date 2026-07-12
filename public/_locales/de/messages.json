@@ -200,6 +200,7 @@
   "networkSearchPlaceholder": { "message": "Suche nach URL, Dateityp, Mimetype..." },
   "networkSearchClear": { "message": "Suche löschen" },
   "networkEmpty": { "message": "Für diese Seite wurden noch keine Anfragen erfasst." },
+  "networkLoading": { "message": "Wird geladen..." },
   "networkCopyUrl": { "message": "URL kopieren" },
   "networkOpenInNewTab": { "message": "In neuem Tab öffnen" },
   "networkUrlCopied": { "message": "URL kopiert" },

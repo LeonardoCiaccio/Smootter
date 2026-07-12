@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, inject, onMounted, onUnmounted, ref } from 'vue'
-import { MagnifyingGlassIcon, SignalIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { ArrowPathIcon, MagnifyingGlassIcon, SignalIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import Breadcrumb from '../components/Breadcrumb.vue'
 import NetworkCategorySidebar from '../components/NetworkCategorySidebar.vue'
@@ -9,6 +9,7 @@ import { channelKey } from '@/shared/vuePlugins/messaging'
 import { fileExtensionOf } from '@/shared/url'
 import type { NetworkEntry } from '@/shared/messages'
 import { DEFAULT_NETWORK_CONFIG, type MimeCategoryRule } from '@/shared/preferences'
+import { sanitizeMimeCategories } from '@/shared/mimeCategories'
 
 const channel = inject(channelKey)
 
@@ -17,8 +18,12 @@ const entries = ref<NetworkEntry[]>([])
 const mimeCategories = ref<MimeCategoryRule[]>(DEFAULT_NETWORK_CONFIG.mimeCategories)
 const selectedCategory = ref<string>('all')
 const query = ref('')
+// Preloaded: the sidebar and list only ever paint once with their real data — never an
+// intermediate empty/default state that then jumps once the fetch resolves.
+const ready = ref(false)
 
 const emptyText = chrome.i18n.getMessage('networkEmpty')
+const loadingText = chrome.i18n.getMessage('networkLoading')
 const searchPlaceholder = chrome.i18n.getMessage('networkSearchPlaceholder')
 const searchClearLabel = chrome.i18n.getMessage('networkSearchClear')
 
@@ -39,25 +44,31 @@ const visibleEntries = computed(() => {
 let unsubscribe: (() => void) | undefined
 
 onMounted(async () => {
-  const [logResponse, configResponse] = await Promise.all([
-    channel?.send({ type: 'getNetworkLog' }),
-    channel?.send({ type: 'getPreference', key: 'networkConfig' }),
-  ])
+  try {
+    const [logResponse, configResponse] = await Promise.all([
+      channel?.send({ type: 'getNetworkLog' }),
+      channel?.send({ type: 'getPreference', key: 'networkConfig' }),
+    ])
 
-  if (logResponse?.type === 'networkLogResult') {
-    tabId.value = logResponse.tabId
-    entries.value = logResponse.entries
-  }
-  if (configResponse?.type === 'preferenceValue' && configResponse.key === 'networkConfig' && configResponse.value) {
-    // A config saved before mimeCategories existed (or a hand-edited import) may not have it —
-    // never hand an undefined array to the sidebar, which maps over it unconditionally.
-    mimeCategories.value = configResponse.value.mimeCategories ?? DEFAULT_NETWORK_CONFIG.mimeCategories
-  }
+    if (logResponse?.type === 'networkLogResult') {
+      tabId.value = logResponse.tabId
+      entries.value = logResponse.entries
+    }
+    if (configResponse?.type === 'preferenceValue' && configResponse.key === 'networkConfig' && configResponse.value) {
+      // A config saved before mimeCategories existed, or with a corrupted rule inside it, falls
+      // back to the built-in defaults here too — same reasoning as networkInspector's normalizeConfig.
+      mimeCategories.value = sanitizeMimeCategories(configResponse.value.mimeCategories)
+    }
 
-  unsubscribe = channel?.subscribe((message) => {
-    if (message.type !== 'networkEntryCaptured' || message.tabId !== tabId.value) return
-    entries.value = [...entries.value, message.entry]
-  })
+    unsubscribe = channel?.subscribe((message) => {
+      if (message.type !== 'networkEntryCaptured' || message.tabId !== tabId.value) return
+      entries.value = [...entries.value, message.entry]
+    })
+  } finally {
+    // Render with whatever we got, even on failure — a stuck spinner would be worse than
+    // falling back to the (already-initialized) defaults.
+    ready.value = true
+  }
 })
 
 onUnmounted(() => {
@@ -69,7 +80,12 @@ onUnmounted(() => {
   <div :class="ui.viewShell">
     <Breadcrumb view-key="network" />
 
-    <div :class="ui.networkLayout">
+    <div v-if="!ready" :class="ui.networkEmpty">
+      <ArrowPathIcon :class="[ui.networkEmptyIcon, 'animate-spin']" />
+      <p>{{ loadingText }}</p>
+    </div>
+
+    <div v-else :class="ui.networkLayout">
       <NetworkCategorySidebar
         :entries="entries"
         :categories="mimeCategories"

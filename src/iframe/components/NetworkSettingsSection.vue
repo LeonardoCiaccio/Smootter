@@ -3,7 +3,13 @@ import { computed, inject, onMounted, reactive, ref } from 'vue'
 import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { DEFAULT_NETWORK_CONFIG, type NetworkConfig } from '@/shared/preferences'
-import { parseMimeCategories, serializeMimeCategories, validateMimeCategoriesText, type MimeCategoriesIssue } from '@/shared/mimeCategories'
+import {
+  parseMimeCategories,
+  sanitizeMimeCategories,
+  serializeMimeCategories,
+  validateMimeCategoriesText,
+  type MimeCategoriesIssue,
+} from '@/shared/mimeCategories'
 import { useToast } from '../plugins/toast'
 
 const channel = inject(channelKey)
@@ -18,12 +24,12 @@ const saving = ref(false)
 onMounted(async () => {
   const response = await channel?.send({ type: 'getPreference', key: 'networkConfig' })
   if (response?.type === 'preferenceValue' && response.key === 'networkConfig' && response.value) {
-    // A config saved before a field existed (or a hand-edited import) may be missing it —
-    // never trust the stored shape blindly, same reasoning as networkInspector's normalizeConfig.
+    // A config saved before a field existed, or with a corrupted rule inside mimeCategories
+    // (from an earlier bug or a hand-edited import), never trusted blindly — same reasoning as
+    // networkInspector's normalizeConfig. A corrupted/empty mimeCategories falls back to the
+    // built-in defaults, same as the actual capture behavior, so the form reflects what's live.
     const blockedMimeTypes = Array.isArray(response.value.blockedMimeTypes) ? response.value.blockedMimeTypes : []
-    const mimeCategories = Array.isArray(response.value.mimeCategories)
-      ? response.value.mimeCategories
-      : DEFAULT_NETWORK_CONFIG.mimeCategories
+    const mimeCategories = sanitizeMimeCategories(response.value.mimeCategories)
     Object.assign(form, response.value, { blockedMimeTypes, mimeCategories })
     blockedMimeTypesText.value = blockedMimeTypes.join('\n')
     mimeCategoriesText.value = serializeMimeCategories(mimeCategories)

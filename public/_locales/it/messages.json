@@ -192,6 +192,7 @@
   "networkSearchPlaceholder": { "message": "Cerca per url, tipo di file, mimetype..." },
   "networkSearchClear": { "message": "Cancella ricerca" },
   "networkEmpty": { "message": "Nessuna richiesta registrata per questa pagina." },
+  "networkLoading": { "message": "Caricamento..." },
   "networkCopyUrl": { "message": "Copia URL" },
   "networkOpenInNewTab": { "message": "Apri in una nuova scheda" },
   "networkUrlCopied": { "message": "URL copiato" },

@@ -8,6 +8,7 @@
  */
 import { NETWORK_OTHER_CATEGORY, type NetworkEntry } from '@/shared/messages'
 import { getPreference, preferenceStorageKey, DEFAULT_NETWORK_CONFIG, type NetworkConfig } from '@/shared/preferences'
+import { sanitizeMimeCategories } from '@/shared/mimeCategories'
 
 const MAX_ENTRIES_PER_TAB = 500
 
@@ -22,12 +23,15 @@ let config: NetworkConfig = DEFAULT_NETWORK_CONFIG
 // Guards against a malformed or older stored value (e.g. minSizeBytes saved as '' by a past UI
 // bug, or a config saved before mimeCategories/blockedMimeTypes existed) silently breaking
 // capture — each field is defended independently rather than rejecting the whole config.
+// mimeCategories goes through sanitizeMimeCategories, which also drops individual corrupted
+// rules (not just a non-array field) — a single bad rule's `.some()` would otherwise throw on
+// every captured request, not just once.
 function normalizeConfig(value: NetworkConfig | undefined): NetworkConfig {
   if (!value) return DEFAULT_NETWORK_CONFIG
   return {
     minSizeBytes: Number.isFinite(value.minSizeBytes) && value.minSizeBytes >= 0 ? value.minSizeBytes : DEFAULT_NETWORK_CONFIG.minSizeBytes,
     blockedMimeTypes: Array.isArray(value.blockedMimeTypes) ? value.blockedMimeTypes : DEFAULT_NETWORK_CONFIG.blockedMimeTypes,
-    mimeCategories: Array.isArray(value.mimeCategories) ? value.mimeCategories : DEFAULT_NETWORK_CONFIG.mimeCategories,
+    mimeCategories: sanitizeMimeCategories(value.mimeCategories),
   }
 }
 
