@@ -157,6 +157,11 @@
   "bookmarkletsSearch": { "message": "Rechercher" },
   "bookmarkletsSearchPlaceholder": { "message": "Rechercher par titre, description, lien ou tag..." },
   "bookmarkletsSearchClear": { "message": "Effacer la recherche" },
+  "bookmarkletsAiSearch": { "message": "Rechercher avec l'IA" },
+  "bookmarkletsAiSearchResultsHeader": {
+    "message": "Résultats IA pour « $QUERY$ »",
+    "placeholders": { "query": { "content": "$1" } }
+  },
   "bookmarkletsSearchNoResults": { "message": "Aucun bookmarklet ne correspond à la recherche." },
   "bookmarkletsOpenInNewTab": { "message": "Ouvrir dans un nouvel onglet" },
   "bookmarkletsTagsTitle": { "message": "Tags" },

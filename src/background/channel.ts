@@ -16,12 +16,13 @@ import {
   type TestLlmConfigRequest,
   type GenerateCodeRequest,
   type GenerateBookmarkletRequest,
+  type SearchBookmarkletsRequest,
 } from '@/shared/messages'
 import { getPreference, setPreference, removePreference, type Preferences } from '@/shared/preferences'
 import { isLocalLlmEndpoint } from '@/shared/llmEndpoint'
 import { isUserScriptsEnabled } from './userScripts'
 import { runCodeTest } from './testRunner'
-import { testLlmConfig, generateCode, generateBookmarkletMetadata } from './llmClient'
+import { testLlmConfig, generateCode, generateBookmarkletMetadata, searchBookmarklets } from './llmClient'
 
 interface Context {
   sender: chrome.runtime.MessageSender
@@ -222,6 +223,32 @@ grip.register({
   },
 })
 grip.hook('generateBookmarklet', {
+  after({ result }, context: Context) {
+    if (result.isSuccess) context.sendResponse(result.result)
+  },
+})
+
+grip.register({
+  name: 'searchBookmarklets',
+  validate(args: SearchBookmarkletsRequest) {
+    if (typeof args.query !== 'string' || args.query.trim() === '') throw new Error('query is required.')
+  },
+  async business(args: SearchBookmarkletsRequest) {
+    const config = await getPreference('llmConfig')
+    if (!config) {
+      return { type: 'searchBookmarkletsResult', ok: false, errorCode: 'unknown', detail: 'No LLM configured.' }
+    }
+    const result = await searchBookmarklets(config, args.query, args.items)
+    return {
+      type: 'searchBookmarkletsResult',
+      ok: result.ok,
+      ids: result.ids,
+      errorCode: result.errorCode,
+      detail: result.detail,
+    }
+  },
+})
+grip.hook('searchBookmarklets', {
   after({ result }, context: Context) {
     if (result.isSuccess) context.sendResponse(result.result)
   },

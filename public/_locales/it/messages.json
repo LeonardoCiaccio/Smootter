@@ -149,6 +149,11 @@
   "bookmarkletsSearch": { "message": "Cerca" },
   "bookmarkletsSearchPlaceholder": { "message": "Cerca per titolo, descrizione, link o tag..." },
   "bookmarkletsSearchClear": { "message": "Cancella ricerca" },
+  "bookmarkletsAiSearch": { "message": "Cerca con AI" },
+  "bookmarkletsAiSearchResultsHeader": {
+    "message": "Risultati AI per \"$QUERY$\"",
+    "placeholders": { "query": { "content": "$1" } }
+  },
   "bookmarkletsSearchNoResults": { "message": "Nessun bookmarklet corrisponde alla ricerca." },
   "bookmarkletsOpenInNewTab": { "message": "Apri in una nuova scheda" },
   "bookmarkletsTagsTitle": { "message": "Tag" },

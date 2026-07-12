@@ -151,6 +151,11 @@
   "bookmarkletsSearch": { "message": "Search" },
   "bookmarkletsSearchPlaceholder": { "message": "Search by title, description, link or tag..." },
   "bookmarkletsSearchClear": { "message": "Clear search" },
+  "bookmarkletsAiSearch": { "message": "Search with AI" },
+  "bookmarkletsAiSearchResultsHeader": {
+    "message": "AI results for \"$QUERY$\"",
+    "placeholders": { "query": { "content": "$1" } }
+  },
   "bookmarkletsSearchNoResults": { "message": "No bookmarklet matches your search." },
   "bookmarkletsOpenInNewTab": { "message": "Open in a new tab" },
   "bookmarkletsTagsTitle": { "message": "Tags" },

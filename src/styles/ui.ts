@@ -184,7 +184,8 @@ export const ui = {
   bookmarkletsTagResultTitle: 'truncate text-sm font-semibold text-gray-900 dark:text-gray-100',
   bookmarkletsTagResultDescription: 'text-xs text-gray-500 dark:text-gray-400',
   bookmarkletsTagResultTags: 'flex flex-wrap gap-1.5',
-  bookmarkletsSearchInputWrapper: 'relative mb-6',
+  bookmarkletsSearchRow: 'mb-6 flex items-center gap-2',
+  bookmarkletsSearchInputWrapper: 'relative min-w-0 flex-1',
   bookmarkletsSearchInputIcon:
     'pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400 dark:text-gray-500',
   bookmarkletsSearchInput:

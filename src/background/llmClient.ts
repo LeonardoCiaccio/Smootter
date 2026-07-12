@@ -35,6 +35,23 @@ export interface LlmBookmarkletResult {
   detail?: string
 }
 
+/** A bookmarklet's searchable fields, sent by the caller — the background never touches the DB itself. */
+export interface BookmarkletSearchItem {
+  id: string
+  title: string
+  description: string
+  tags: string[]
+  category: string
+  url: string
+}
+
+export interface LlmSearchResult {
+  ok: boolean
+  ids?: string[]
+  errorCode?: LlmErrorCode
+  detail?: string
+}
+
 const WRITE_CODE_TOOL = {
   type: 'function',
   function: {
@@ -108,6 +125,42 @@ const FILL_BOOKMARKLET_TOOL = {
 } as const
 
 const BOOKMARKLET_TOOLS = [FILL_BOOKMARKLET_TOOL, FETCH_TOOL] as const
+
+const SEARCH_BOOKMARKLETS_TOOL = {
+  type: 'function',
+  function: {
+    name: 'search_bookmarklets',
+    description:
+      "Loosely searches the user's saved bookmarklets — plain case-insensitive word matching across title, description, tags, category and url. It is deliberately dumb (no typo correction, no synonyms) and returns candidates, not a verdict: you decide which of them actually match. Call this one or more times with different keywords, rephrasings, or synonyms — e.g. to work around a typo in the user's query, or to try a translation — before delivering your final answer.",
+    parameters: {
+      type: 'object',
+      properties: { query: { type: 'string', description: 'Search keywords.' } },
+      required: ['query'],
+    },
+  },
+} as const
+
+const RETURN_SEARCH_RESULTS_TOOL = {
+  type: 'function',
+  function: {
+    name: 'return_search_results',
+    description:
+      'Deliver your final answer: the ids of the bookmarklets that genuinely match what the user is looking for, most relevant first. Call this once, after searching as needed. An empty list is a correct answer when nothing truly matches — never force irrelevant results in just to return something.',
+    parameters: {
+      type: 'object',
+      properties: {
+        ids: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Matching bookmarklet ids, most relevant first.',
+        },
+      },
+      required: ['ids'],
+    },
+  },
+} as const
+
+const SEARCH_TOOLS = [SEARCH_BOOKMARKLETS_TOOL, RETURN_SEARCH_RESULTS_TOOL] as const
 
 interface ToolCall {
   id?: string
@@ -433,6 +486,86 @@ export async function generateBookmarkletMetadata(
           category: typeof args.category === 'string' ? args.category : '',
           tags: Array.isArray(args.tags) ? args.tags.filter((tag): tag is string => typeof tag === 'string') : [],
         }
+      } catch (error) {
+        return { ok: false, errorCode: 'unknown', detail: describeError(error) }
+      }
+    }
+
+    return { ok: false, errorCode: 'unknown', detail: `Unexpected tool call: ${name}` }
+  }
+
+  return { ok: false, errorCode: 'unknown', detail: 'Too many tool calls without a final answer.' }
+}
+
+/** Loose, dumb word-matching — the model is what makes it "semantic" by trying variations. */
+function executeSearchTool(query: string, items: BookmarkletSearchItem[]): string {
+  const words = query
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((word) => word !== '')
+  const matches = items.filter((item) => {
+    const haystack = `${item.title} ${item.description} ${item.tags.join(' ')} ${item.category} ${item.url}`.toLowerCase()
+    return words.length === 0 || words.some((word) => haystack.includes(word))
+  })
+  return JSON.stringify(
+    matches
+      .slice(0, 50)
+      .map((item) => ({ id: item.id, title: item.title, description: item.description, tags: item.tags, category: item.category })),
+  )
+}
+
+function buildSearchSystemPrompt(): string {
+  return [
+    "You are the search assistant for Smootter's saved bookmarklets. The user typed a free-text query — possibly with typos, vague wording, or a different language than the saved titles. Understand their intent, not just literal keyword overlap.",
+    'Tool calling is available: you have `search_bookmarklets` (a deliberately dumb loose search you can call repeatedly with different keywords) and `return_search_results` (deliver your final answer). Always use these — never answer in plain text.',
+    "The search tool won't correct typos or match synonyms for you — that's your job. Call it several times with different keywords, corrected spellings, synonyms, or a translation of the query if it looks like it might be in a different language than the saved content. Then judge which of the returned candidates actually match what the user means, and call return_search_results with only those, most relevant first.",
+  ].join('\n\n')
+}
+
+/**
+ * Asks the model to find which of `items` (the caller's full bookmarklet list, or a relevant
+ * subset) match a free-text `query`. The model calls search_bookmarklets (executed for real,
+ * against `items`) as many times as it wants before deciding the final set via
+ * return_search_results.
+ */
+export async function searchBookmarklets(
+  config: LlmConfig,
+  query: string,
+  items: BookmarkletSearchItem[],
+): Promise<LlmSearchResult> {
+  const conversation: ConversationMessage[] = [
+    { role: 'system', content: buildSearchSystemPrompt() },
+    { role: 'user', content: `Search query: ${query}` },
+  ]
+
+  for (let iteration = 0; iteration < MAX_TOOL_ITERATIONS; iteration++) {
+    const result = await callChatCompletions(config, conversation, SEARCH_TOOLS)
+    if (!result.ok) return { ok: false, errorCode: result.errorCode, detail: result.detail }
+
+    const toolCall = result.message.tool_calls?.[0]
+    const name = toolCall?.function?.name
+    if (!toolCall || !name) return { ok: false, errorCode: 'noToolSupport' }
+
+    if (name === 'search_bookmarklets') {
+      let args: { query?: string } = {}
+      try {
+        args = JSON.parse(toolCall.function?.arguments ?? '{}')
+      } catch {
+        // fall through with an empty query — reported to the model below
+      }
+      const toolResult =
+        typeof args.query === 'string' && args.query.trim() !== ''
+          ? executeSearchTool(args.query, items)
+          : JSON.stringify({ error: 'Missing query.' })
+      pushToolResult(conversation, toolCall, result.message.content ?? null, toolResult)
+      continue
+    }
+
+    if (name === 'return_search_results') {
+      try {
+        const args = JSON.parse(toolCall.function?.arguments ?? '{}') as { ids?: unknown }
+        const ids = Array.isArray(args.ids) ? args.ids.filter((id): id is string => typeof id === 'string') : []
+        return { ok: true, ids }
       } catch (error) {
         return { ok: false, errorCode: 'unknown', detail: describeError(error) }
       }

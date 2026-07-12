@@ -157,6 +157,11 @@
   "bookmarkletsSearch": { "message": "Suchen" },
   "bookmarkletsSearchPlaceholder": { "message": "Suche nach Titel, Beschreibung, Link oder Tag..." },
   "bookmarkletsSearchClear": { "message": "Suche löschen" },
+  "bookmarkletsAiSearch": { "message": "Mit KI suchen" },
+  "bookmarkletsAiSearchResultsHeader": {
+    "message": "KI-Ergebnisse für „$QUERY$“",
+    "placeholders": { "query": { "content": "$1" } }
+  },
   "bookmarkletsSearchNoResults": { "message": "Kein Bookmarklet entspricht der Suche." },
   "bookmarkletsOpenInNewTab": { "message": "In neuem Tab öffnen" },
   "bookmarkletsTagsTitle": { "message": "Tags" },
