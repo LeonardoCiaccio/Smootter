@@ -15,12 +15,14 @@ import {
   type TestCodeRequest,
   type TestLlmConfigRequest,
   type GenerateCodeRequest,
+  type GenerateBookmarkletRequest,
+  type SearchBookmarkletsRequest,
 } from '@/shared/messages'
 import { getPreference, setPreference, removePreference, type Preferences } from '@/shared/preferences'
 import { isLocalLlmEndpoint } from '@/shared/llmEndpoint'
 import { isUserScriptsEnabled } from './userScripts'
 import { runCodeTest } from './testRunner'
-import { testLlmConfig, generateCode } from './llmClient'
+import { testLlmConfig, generateCode, generateBookmarkletMetadata, searchBookmarklets } from './llmClient'
 
 interface Context {
   sender: chrome.runtime.MessageSender
@@ -43,19 +45,6 @@ grip.register({
   },
 })
 grip.hook('ping', {
-  after({ result }, context: Context) {
-    if (result.isSuccess) context.sendResponse(result.result)
-  },
-})
-
-grip.register({
-  name: 'getTopMessage',
-  validate() {},
-  business() {
-    return { type: 'topMessage', value: chrome.i18n.getMessage('topMessage') }
-  },
-})
-grip.hook('getTopMessage', {
   after({ result }, context: Context) {
     if (result.isSuccess) context.sendResponse(result.result)
   },
@@ -129,6 +118,20 @@ grip.hook('getUserScriptsStatus', {
 })
 
 grip.register({
+  name: 'getCurrentPage',
+  validate() {},
+  business(_args: unknown, context?: object) {
+    const tab = (context as Context | undefined)?.sender.tab
+    return { type: 'currentPage', url: tab?.url, title: tab?.title, favIconUrl: tab?.favIconUrl }
+  },
+})
+grip.hook('getCurrentPage', {
+  after({ result }, context: Context) {
+    if (result.isSuccess) context.sendResponse(result.result)
+  },
+})
+
+grip.register({
   name: 'testCode',
   validate(args: TestCodeRequest) {
     if (typeof args.code !== 'string' || args.code.trim() === '') {
@@ -192,6 +195,61 @@ grip.register({
   },
 })
 grip.hook('generateCode', {
+  after({ result }, context: Context) {
+    if (result.isSuccess) context.sendResponse(result.result)
+  },
+})
+
+grip.register({
+  name: 'generateBookmarklet',
+  validate(args: GenerateBookmarkletRequest) {
+    if (typeof args.url !== 'string' || args.url.trim() === '') throw new Error('url is required.')
+  },
+  async business(args: GenerateBookmarkletRequest) {
+    const config = await getPreference('llmConfig')
+    if (!config) {
+      return { type: 'generateBookmarkletResult', ok: false, errorCode: 'unknown', detail: 'No LLM configured.' }
+    }
+    const result = await generateBookmarkletMetadata(config, args.url, args.currentTitle, args.existingTags, args.existingCategories)
+    return {
+      type: 'generateBookmarkletResult',
+      ok: result.ok,
+      title: result.title,
+      description: result.description,
+      category: result.category,
+      tags: result.tags,
+      errorCode: result.errorCode,
+      detail: result.detail,
+    }
+  },
+})
+grip.hook('generateBookmarklet', {
+  after({ result }, context: Context) {
+    if (result.isSuccess) context.sendResponse(result.result)
+  },
+})
+
+grip.register({
+  name: 'searchBookmarklets',
+  validate(args: SearchBookmarkletsRequest) {
+    if (typeof args.query !== 'string' || args.query.trim() === '') throw new Error('query is required.')
+  },
+  async business(args: SearchBookmarkletsRequest) {
+    const config = await getPreference('llmConfig')
+    if (!config) {
+      return { type: 'searchBookmarkletsResult', ok: false, errorCode: 'unknown', detail: 'No LLM configured.' }
+    }
+    const result = await searchBookmarklets(config, args.query, args.items)
+    return {
+      type: 'searchBookmarkletsResult',
+      ok: result.ok,
+      ids: result.ids,
+      errorCode: result.errorCode,
+      detail: result.detail,
+    }
+  },
+})
+grip.hook('searchBookmarklets', {
   after({ result }, context: Context) {
     if (result.isSuccess) context.sendResponse(result.result)
   },

@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import { computed, inject, onMounted, ref } from 'vue'
-import { ArrowDownTrayIcon, ArrowUpTrayIcon, Cog6ToothIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { computed, inject, ref } from 'vue'
+import { ArrowDownTrayIcon, ArrowUpTrayIcon, Cog6ToothIcon, FolderIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { useTheme } from '@/shared/vuePlugins/theme'
-import { useToast } from '../plugins/toast'
-import { getAllTools } from '@/shared/toolsDb'
-import { exportAllTools, importToolsFromFiles } from '@/shared/toolsTransfer'
-import { notifyToolsChanged } from '../composables/toolsRefresh'
+import { exportEverything } from '@/shared/exportImport'
+import { startImport } from '../composables/importFlow'
 
 const manifest = chrome.runtime.getManifest()
 const appName = manifest.name
@@ -15,13 +13,7 @@ const appVersion = 'v' + manifest.version
 const logoUrl = chrome.runtime.getURL('icons/icon-32.png')
 
 const channel = inject(channelKey)
-const topMessage = ref('')
-
-onMounted(async () => {
-  if (!channel) return
-  const response = await channel.send({ type: 'getTopMessage' })
-  if (response.type === 'topMessage') topMessage.value = response.value
-})
+const bookmarkletsLabel = chrome.i18n.getMessage('bookmarklets')
 
 const { theme, toggle } = useTheme()
 const ThemeIcon = computed(() => (theme.value === 'dark' ? SunIcon : MoonIcon))
@@ -30,13 +22,11 @@ function closeModal(): void {
   channel?.send({ type: 'closeModal' })
 }
 
-const toast = useToast()
 const exportAllLabel = chrome.i18n.getMessage('toolbarExportAll')
 const importLabel = chrome.i18n.getMessage('toolbarImport')
 
 async function onExportAllClick(): Promise<void> {
-  const tools = await getAllTools()
-  exportAllTools(tools)
+  await exportEverything()
 }
 
 const importInput = ref<HTMLInputElement>()
@@ -49,14 +39,7 @@ async function onImportFileChange(event: Event): Promise<void> {
   const input = event.target as HTMLInputElement
   const files = Array.from(input.files ?? [])
   input.value = '' // lets the same file be re-selected later
-  if (files.length === 0) return
-
-  const { imported, failed } = await importToolsFromFiles(files)
-  if (imported > 0) {
-    notifyToolsChanged()
-    toast.success(chrome.i18n.getMessage('toolsImportSuccess', [String(imported)]))
-  }
-  if (failed > 0) toast.error(chrome.i18n.getMessage('toolsImportError'))
+  await startImport(files)
 }
 </script>
 
@@ -68,11 +51,11 @@ async function onImportFileChange(event: Event): Promise<void> {
       <span :class="ui.toolbarAppVersion">{{ appVersion }}</span>
     </div>
 
-    <div v-if="topMessage" :class="ui.toolbarPill">
-      <span :class="ui.toolbarPillDot" />
-      <span :class="ui.toolbarPillText">{{ topMessage }}</span>
+    <div :class="ui.toolbarAccessories">
+      <RouterLink to="/bookmarklets" :class="ui.toolbarAccessoryButton" :title="bookmarkletsLabel">
+        <FolderIcon :class="ui.toolbarAccessoryIcon" />
+      </RouterLink>
     </div>
-    <div v-else />
 
     <div :class="ui.toolbarActions">
       <button type="button" :class="ui.toolbarIconButton" :title="exportAllLabel" @click="onExportAllClick">

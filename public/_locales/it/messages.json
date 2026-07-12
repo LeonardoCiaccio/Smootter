@@ -3,9 +3,6 @@
   "appDescription": {
     "message": "Basta abbonamenti: descrivi il tool che ti serve, l'AI lo scrive, tu lo usi. Il tuo browser, piegato alla tua volontà."
   },
-  "topMessage": {
-    "message": "Puoi costruire qualsiasi tool tu voglia"
-  },
   "homeHeader": {
     "message": "Il tuo browser, i tuoi strumenti."
   },
@@ -18,6 +15,7 @@
   "addTool": {
     "message": "Aggiungi un tool"
   },
+  "bookmarklets": { "message": "Bookmarklet" },
   "home": {
     "message": "Home"
   },
@@ -50,7 +48,7 @@
   "wizardDescriptionPlaceholder": { "message": "es. Preleva tutti i link dalla pagina corrente" },
   "wizardBack": { "message": "Indietro" },
   "wizardNext": { "message": "Avanti" },
-  "wizardPlaceholder": { "message": "In arrivo" },
+  "comingSoon": { "message": "In arrivo" },
   "wizardTriggerStartTitle": { "message": "Al caricamento" },
   "wizardTriggerStartDescription": {
     "message": "Parte subito, prima che la pagina finisca di caricare."
@@ -125,9 +123,69 @@
   "toolbarExportAll": { "message": "Esporta tutti i tool" },
   "toolbarImport": { "message": "Importa tool" },
   "toolsImportSuccess": {
-    "message": "$COUNT$ tool importati",
+    "message": "$COUNT$ elementi importati",
     "placeholders": { "count": { "content": "$1" } }
   },
   "toolsImportError": { "message": "Impossibile importare il file — verifica che sia un export valido." },
-  "toolsDropHint": { "message": "Rilascia per importare" }
+  "toolsDropHint": { "message": "Rilascia per importare" },
+  "bookmarkletsHeader": { "message": "Salva questa pagina" },
+  "bookmarkletsEditHeader": { "message": "Modifica questa pagina" },
+  "bookmarkletsSubheader": { "message": "Organizza i link utili per dominio, con tag e categorie." },
+  "bookmarkletsFormTitleLabel": { "message": "Titolo" },
+  "bookmarkletsFormTitlePlaceholder": { "message": "Titolo della pagina" },
+  "bookmarkletsFormLinkLabel": { "message": "Link" },
+  "bookmarkletsFormDescriptionLabel": { "message": "Descrizione" },
+  "bookmarkletsFormDescriptionPlaceholder": { "message": "es. Perché ti serve questo link" },
+  "bookmarkletsFormTagsLabel": { "message": "Tag" },
+  "bookmarkletsFormTagsPlaceholder": { "message": "Aggiungi un tag e premi invio" },
+  "bookmarkletsFormCategoryLabel": { "message": "Categoria" },
+  "bookmarkletsCategoryNewOption": { "message": "+ Nuova categoria" },
+  "bookmarkletsCategoryNewPlaceholder": { "message": "Nome categoria, es. AA/BB/CC per sottocategorie" },
+  "bookmarkletsSave": { "message": "Salva" },
+  "bookmarkletsGenerate": { "message": "Genera con AI" },
+  "bookmarkletsSaved": { "message": "Bookmarklet salvato" },
+  "bookmarkletsCategoriesTitle": { "message": "Categorie" },
+  "bookmarkletsAddNew": { "message": "Aggiungi pagina" },
+  "bookmarkletsSearch": { "message": "Cerca" },
+  "bookmarkletsSearchPlaceholder": { "message": "Cerca per titolo, descrizione, link o tag..." },
+  "bookmarkletsSearchClear": { "message": "Cancella ricerca" },
+  "bookmarkletsAiSearch": { "message": "Cerca con AI" },
+  "importConfirmTitle": { "message": "Cosa vuoi importare?" },
+  "importConfirmTools": {
+    "message": "Tool ($COUNT$)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "importConfirmBookmarklets": {
+    "message": "Bookmarklet ($COUNT$)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "importConfirmLlmConfig": { "message": "Configurazione AI (endpoint, modello — senza la key)" },
+  "importConfirmButton": { "message": "Importa" },
+  "importConfirmCancel": { "message": "Annulla" },
+  "llmApiKeyReminderTitle": { "message": "Serve una API key" },
+  "llmApiKeyReminderMessage": {
+    "message": "Hai importato una configurazione AI che non è un runtime locale (come Ollama) — questo provider richiede una API key. Vai nelle Opzioni per inserirla."
+  },
+  "llmApiKeyReminderOk": { "message": "Ho capito" },
+  "bookmarkletsAiSearchResultsHeader": {
+    "message": "Risultati AI per \"$QUERY$\"",
+    "placeholders": { "query": { "content": "$1" } }
+  },
+  "bookmarkletsSearchNoResults": { "message": "Nessun bookmarklet corrisponde alla ricerca." },
+  "bookmarkletsOpenInNewTab": { "message": "Apri in una nuova scheda" },
+  "bookmarkletsTagsTitle": { "message": "Tag" },
+  "bookmarkletsTagDeleteConfirm": { "message": "Clicca di nuovo per eliminare ovunque" },
+  "bookmarkletsDeleteConfirm": { "message": "Clicca di nuovo per eliminare" },
+  "bookmarkletDeleted": { "message": "Bookmarklet eliminato" },
+  "bookmarkletsUncategorized": { "message": "Senza categoria" },
+  "bookmarkletsCategoryDeleteConfirm": { "message": "Clicca di nuovo per eliminare la categoria" },
+  "bookmarkletCategoryDeleted": { "message": "Categoria eliminata" },
+  "bookmarkletsTagResultsHeader": {
+    "message": "Bookmarklet con il tag \"$TAG$\"",
+    "placeholders": { "tag": { "content": "$1" } }
+  },
+  "bookmarkletsAlreadySaved": {
+    "message": "Avevi già salvato questa pagina il $DATE$ — modifica e salva per aggiornarla.",
+    "placeholders": { "date": { "content": "$1" } }
+  }
 }

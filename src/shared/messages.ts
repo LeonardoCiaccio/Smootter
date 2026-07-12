@@ -30,10 +30,6 @@ export type RemovePreferenceRequest = {
   [K in keyof Preferences]: { type: 'removePreference'; key: K }
 }[keyof Preferences]
 
-export interface GetTopMessageRequest {
-  type: 'getTopMessage'
-}
-
 /**
  * Close signal. The iframe can't reach the host page's DOM to hide the
  * modal itself, so it sends this to the worker, which broadcasts it to
@@ -41,12 +37,6 @@ export interface GetTopMessageRequest {
  */
 export interface CloseModalSignal {
   type: 'closeModal'
-}
-
-/** Reply to getTopMessage: the top message text. */
-export interface TopMessageResponse {
-  type: 'topMessage'
-  value: string
 }
 
 export interface GetUserScriptsStatusRequest {
@@ -57,6 +47,18 @@ export interface GetUserScriptsStatusRequest {
 export interface UserScriptsStatusResponse {
   type: 'userScriptsStatus'
   enabled: boolean
+}
+
+export interface GetCurrentPageRequest {
+  type: 'getCurrentPage'
+}
+
+/** Reply to getCurrentPage: the tab the iframe is embedded in, straight from chrome.tabs.Tab. */
+export interface CurrentPageResponse {
+  type: 'currentPage'
+  url?: string
+  title?: string
+  favIconUrl?: string
 }
 
 /** Reply to getPreference: value is undefined when not stored. */
@@ -152,27 +154,87 @@ export interface GenerateCodeResult {
   detail?: string
 }
 
+/**
+ * Sent by the Bookmarklets form's "Generate with AI" button: asks the model
+ * to write a description, category, and tags for `url`. `existingTags`/
+ * `existingCategories` are passed as context so the model prefers reusing
+ * them over inventing near-duplicates.
+ */
+export interface GenerateBookmarkletRequest {
+  type: 'generateBookmarklet'
+  url: string
+  currentTitle: string
+  existingTags: string[]
+  existingCategories: string[]
+}
+
+/** Reply to generateBookmarklet. */
+export interface GenerateBookmarkletResult {
+  type: 'generateBookmarkletResult'
+  ok: boolean
+  title?: string
+  description?: string
+  category?: string
+  tags?: string[]
+  errorCode?: LlmErrorCode
+  detail?: string
+}
+
+/** A bookmarklet's searchable fields, sent alongside a search query — the background never touches the DB itself. */
+export interface BookmarkletSearchItem {
+  id: string
+  title: string
+  description: string
+  tags: string[]
+  category: string
+  url: string
+}
+
+/**
+ * Sent by the Bookmarklets search panel's AI button: asks the model to find
+ * which of `items` match a free-text `query`, understanding typos/wording
+ * the way a plain substring filter can't.
+ */
+export interface SearchBookmarkletsRequest {
+  type: 'searchBookmarklets'
+  query: string
+  items: BookmarkletSearchItem[]
+}
+
+/** Reply to searchBookmarklets: matching ids, most relevant first. */
+export interface SearchBookmarkletsResult {
+  type: 'searchBookmarkletsResult'
+  ok: boolean
+  ids?: string[]
+  errorCode?: LlmErrorCode
+  detail?: string
+}
+
 /** Messages sent from the UI to the background. */
 export type ChannelRequest =
   | PingRequest
   | SetPreferenceRequest
   | GetPreferenceRequest
   | RemovePreferenceRequest
-  | GetTopMessageRequest
   | CloseModalSignal
   | GetUserScriptsStatusRequest
+  | GetCurrentPageRequest
   | TestCodeRequest
   | TestLlmConfigRequest
   | GenerateCodeRequest
+  | GenerateBookmarkletRequest
+  | SearchBookmarkletsRequest
 
 /** Messages sent from the background to the UI. */
 export type ChannelResponse =
   | PongResponse
   | PreferenceValue
   | PreferenceSaved
-  | TopMessageResponse
   | CloseModalSignal
   | UserScriptsStatusResponse
+  | CurrentPageResponse
   | TestCodeResult
   | TestLlmConfigResult
+  | GenerateBookmarkletResult
   | GenerateCodeResult
+  | SearchBookmarkletsResult

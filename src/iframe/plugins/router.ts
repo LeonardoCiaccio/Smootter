@@ -5,15 +5,13 @@
  * iframe's src with a `#/route` suffix.
  */
 import { createRouter, createWebHashHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
-import BuilderView from '../views/BuilderView.vue'
-import OptionsView from '../views/OptionsView.vue'
 
 export const router = createRouter({
   history: createWebHashHistory(),
   routes: [
-    { path: '/', component: HomeView },
-    { path: '/builder', component: BuilderView },
-    { path: '/options', component: OptionsView },
+    { path: '/', component: () => import('../views/HomeView.vue') },
+    { path: '/builder', component: () => import('../views/BuilderView.vue') },
+    { path: '/options', component: () => import('../views/OptionsView.vue') },
+    { path: '/bookmarklets', component: () => import('../views/BookmarkletsView.vue') },
   ],
 })

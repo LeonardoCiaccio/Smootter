@@ -26,6 +26,33 @@ export interface LlmGenerateResult {
   detail?: string
 }
 
+export interface LlmBookmarkletResult {
+  ok: boolean
+  title?: string
+  description?: string
+  category?: string
+  tags?: string[]
+  errorCode?: LlmErrorCode
+  detail?: string
+}
+
+/** A bookmarklet's searchable fields, sent by the caller — the background never touches the DB itself. */
+export interface BookmarkletSearchItem {
+  id: string
+  title: string
+  description: string
+  tags: string[]
+  category: string
+  url: string
+}
+
+export interface LlmSearchResult {
+  ok: boolean
+  ids?: string[]
+  errorCode?: LlmErrorCode
+  detail?: string
+}
+
 const WRITE_CODE_TOOL = {
   type: 'function',
   function: {
@@ -66,7 +93,80 @@ const FETCH_TOOL = {
   },
 } as const
 
-const TOOLS = [WRITE_CODE_TOOL, FETCH_TOOL] as const
+const CODE_TOOLS = [WRITE_CODE_TOOL, FETCH_TOOL] as const
+
+const FILL_BOOKMARKLET_TOOL = {
+  type: 'function',
+  function: {
+    name: 'fill_bookmarklet',
+    description:
+      'Deliver your answer: a short description, a category, and tags for this saved page. Call this when ready, after using fetch_url if you needed to.',
+    parameters: {
+      type: 'object',
+      properties: {
+        title: {
+          type: 'string',
+          description:
+            'A short, human-readable title for this page. Only include this if the current title given in context is missing, empty, or clearly unusable (e.g. a generic placeholder) — otherwise omit this field entirely and leave the existing title untouched.',
+        },
+        description: {
+          type: 'string',
+          description: 'A short, plain description (one or two sentences) of what this page is and why it is worth saving.',
+        },
+        category: {
+          type: 'string',
+          description:
+            'The category for this bookmark. Strongly prefer reusing one of the existing categories provided if it reasonably fits — only propose a new one when none fit. Categories can be nested paths, e.g. "Work/Projects".',
+        },
+        tags: {
+          type: 'array',
+          items: { type: 'string' },
+          description:
+            'A short list of tags (2-5). Strongly prefer reusing existing tags provided when they fit — only add new ones if needed.',
+        },
+      },
+      required: ['description', 'category', 'tags'],
+    },
+  },
+} as const
+
+const BOOKMARKLET_TOOLS = [FILL_BOOKMARKLET_TOOL, FETCH_TOOL] as const
+
+const SEARCH_BOOKMARKLETS_TOOL = {
+  type: 'function',
+  function: {
+    name: 'search_bookmarklets',
+    description:
+      "Loosely searches the user's saved bookmarklets — plain case-insensitive word matching across title, description, tags, category and url. It is deliberately dumb (no typo correction, no synonyms) and returns candidates, not a verdict: you decide which of them actually match. Call this one or more times with different keywords, rephrasings, or synonyms — e.g. to work around a typo in the user's query, or to try a translation — before delivering your final answer.",
+    parameters: {
+      type: 'object',
+      properties: { query: { type: 'string', description: 'Search keywords.' } },
+      required: ['query'],
+    },
+  },
+} as const
+
+const RETURN_SEARCH_RESULTS_TOOL = {
+  type: 'function',
+  function: {
+    name: 'return_search_results',
+    description:
+      'Deliver your final answer: the ids of the bookmarklets that genuinely match what the user is looking for, most relevant first. Call this once, after searching as needed. An empty list is a correct answer when nothing truly matches — never force irrelevant results in just to return something.',
+    parameters: {
+      type: 'object',
+      properties: {
+        ids: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Matching bookmarklet ids, most relevant first.',
+        },
+      },
+      required: ['ids'],
+    },
+  },
+} as const
+
+const SEARCH_TOOLS = [SEARCH_BOOKMARKLETS_TOOL, RETURN_SEARCH_RESULTS_TOOL] as const
 
 interface ToolCall {
   id?: string
@@ -110,9 +210,44 @@ async function executeFetchTool(url: string): Promise<string> {
   }
 }
 
+/** Resolves a fetch_url tool call's arguments and actually performs it. Shared by every tool loop. */
+async function resolveFetchToolCall(toolCall: ToolCall): Promise<string> {
+  let args: { url?: string } = {}
+  try {
+    args = JSON.parse(toolCall.function?.arguments ?? '{}')
+  } catch {
+    // fall through with an empty url — reported to the model below
+  }
+  return typeof args.url === 'string' && args.url.trim() !== ''
+    ? await executeFetchTool(args.url)
+    : JSON.stringify({ error: 'Missing url.', note: 'Another tool is still available — you can answer without this data.' })
+}
+
+/**
+ * Appends a tool call and its result to the conversation. The tool call is
+ * reconstructed explicitly (id + type: 'function' + function): some
+ * providers require this exact shape echoed back and won't reliably
+ * continue the conversation without it.
+ */
+function pushToolResult(
+  conversation: ConversationMessage[],
+  toolCall: ToolCall,
+  assistantContent: string | null,
+  toolResultContent: string,
+): void {
+  const toolCallId = toolCall.id ?? crypto.randomUUID()
+  conversation.push({
+    role: 'assistant',
+    content: assistantContent,
+    tool_calls: [{ id: toolCallId, type: 'function', function: toolCall.function }],
+  })
+  conversation.push({ role: 'tool', tool_call_id: toolCallId, content: toolResultContent })
+}
+
 async function callChatCompletions(
   config: LlmConfig,
   messages: ConversationMessage[],
+  tools: readonly unknown[],
 ): Promise<{ ok: true; message: ConversationMessage } | { ok: false; errorCode: LlmErrorCode; detail?: string }> {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' }
   if (config.apiKey.trim() !== '') headers.Authorization = `Bearer ${config.apiKey}`
@@ -125,7 +260,7 @@ async function callChatCompletions(
       body: JSON.stringify({
         model: config.model,
         messages,
-        tools: TOOLS,
+        tools,
         // 'required' forces a tool call every turn, but some providers/gateways (e.g. OpenCode
         // Zen) reject it outright with a 400. 'auto' is honored everywhere and models still call
         // a tool on their own when one applies — the loop below already treats a plain-text,
@@ -162,12 +297,16 @@ async function callChatCompletions(
 
 /** Verifies the endpoint is reachable, the key is accepted, and the model actually calls tools. */
 export async function testLlmConfig(config: LlmConfig): Promise<LlmTestResult> {
-  const result = await callChatCompletions(config, [
-    {
-      role: 'user',
-      content: 'You have tool calling available. Call the write_code tool with a single console.log("ok"); statement and any short reply.',
-    },
-  ])
+  const result = await callChatCompletions(
+    config,
+    [
+      {
+        role: 'user',
+        content: 'You have tool calling available. Call the write_code tool with a single console.log("ok"); statement and any short reply.',
+      },
+    ],
+    CODE_TOOLS,
+  )
 
   if (!result.ok) return { ok: false, errorCode: result.errorCode, detail: result.detail }
   if (!result.message.tool_calls?.[0]?.function?.name) {
@@ -233,7 +372,7 @@ export async function generateCode(
   ]
 
   for (let iteration = 0; iteration < MAX_TOOL_ITERATIONS; iteration++) {
-    const result = await callChatCompletions(config, conversation)
+    const result = await callChatCompletions(config, conversation, CODE_TOOLS)
     if (!result.ok) return { ok: false, errorCode: result.errorCode, detail: result.detail }
 
     const toolCall = result.message.tool_calls?.[0]
@@ -249,27 +388,8 @@ export async function generateCode(
     }
 
     if (name === 'fetch_url') {
-      let args: { url?: string } = {}
-      try {
-        args = JSON.parse(toolCall.function?.arguments ?? '{}')
-      } catch {
-        // fall through with an empty url — reported to the model below
-      }
-      const toolResult =
-        typeof args.url === 'string' && args.url.trim() !== ''
-          ? await executeFetchTool(args.url)
-          : JSON.stringify({ error: 'Missing url.', note: 'write_code is still available — you can answer without this data.' })
-
-      // Reconstruct the tool call explicitly (id + type: 'function' + function):
-      // some providers require this exact shape to be echoed back, and won't
-      // reliably continue the conversation without it.
-      const toolCallId = toolCall.id ?? crypto.randomUUID()
-      conversation.push({
-        role: 'assistant',
-        content: result.message.content ?? null,
-        tool_calls: [{ id: toolCallId, type: 'function', function: toolCall.function }],
-      })
-      conversation.push({ role: 'tool', tool_call_id: toolCallId, content: toolResult })
+      const toolResult = await resolveFetchToolCall(toolCall)
+      pushToolResult(conversation, toolCall, result.message.content ?? null, toolResult)
       continue
     }
 
@@ -279,6 +399,190 @@ export async function generateCode(
         // code is optional — the model leaves it out for plain conversation, not every turn writes code.
         const code = typeof args.code === 'string' && args.code.trim() !== '' ? args.code : undefined
         return { ok: true, code, reply: args.reply ?? '' }
+      } catch (error) {
+        return { ok: false, errorCode: 'unknown', detail: describeError(error) }
+      }
+    }
+
+    return { ok: false, errorCode: 'unknown', detail: `Unexpected tool call: ${name}` }
+  }
+
+  return { ok: false, errorCode: 'unknown', detail: 'Too many tool calls without a final answer.' }
+}
+
+/**
+ * Builds the system prompt for bookmarklet metadata generation: an explicit
+ * statement that tool calling IS available, the page being saved (so
+ * fetch_url has something concrete to look at instead of guessing), and the
+ * existing tags/categories — the model is told to strongly prefer reusing
+ * them over inventing near-duplicates.
+ */
+function buildBookmarkletSystemPrompt(
+  url: string,
+  currentTitle: string,
+  existingTags: string[],
+  existingCategories: string[],
+): string {
+  const parts = [
+    'You are the metadata assistant for Smootter, a browser extension where users save bookmarks ("bookmarklets") organized by category and tags.',
+    'Tool calling is available and working in this conversation: you have `fill_bookmarklet` (deliver your final answer) and `fetch_url` (fetch the real page content before answering). You DO support tool calling here — never claim otherwise, never answer with plain text, always call one of these two tools.',
+    `The page being saved is: ${url}. Use fetch_url on it to see its actual title and content before writing the description — do not guess.`,
+    currentTitle.trim() === ''
+      ? 'This page currently has no title. You must come up with one (from fetch_url or the URL itself) and include it as `title` in fill_bookmarklet.'
+      : `This page's current title is: "${currentTitle}". Only override it with \`title\` in fill_bookmarklet if it is clearly wrong or unusable — otherwise omit \`title\` and leave it as-is.`,
+    `Write \`description\` (and \`title\` if you set one) in the language of locale "${chrome.i18n.getUILanguage()}" (Smootter's interface language).`,
+  ]
+
+  parts.push(
+    '`category` is the primary way pages get organized here — a real folder hierarchy the user browses, not a second tag. Tags are for short, cross-cutting labels; `category` is for structure, and building that structure well matters. Actively look for a subcategory opportunity before settling on a flat, top-level one.',
+  )
+
+  parts.push(
+    'Categories nest into subcategories by writing a path with "/" as the separator, e.g. "Work/Projects/2026" — each segment becomes one level of folder in the sidebar. Whenever the page is a specific instance of a broader topic, nest it: prefer "Cooking/Desserts/Tiramisu" over just "Cooking" or just "Desserts". A flat, single-segment category should be the exception, used only when the page is genuinely broad and no meaningful parent/child structure applies to it — do not default to flat out of laziness.',
+  )
+
+  parts.push(
+    existingCategories.length > 0
+      ? `Existing categories already in use: ${existingCategories.join(', ')}. Before proposing anything new, check whether one of these is (or should become) the parent of a new subcategory for this page — e.g. if "Work/Projects" exists and this page is about one particular project, propose "Work/Projects/<ProjectName>". Reuse an existing full path exactly (same spelling, same nesting) when it already fits this page precisely; extend it with a new segment when it's the right parent but too broad; only propose a fully unrelated new top-level category when nothing existing is even a plausible parent.`
+      : 'No categories exist yet — this is your chance to start a sensible hierarchy. If the page suggests a natural parent/child relationship (e.g. a specific recipe under a cuisine or course), propose a nested path like "Recipes/Desserts" rather than a single flat category.',
+  )
+
+  parts.push(
+    existingTags.length > 0
+      ? `Existing tags already in use: ${existingTags.join(', ')}. Strongly prefer reusing these for \`tags\` when they fit — only add new ones if needed. Keep the list short (2-5 tags).`
+      : 'No tags exist yet — propose a short, sensible set (2-5).',
+  )
+
+  return parts.join('\n\n')
+}
+
+/**
+ * Asks the model to write a description, category, and tags for `url`,
+ * given the tags/categories already in use as context. The model may call
+ * fetch_url first (one or more times, actually executed here) to see the
+ * real page before calling fill_bookmarklet with its final answer.
+ */
+export async function generateBookmarkletMetadata(
+  config: LlmConfig,
+  url: string,
+  currentTitle: string,
+  existingTags: string[],
+  existingCategories: string[],
+): Promise<LlmBookmarkletResult> {
+  const conversation: ConversationMessage[] = [
+    { role: 'system', content: buildBookmarkletSystemPrompt(url, currentTitle, existingTags, existingCategories) },
+    { role: 'user', content: `Generate the description, category, and tags for this page: ${url}` },
+  ]
+
+  for (let iteration = 0; iteration < MAX_TOOL_ITERATIONS; iteration++) {
+    const result = await callChatCompletions(config, conversation, BOOKMARKLET_TOOLS)
+    if (!result.ok) return { ok: false, errorCode: result.errorCode, detail: result.detail }
+
+    const toolCall = result.message.tool_calls?.[0]
+    const name = toolCall?.function?.name
+    if (!toolCall || !name) return { ok: false, errorCode: 'noToolSupport' }
+
+    if (name === 'fetch_url') {
+      const toolResult = await resolveFetchToolCall(toolCall)
+      pushToolResult(conversation, toolCall, result.message.content ?? null, toolResult)
+      continue
+    }
+
+    if (name === 'fill_bookmarklet') {
+      try {
+        const args = JSON.parse(toolCall.function?.arguments ?? '{}') as {
+          title?: string
+          description?: string
+          category?: string
+          tags?: unknown
+        }
+        return {
+          ok: true,
+          title: typeof args.title === 'string' ? args.title : undefined,
+          description: typeof args.description === 'string' ? args.description : '',
+          category: typeof args.category === 'string' ? args.category : '',
+          tags: Array.isArray(args.tags) ? args.tags.filter((tag): tag is string => typeof tag === 'string') : [],
+        }
+      } catch (error) {
+        return { ok: false, errorCode: 'unknown', detail: describeError(error) }
+      }
+    }
+
+    return { ok: false, errorCode: 'unknown', detail: `Unexpected tool call: ${name}` }
+  }
+
+  return { ok: false, errorCode: 'unknown', detail: 'Too many tool calls without a final answer.' }
+}
+
+/** Loose, dumb word-matching — the model is what makes it "semantic" by trying variations. */
+function executeSearchTool(query: string, items: BookmarkletSearchItem[]): string {
+  const words = query
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((word) => word !== '')
+  const matches = items.filter((item) => {
+    const haystack = `${item.title} ${item.description} ${item.tags.join(' ')} ${item.category} ${item.url}`.toLowerCase()
+    return words.length === 0 || words.some((word) => haystack.includes(word))
+  })
+  return JSON.stringify(
+    matches
+      .slice(0, 50)
+      .map((item) => ({ id: item.id, title: item.title, description: item.description, tags: item.tags, category: item.category })),
+  )
+}
+
+function buildSearchSystemPrompt(): string {
+  return [
+    "You are the search assistant for Smootter's saved bookmarklets. The user typed a free-text query — possibly with typos, vague wording, or a different language than the saved titles. Understand their intent, not just literal keyword overlap.",
+    'Tool calling is available: you have `search_bookmarklets` (a deliberately dumb loose search you can call repeatedly with different keywords) and `return_search_results` (deliver your final answer). Always use these — never answer in plain text.',
+    "The search tool won't correct typos or match synonyms for you — that's your job. Call it several times with different keywords, corrected spellings, synonyms, or a translation of the query if it looks like it might be in a different language than the saved content. Then judge which of the returned candidates actually match what the user means, and call return_search_results with only those, most relevant first.",
+  ].join('\n\n')
+}
+
+/**
+ * Asks the model to find which of `items` (the caller's full bookmarklet list, or a relevant
+ * subset) match a free-text `query`. The model calls search_bookmarklets (executed for real,
+ * against `items`) as many times as it wants before deciding the final set via
+ * return_search_results.
+ */
+export async function searchBookmarklets(
+  config: LlmConfig,
+  query: string,
+  items: BookmarkletSearchItem[],
+): Promise<LlmSearchResult> {
+  const conversation: ConversationMessage[] = [
+    { role: 'system', content: buildSearchSystemPrompt() },
+    { role: 'user', content: `Search query: ${query}` },
+  ]
+
+  for (let iteration = 0; iteration < MAX_TOOL_ITERATIONS; iteration++) {
+    const result = await callChatCompletions(config, conversation, SEARCH_TOOLS)
+    if (!result.ok) return { ok: false, errorCode: result.errorCode, detail: result.detail }
+
+    const toolCall = result.message.tool_calls?.[0]
+    const name = toolCall?.function?.name
+    if (!toolCall || !name) return { ok: false, errorCode: 'noToolSupport' }
+
+    if (name === 'search_bookmarklets') {
+      let args: { query?: string } = {}
+      try {
+        args = JSON.parse(toolCall.function?.arguments ?? '{}')
+      } catch {
+        // fall through with an empty query — reported to the model below
+      }
+      const toolResult =
+        typeof args.query === 'string' && args.query.trim() !== ''
+          ? executeSearchTool(args.query, items)
+          : JSON.stringify({ error: 'Missing query.' })
+      pushToolResult(conversation, toolCall, result.message.content ?? null, toolResult)
+      continue
+    }
+
+    if (name === 'return_search_results') {
+      try {
+        const args = JSON.parse(toolCall.function?.arguments ?? '{}') as { ids?: unknown }
+        const ids = Array.isArray(args.ids) ? args.ids.filter((id): id is string => typeof id === 'string') : []
+        return { ok: true, ids }
       } catch (error) {
         return { ok: false, errorCode: 'unknown', detail: describeError(error) }
       }
