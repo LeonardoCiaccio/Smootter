@@ -367,9 +367,13 @@ function buildBookmarkletSystemPrompt(url: string, existingTags: string[], exist
   ]
 
   parts.push(
+    'Categories can be nested into subcategories by writing a path with "/" as the separator, e.g. "Work/Projects/2026" — each segment between slashes becomes one level of folder in the sidebar. Use nesting when the page is a specific case of a broader existing category (e.g. if "Work/Projects" already exists and this page is about one particular project, propose "Work/Projects/<ProjectName>" rather than a new unrelated top-level category). Do not nest needlessly — a flat, single-segment category is fine when there is no meaningful broader group to nest it under.',
+  )
+
+  parts.push(
     existingCategories.length > 0
-      ? `Existing categories already in use: ${existingCategories.join(', ')}. Strongly prefer reusing one of these for \`category\` if it reasonably fits — only propose a new one when none fit. Categories can be nested paths, e.g. "Work/Projects".`
-      : 'No categories exist yet — propose a single, sensible one.',
+      ? `Existing categories already in use: ${existingCategories.join(', ')}. Strongly prefer reusing one of these exactly (same spelling, same nesting) for \`category\` if it reasonably fits, or nesting a new subcategory under one of them — only propose a fully new top-level category when none of these fit at all.`
+      : 'No categories exist yet — propose a single, sensible one (nested only if the page itself suggests a natural hierarchy, e.g. "Recipes/Desserts").',
   )
 
   parts.push(
