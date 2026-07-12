@@ -5,7 +5,8 @@ import Breadcrumb from '../components/Breadcrumb.vue'
 import BookmarkletForm from '../components/BookmarkletForm.vue'
 import BookmarkletsSidebar from '../components/BookmarkletsSidebar.vue'
 import BookmarkletsTagsSidebar from '../components/BookmarkletsTagsSidebar.vue'
-import BookmarkletsTagResults from '../components/BookmarkletsTagResults.vue'
+import BookmarkletsResultsList from '../components/BookmarkletsResultsList.vue'
+import BookmarkletsSearchPanel from '../components/BookmarkletsSearchPanel.vue'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { useToast } from '../plugins/toast'
 import {
@@ -30,6 +31,7 @@ const bookmarklets = ref<StoredBookmarklet[]>([])
 const categories = ref<StoredCategory[]>([])
 const selectedId = ref<string | null>(null)
 const selectedTag = ref<string | null>(null)
+const searchActive = ref(false)
 
 // Categories always include the fixed "uncategorized" one (seeded by getAllCategories), so
 // emptiness is purely about whether any bookmarklet has been saved yet.
@@ -42,6 +44,9 @@ const bookmarkletsForSelectedTag = computed(() =>
   selectedTag.value === null
     ? []
     : bookmarklets.value.filter((bookmarklet) => bookmarklet.tags.includes(selectedTag.value as string)),
+)
+const selectedTagHeader = computed(() =>
+  selectedTag.value === null ? '' : chrome.i18n.getMessage('bookmarkletsTagResultsHeader', [selectedTag.value]),
 )
 // The current page may already be saved — the form edits that entry in place instead of duplicating it.
 const existingForCurrentUrl = computed(
@@ -72,14 +77,23 @@ async function onTagDeleted(tag: string): Promise<void> {
 function onSelectBookmarklet(id: string): void {
   selectedId.value = id
   selectedTag.value = null
+  searchActive.value = false
 }
 
 function onSelectTag(tag: string): void {
   selectedTag.value = tag
   selectedId.value = null
+  searchActive.value = false
 }
 
 function onAddNew(): void {
+  selectedId.value = null
+  selectedTag.value = null
+  searchActive.value = false
+}
+
+function onSearchOpened(): void {
+  searchActive.value = true
   selectedId.value = null
   selectedTag.value = null
 }
@@ -158,16 +172,24 @@ onMounted(async () => {
         :selected-id="selectedId"
         @select="onSelectBookmarklet"
         @add="onAddNew"
+        @search="onSearchOpened"
         @delete="onBookmarkletDeleted"
         @delete-category="onCategoryDeleted"
         @move="onBookmarkletMoved"
       />
       <div :class="ui.bookmarkletsMain">
         <div :class="ui.bookmarkletsWrapper">
-          <BookmarkletsTagResults
+          <BookmarkletsResultsList
             v-if="selectedTag"
-            :tag="selectedTag"
+            :header-text="selectedTagHeader"
             :bookmarklets="bookmarkletsForSelectedTag"
+            :categories="categories"
+            :exclude-tag="selectedTag"
+            @select="onSelectBookmarklet"
+          />
+          <BookmarkletsSearchPanel
+            v-else-if="searchActive"
+            :bookmarklets="bookmarklets"
             :categories="categories"
             @select="onSelectBookmarklet"
           />

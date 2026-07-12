@@ -1,25 +1,27 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
+import { computed } from 'vue'
 import { GlobeAltIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
-import { ensureFavicon, type StoredBookmarklet, type StoredCategory } from '@/shared/bookmarkletsDb'
-import { hostnameOf } from '@/shared/url'
+import type { StoredBookmarklet, StoredCategory } from '@/shared/bookmarkletsDb'
+import { useFaviconCache } from '../composables/bookmarkletFavicons'
 
 const props = defineProps<{
-  tag: string
+  headerText?: string
   bookmarklets: StoredBookmarklet[]
   categories: StoredCategory[]
+  // Hides this one tag from each record's tag chips — used by the tag-filter view, where
+  // the selected tag is already implied by being in this list.
+  excludeTag?: string
+  noResultsText?: string
 }>()
 const emit = defineEmits<{ select: [id: string] }>()
-
-const headerText = computed(() => chrome.i18n.getMessage('bookmarkletsTagResultsHeader', [props.tag]))
 
 function categoryName(categoryId: string): string {
   return props.categories.find((category) => category.id === categoryId)?.name ?? ''
 }
 
-function otherTags(bookmarklet: StoredBookmarklet): string[] {
-  return bookmarklet.tags.filter((tag) => tag !== props.tag)
+function visibleTags(bookmarklet: StoredBookmarklet): string[] {
+  return props.excludeTag ? bookmarklet.tags.filter((tag) => tag !== props.excludeTag) : bookmarklet.tags
 }
 
 // Grouped visually by category, alphabetical within it — a scannable, ordered record list.
@@ -30,36 +32,16 @@ const sorted = computed(() =>
   }),
 )
 
-// Cache-only lookup (no liveFaviconUrl) — these are arbitrary saved pages, not the live tab.
-const faviconsByDomain = ref<Record<string, string>>({})
-
-watch(
-  () => props.bookmarklets,
-  async (list) => {
-    const domains = [...new Set(list.map((bookmarklet) => hostnameOf(bookmarklet.url)).filter((domain) => domain !== ''))]
-    const missing = domains.filter((domain) => !(domain in faviconsByDomain.value))
-    if (missing.length === 0) return
-
-    const entries = await Promise.all(missing.map(async (domain) => [domain, await ensureFavicon(domain)] as const))
-    const next = { ...faviconsByDomain.value }
-    for (const [domain, dataUrl] of entries) {
-      if (dataUrl) next[domain] = dataUrl
-    }
-    faviconsByDomain.value = next
-  },
-  { immediate: true },
-)
-
-function faviconFor(url: string): string | undefined {
-  return faviconsByDomain.value[hostnameOf(url)]
-}
+const { faviconFor } = useFaviconCache(computed(() => props.bookmarklets))
 </script>
 
 <template>
   <div>
-    <h1 :class="ui.bookmarkletsTagResultsHeader">{{ headerText }}</h1>
+    <h1 v-if="headerText" :class="ui.bookmarkletsTagResultsHeader">{{ headerText }}</h1>
 
-    <div :class="ui.bookmarkletsTagResultsList">
+    <p v-if="sorted.length === 0 && noResultsText" :class="ui.toolsNoResults">{{ noResultsText }}</p>
+
+    <div v-else :class="ui.bookmarkletsTagResultsList">
       <div
         v-for="bookmarklet in sorted"
         :key="bookmarklet.id"
@@ -83,8 +65,8 @@ function faviconFor(url: string): string | undefined {
           {{ bookmarklet.description }}
         </p>
 
-        <div v-if="otherTags(bookmarklet).length > 0" :class="ui.bookmarkletsTagResultTags">
-          <span v-for="otherTag in otherTags(bookmarklet)" :key="otherTag" :class="ui.tagChip">{{ otherTag }}</span>
+        <div v-if="visibleTags(bookmarklet).length > 0" :class="ui.bookmarkletsTagResultTags">
+          <span v-for="tag in visibleTags(bookmarklet)" :key="tag" :class="ui.tagChip">{{ tag }}</span>
         </div>
 
         <a
