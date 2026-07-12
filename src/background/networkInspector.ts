@@ -9,6 +9,10 @@
 import type { NetworkEntry, NetworkEntryCategory } from '@/shared/messages'
 
 const MAX_ENTRIES_PER_TAB = 500
+// Below this, a response is noise for an investigation (tracking pixels, empty beacons) — not
+// captured at all. Responses with no content-length header (size 0, e.g. chunked transfer) are
+// kept regardless: their real size is unknown, not necessarily small.
+const MIN_ENTRY_SIZE_BYTES = 1024
 
 const logsByTab = new Map<number, NetworkEntry[]>()
 
@@ -17,6 +21,12 @@ function classify(contentType: string): NetworkEntryCategory {
   if (type.startsWith('image/') || type.startsWith('video/') || type.startsWith('audio/')) return 'media'
   if (/pdf|msword|officedocument|rtf|json|xml|text\/(plain|csv|html)/.test(type)) return 'document'
   return 'other'
+}
+
+// Textual data calls (API responses, config, auth) — not a "file" download, so the size floor
+// below doesn't apply to them: a 40-byte JSON response can be exactly what an investigation needs.
+function isDataCall(contentType: string): boolean {
+  return /json|xml|text\/(plain|csv|html)/.test(contentType.toLowerCase())
 }
 
 function readHeaders(headers: chrome.webRequest.HttpHeader[] | undefined): { contentType: string; size: number } {
@@ -58,7 +68,18 @@ export function registerNetworkInspector(): void {
       if (details.tabId < 0) return
       if (details.url.startsWith('chrome-extension://')) return
 
+      // Preflight/no-body responses never carry anything worth investigating.
+      if (details.method === 'OPTIONS') return
+      if (details.statusCode === 204 || details.statusCode === 304 || details.statusCode === 101) return
+
       const { contentType, size } = readHeaders(details.responseHeaders)
+      // No content-length AND no content-type: not a real payload either (redirects,
+      // sendBeacon pings, empty acks) — junk regardless of type.
+      if (size === 0 && contentType === '') return
+      // The size floor only applies to actual file downloads (media/binary "other") — small
+      // data calls (json/xml/html/text) are kept regardless of size, see isDataCall above.
+      if (!isDataCall(contentType) && size > 0 && size < MIN_ENTRY_SIZE_BYTES) return
+
       const entry: NetworkEntry = {
         id: crypto.randomUUID(),
         url: details.url,
@@ -83,5 +104,17 @@ export function registerNetworkInspector(): void {
 
   chrome.tabs.onRemoved.addListener((tabId) => {
     clearLog(tabId)
+  })
+
+  // Chrome sometimes swaps a tab's id in place (e.g. a prerendered tab taking over) — the old
+  // id never gets an onRemoved event, so its log would otherwise leak in memory forever.
+  chrome.tabs.onReplaced.addListener((_addedTabId, removedTabId) => {
+    clearLog(removedTabId)
+  })
+
+  // A fresh browser launch means every previously-tracked tab is gone (tab ids aren't
+  // preserved across restarts) — start with a clean slate rather than stale entries.
+  chrome.runtime.onStartup.addListener(() => {
+    logsByTab.clear()
   })
 }
