@@ -3,9 +3,6 @@
   "appDescription": {
     "message": "Fabrique d'outils dans le navigateur : créez des outils sur mesure, à coût zéro à l'usage."
   },
-  "topMessage": {
-    "message": "Vous pouvez créer l'outil que vous voulez"
-  },
   "homeHeader": {
     "message": "Votre navigateur, vos outils."
   },
@@ -18,6 +15,7 @@
   "addTool": {
     "message": "Ajouter un outil"
   },
+  "bookmarklets": { "message": "Bookmarklet" },
   "home": {
     "message": "Accueil"
   },
@@ -54,7 +52,7 @@
   "wizardDescriptionPlaceholder": { "message": "ex. Extraire tous les liens de la page actuelle" },
   "wizardBack": { "message": "Retour" },
   "wizardNext": { "message": "Suivant" },
-  "wizardPlaceholder": { "message": "Bientôt disponible" },
+  "comingSoon": { "message": "Bientôt disponible" },
   "wizardTriggerStartTitle": { "message": "Au chargement de la page" },
   "wizardTriggerStartDescription": {
     "message": "Démarre immédiatement, avant que la page ait fini de charger."

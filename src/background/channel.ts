@@ -49,19 +49,6 @@ grip.hook('ping', {
 })
 
 grip.register({
-  name: 'getTopMessage',
-  validate() {},
-  business() {
-    return { type: 'topMessage', value: chrome.i18n.getMessage('topMessage') }
-  },
-})
-grip.hook('getTopMessage', {
-  after({ result }, context: Context) {
-    if (result.isSuccess) context.sendResponse(result.result)
-  },
-})
-
-grip.register({
   name: 'getPreference',
   validate(args: GetPreferenceRequest) {
     if (typeof args.key !== 'string') throw new Error('key is required.')

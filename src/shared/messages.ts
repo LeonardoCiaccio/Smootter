@@ -30,10 +30,6 @@ export type RemovePreferenceRequest = {
   [K in keyof Preferences]: { type: 'removePreference'; key: K }
 }[keyof Preferences]
 
-export interface GetTopMessageRequest {
-  type: 'getTopMessage'
-}
-
 /**
  * Close signal. The iframe can't reach the host page's DOM to hide the
  * modal itself, so it sends this to the worker, which broadcasts it to
@@ -41,12 +37,6 @@ export interface GetTopMessageRequest {
  */
 export interface CloseModalSignal {
   type: 'closeModal'
-}
-
-/** Reply to getTopMessage: the top message text. */
-export interface TopMessageResponse {
-  type: 'topMessage'
-  value: string
 }
 
 export interface GetUserScriptsStatusRequest {
@@ -158,7 +148,6 @@ export type ChannelRequest =
   | SetPreferenceRequest
   | GetPreferenceRequest
   | RemovePreferenceRequest
-  | GetTopMessageRequest
   | CloseModalSignal
   | GetUserScriptsStatusRequest
   | TestCodeRequest
@@ -170,7 +159,6 @@ export type ChannelResponse =
   | PongResponse
   | PreferenceValue
   | PreferenceSaved
-  | TopMessageResponse
   | CloseModalSignal
   | UserScriptsStatusResponse
   | TestCodeResult

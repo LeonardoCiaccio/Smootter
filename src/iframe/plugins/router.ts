@@ -8,6 +8,7 @@ import { createRouter, createWebHashHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import BuilderView from '../views/BuilderView.vue'
 import OptionsView from '../views/OptionsView.vue'
+import BookmarkletsView from '../views/BookmarkletsView.vue'
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -15,5 +16,6 @@ export const router = createRouter({
     { path: '/', component: HomeView },
     { path: '/builder', component: BuilderView },
     { path: '/options', component: OptionsView },
+    { path: '/bookmarklets', component: BookmarkletsView },
   ],
 })

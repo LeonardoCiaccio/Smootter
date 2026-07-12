@@ -3,9 +3,6 @@
   "appDescription": {
     "message": "Fábrica de herramientas en el navegador: crea herramientas a medida, con coste cero por uso."
   },
-  "topMessage": {
-    "message": "Puedes construir cualquier herramienta que quieras"
-  },
   "homeHeader": {
     "message": "Tu navegador, tus herramientas."
   },
@@ -18,6 +15,7 @@
   "addTool": {
     "message": "Añadir una herramienta"
   },
+  "bookmarklets": { "message": "Bookmarklet" },
   "home": {
     "message": "Inicio"
   },
@@ -50,7 +48,7 @@
   "wizardDescriptionPlaceholder": { "message": "ej. Extraer todos los enlaces de la página actual" },
   "wizardBack": { "message": "Atrás" },
   "wizardNext": { "message": "Siguiente" },
-  "wizardPlaceholder": { "message": "Próximamente" },
+  "comingSoon": { "message": "Próximamente" },
   "wizardTriggerStartTitle": { "message": "Al cargar la página" },
   "wizardTriggerStartDescription": {
     "message": "Empieza enseguida, antes de que la página termine de cargar."

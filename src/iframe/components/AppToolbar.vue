@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, inject, onMounted, ref } from 'vue'
-import { ArrowDownTrayIcon, ArrowUpTrayIcon, Cog6ToothIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { computed, inject, ref } from 'vue'
+import { ArrowDownTrayIcon, ArrowUpTrayIcon, Cog6ToothIcon, FolderIcon, MoonIcon, SunIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { useTheme } from '@/shared/vuePlugins/theme'
@@ -15,13 +15,7 @@ const appVersion = 'v' + manifest.version
 const logoUrl = chrome.runtime.getURL('icons/icon-32.png')
 
 const channel = inject(channelKey)
-const topMessage = ref('')
-
-onMounted(async () => {
-  if (!channel) return
-  const response = await channel.send({ type: 'getTopMessage' })
-  if (response.type === 'topMessage') topMessage.value = response.value
-})
+const bookmarkletsLabel = chrome.i18n.getMessage('bookmarklets')
 
 const { theme, toggle } = useTheme()
 const ThemeIcon = computed(() => (theme.value === 'dark' ? SunIcon : MoonIcon))
@@ -68,11 +62,11 @@ async function onImportFileChange(event: Event): Promise<void> {
       <span :class="ui.toolbarAppVersion">{{ appVersion }}</span>
     </div>
 
-    <div v-if="topMessage" :class="ui.toolbarPill">
-      <span :class="ui.toolbarPillDot" />
-      <span :class="ui.toolbarPillText">{{ topMessage }}</span>
+    <div :class="ui.toolbarAccessories">
+      <RouterLink to="/bookmarklets" :class="ui.toolbarIconButton" :title="bookmarkletsLabel">
+        <FolderIcon :class="ui.toolbarIcon" />
+      </RouterLink>
     </div>
-    <div v-else />
 
     <div :class="ui.toolbarActions">
       <button type="button" :class="ui.toolbarIconButton" :title="exportAllLabel" @click="onExportAllClick">

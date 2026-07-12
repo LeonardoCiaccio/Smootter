@@ -3,9 +3,6 @@
   "appDescription": {
     "message": "Basta abbonamenti: descrivi il tool che ti serve, l'AI lo scrive, tu lo usi. Il tuo browser, piegato alla tua volontà."
   },
-  "topMessage": {
-    "message": "Puoi costruire qualsiasi tool tu voglia"
-  },
   "homeHeader": {
     "message": "Il tuo browser, i tuoi strumenti."
   },
@@ -18,6 +15,7 @@
   "addTool": {
     "message": "Aggiungi un tool"
   },
+  "bookmarklets": { "message": "Bookmarklet" },
   "home": {
     "message": "Home"
   },
@@ -50,7 +48,7 @@
   "wizardDescriptionPlaceholder": { "message": "es. Preleva tutti i link dalla pagina corrente" },
   "wizardBack": { "message": "Indietro" },
   "wizardNext": { "message": "Avanti" },
-  "wizardPlaceholder": { "message": "In arrivo" },
+  "comingSoon": { "message": "In arrivo" },
   "wizardTriggerStartTitle": { "message": "Al caricamento" },
   "wizardTriggerStartDescription": {
     "message": "Parte subito, prima che la pagina finisca di caricare."

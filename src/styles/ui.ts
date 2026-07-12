@@ -23,16 +23,13 @@ export const ui = {
   layoutRoot: 'flex w-full min-h-0 flex-1',
   layoutSide: 'flex-1 h-full',
   layoutCenter: 'relative w-full max-w-7xl h-full overflow-hidden',
-  // Toolbar: app info (left) · top message pill (center) · actions (right)
+  // Toolbar: app info (left) · built-in accessory tools (center) · actions (right)
   toolbar: 'grid flex-shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-4 px-5 py-4',
   toolbarAppInfo: 'flex items-center gap-2 justify-self-start text-gray-900 dark:text-gray-100',
   toolbarLogo: 'h-5 w-5',
   toolbarAppName: 'text-sm font-semibold',
   toolbarAppVersion: 'text-xs opacity-60',
-  toolbarPill:
-    'flex min-w-0 max-w-xs items-center gap-2 justify-self-center rounded-full bg-gray-100 px-4 py-1.5 dark:bg-gray-800',
-  toolbarPillDot: 'h-1.5 w-1.5 flex-shrink-0 rounded-full bg-sky-400',
-  toolbarPillText: 'truncate text-xs font-medium text-gray-700 dark:text-gray-300',
+  toolbarAccessories: 'flex items-center gap-2 justify-self-center',
   toolbarActions: 'flex items-center gap-2 justify-self-end',
   toolbarIconButton:
     'flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-full text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100',
