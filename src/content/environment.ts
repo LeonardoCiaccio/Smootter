@@ -85,9 +85,9 @@ function getMaxZIndex(): number {
   return max
 }
 
-function buildIframe(): HTMLIFrameElement {
+function buildIframe(route: string): HTMLIFrameElement {
   const iframe = document.createElement('iframe')
-  iframe.src = iframeUrl
+  iframe.src = `${iframeUrl}#${route}`
   iframe.style.display = 'block'
   iframe.style.width = '100%'
   iframe.style.height = '100%'
@@ -95,21 +95,48 @@ function buildIframe(): HTMLIFrameElement {
   return iframe
 }
 
-function createModal(): void {
+function createModal(route: string): void {
   const modal = document.createElement('div')
   modal.id = modalId
   modal.style.position = 'fixed'
   modal.style.inset = '0'
   modal.style.zIndex = String(getMaxZIndex() + 10)
-  modal.appendChild(buildIframe())
+  modal.appendChild(buildIframe(route))
   document.body.appendChild(modal)
   lockHostScroll()
 }
 
-// ---- Controller: handle one toolbar click (one injection) ----
-function handleToolbarClick(): void {
+// Set by openEnvironment.ts's inline func injection, right before this file runs — a specific
+// context-menu entry (e.g. "Rete") always jumps straight there, even reusing an already-open
+// modal, rather than toggling it closed like a plain toolbar click would.
+function consumeInitialRoute(): string | undefined {
+  const route = (window as unknown as { __smootterInitialRoute?: string }).__smootterInitialRoute
+  delete (window as unknown as { __smootterInitialRoute?: string }).__smootterInitialRoute
+  return route
+}
+
+function openAtRoute(route: string): void {
+  const modal = getModal()
+  if (!modal) {
+    createModal(route)
+    return
+  }
+  const iframe = modal.querySelector('iframe')
+  if (iframe) iframe.src = `${iframeUrl}#${route}`
+  show()
+}
+
+// ---- Controller: handle one injection (one toolbar click, or one context menu click) ----
+function handleInjection(): void {
+  const route = consumeInitialRoute()
+  if (route !== undefined) {
+    openAtRoute(route)
+    return
+  }
+
+  // Plain toolbar click: toggle open/closed, defaulting to Home.
   if (!isPresent()) {
-    createModal()
+    createModal('/')
     return
   }
   if (isVisible()) hide()
@@ -117,4 +144,4 @@ function handleToolbarClick(): void {
 }
 
 connectChannel()
-handleToolbarClick()
+handleInjection()
