@@ -15,6 +15,7 @@ import {
   getAllCategories,
   reconcileOrphanBookmarklets,
   saveBookmarklet,
+  saveCategory,
   type StoredBookmarklet,
   type StoredCategory,
 } from '@/shared/bookmarkletsDb'
@@ -90,11 +91,22 @@ async function onBookmarkletDeleted(id: string): Promise<void> {
   toast.success(chrome.i18n.getMessage('bookmarkletDeleted'))
 }
 
-async function onBookmarkletMoved(id: string, categoryId: string): Promise<void> {
+// categoryPath is the dropped-on node's fullPath — it may be an existing category's name, or
+// just a structural path segment (e.g. "AA" when only "AA/BB" was ever created) that gets
+// promoted into a real category here, on first use.
+async function onBookmarkletMoved(id: string, categoryPath: string): Promise<void> {
   const bookmarklet = bookmarklets.value.find((existing) => existing.id === id)
-  if (!bookmarklet || bookmarklet.categoryId === categoryId) return
+  if (!bookmarklet) return
 
-  const updated = { ...bookmarklet, categoryId, updatedAt: Date.now() }
+  let category = categories.value.find((existing) => existing.name === categoryPath)
+  if (!category) {
+    category = { id: crypto.randomUUID(), name: categoryPath }
+    await saveCategory(category)
+    categories.value = [...categories.value, category]
+  }
+  if (bookmarklet.categoryId === category.id) return
+
+  const updated = { ...bookmarklet, categoryId: category.id, updatedAt: Date.now() }
   await saveBookmarklet(updated)
   bookmarklets.value = bookmarklets.value.map((existing) => (existing.id === id ? updated : existing))
 }

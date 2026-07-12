@@ -20,7 +20,9 @@ const emit = defineEmits<{
   select: [id: string]
   delete: [id: string]
   deleteCategory: [id: string]
-  move: [id: string, categoryId: string]
+  // categoryPath: the target node's fullPath — BookmarkletsView resolves it to a category,
+  // creating one by that name first if it's still just a structural path segment.
+  move: [id: string, categoryPath: string]
 }>()
 
 const DRAG_MIME = 'application/x-smootter-bookmarklet-id'
@@ -65,29 +67,33 @@ function onDragStart(id: string, event: DragEvent): void {
   if (event.dataTransfer) event.dataTransfer.effectAllowed = 'move'
 }
 
-// Only a real category is a valid drop target — dropping on a purely structural path
-// segment (e.g. "AA" when only "AA/BB" was ever created) wouldn't have anywhere to land.
-const isDropTarget = ref(false)
+// Every node is a valid drop target, including purely structural path segments (e.g. "AA"
+// when only "AA/BB" was ever created) — dropping there promotes it into a real category on
+// the fly (BookmarkletsView creates it by name if it doesn't exist yet).
+// dragenter/dragleave also fire when the pointer crosses the row's own children (the chevron,
+// icon, text) since they bubble — a plain boolean flickers on/off as it crosses them, so a
+// counter nets that out to "is the pointer still somewhere inside this row" (same pattern as
+// HomeView's file-drop overlay).
+const dropDepth = ref(0)
+const isDropTarget = computed(() => dropDepth.value > 0)
 
 function onDragOver(event: DragEvent): void {
-  if (!props.node.category) return
   event.preventDefault()
   if (event.dataTransfer) event.dataTransfer.dropEffect = 'move'
 }
 
 function onDragEnter(): void {
-  if (props.node.category) isDropTarget.value = true
+  dropDepth.value++
 }
 
 function onDragLeave(): void {
-  isDropTarget.value = false
+  dropDepth.value = Math.max(0, dropDepth.value - 1)
 }
 
 function onDrop(event: DragEvent): void {
-  isDropTarget.value = false
-  if (!props.node.category) return
+  dropDepth.value = 0
   const id = event.dataTransfer?.getData(DRAG_MIME)
-  if (id) emit('move', id, props.node.category.id)
+  if (id) emit('move', id, props.node.fullPath)
 }
 
 const confirmingCategory = ref(false)
