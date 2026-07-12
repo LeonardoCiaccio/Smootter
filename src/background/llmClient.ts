@@ -28,6 +28,7 @@ export interface LlmGenerateResult {
 
 export interface LlmBookmarkletResult {
   ok: boolean
+  title?: string
   description?: string
   category?: string
   tags?: string[]
@@ -103,6 +104,11 @@ const FILL_BOOKMARKLET_TOOL = {
     parameters: {
       type: 'object',
       properties: {
+        title: {
+          type: 'string',
+          description:
+            'A short, human-readable title for this page. Only include this if the current title given in context is missing, empty, or clearly unusable (e.g. a generic placeholder) — otherwise omit this field entirely and leave the existing title untouched.',
+        },
         description: {
           type: 'string',
           description: 'A short, plain description (one or two sentences) of what this page is and why it is worth saving.',
@@ -411,12 +417,20 @@ export async function generateCode(
  * existing tags/categories — the model is told to strongly prefer reusing
  * them over inventing near-duplicates.
  */
-function buildBookmarkletSystemPrompt(url: string, existingTags: string[], existingCategories: string[]): string {
+function buildBookmarkletSystemPrompt(
+  url: string,
+  currentTitle: string,
+  existingTags: string[],
+  existingCategories: string[],
+): string {
   const parts = [
     'You are the metadata assistant for Smootter, a browser extension where users save bookmarks ("bookmarklets") organized by category and tags.',
     'Tool calling is available and working in this conversation: you have `fill_bookmarklet` (deliver your final answer) and `fetch_url` (fetch the real page content before answering). You DO support tool calling here — never claim otherwise, never answer with plain text, always call one of these two tools.',
     `The page being saved is: ${url}. Use fetch_url on it to see its actual title and content before writing the description — do not guess.`,
-    `Write \`description\` in the language of locale "${chrome.i18n.getUILanguage()}" (Smootter's interface language).`,
+    currentTitle.trim() === ''
+      ? 'This page currently has no title. You must come up with one (from fetch_url or the URL itself) and include it as `title` in fill_bookmarklet.'
+      : `This page's current title is: "${currentTitle}". Only override it with \`title\` in fill_bookmarklet if it is clearly wrong or unusable — otherwise omit \`title\` and leave it as-is.`,
+    `Write \`description\` (and \`title\` if you set one) in the language of locale "${chrome.i18n.getUILanguage()}" (Smootter's interface language).`,
   ]
 
   parts.push(
@@ -451,11 +465,12 @@ function buildBookmarkletSystemPrompt(url: string, existingTags: string[], exist
 export async function generateBookmarkletMetadata(
   config: LlmConfig,
   url: string,
+  currentTitle: string,
   existingTags: string[],
   existingCategories: string[],
 ): Promise<LlmBookmarkletResult> {
   const conversation: ConversationMessage[] = [
-    { role: 'system', content: buildBookmarkletSystemPrompt(url, existingTags, existingCategories) },
+    { role: 'system', content: buildBookmarkletSystemPrompt(url, currentTitle, existingTags, existingCategories) },
     { role: 'user', content: `Generate the description, category, and tags for this page: ${url}` },
   ]
 
@@ -476,12 +491,14 @@ export async function generateBookmarkletMetadata(
     if (name === 'fill_bookmarklet') {
       try {
         const args = JSON.parse(toolCall.function?.arguments ?? '{}') as {
+          title?: string
           description?: string
           category?: string
           tags?: unknown
         }
         return {
           ok: true,
+          title: typeof args.title === 'string' ? args.title : undefined,
           description: typeof args.description === 'string' ? args.description : '',
           category: typeof args.category === 'string' ? args.category : '',
           tags: Array.isArray(args.tags) ? args.tags.filter((tag): tag is string => typeof tag === 'string') : [],

@@ -143,6 +143,7 @@ async function onGenerate(): Promise<void> {
   const response = await channel.send({
     type: 'generateBookmarklet',
     url: linkUrl.value,
+    currentTitle: title.value,
     existingTags: props.tagSuggestions,
     // The fixed "uncategorized" category is a fallback label, not a real content category —
     // leaving it in this list gives the model an easy out to always "reuse" it instead of
@@ -160,6 +161,7 @@ async function onGenerate(): Promise<void> {
     return
   }
 
+  if (response.title && title.value.trim() === '') title.value = response.title
   if (response.description) description.value = response.description
   if (response.tags) tags.value = response.tags
   if (response.category) await resolveCategoryByName(response.category)

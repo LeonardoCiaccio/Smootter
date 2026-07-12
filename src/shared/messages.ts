@@ -163,6 +163,7 @@ export interface GenerateCodeResult {
 export interface GenerateBookmarkletRequest {
   type: 'generateBookmarklet'
   url: string
+  currentTitle: string
   existingTags: string[]
   existingCategories: string[]
 }
@@ -171,6 +172,7 @@ export interface GenerateBookmarkletRequest {
 export interface GenerateBookmarkletResult {
   type: 'generateBookmarkletResult'
   ok: boolean
+  title?: string
   description?: string
   category?: string
   tags?: string[]

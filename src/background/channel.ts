@@ -210,10 +210,11 @@ grip.register({
     if (!config) {
       return { type: 'generateBookmarkletResult', ok: false, errorCode: 'unknown', detail: 'No LLM configured.' }
     }
-    const result = await generateBookmarkletMetadata(config, args.url, args.existingTags, args.existingCategories)
+    const result = await generateBookmarkletMetadata(config, args.url, args.currentTitle, args.existingTags, args.existingCategories)
     return {
       type: 'generateBookmarkletResult',
       ok: result.ok,
+      title: result.title,
       description: result.description,
       category: result.category,
       tags: result.tags,
