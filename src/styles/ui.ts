@@ -125,6 +125,7 @@ export const ui = {
   bookmarkletsHeader: 'font-heading text-2xl font-bold text-gray-900 dark:text-gray-100',
   bookmarkletsSubheader: 'font-subheading text-sm text-gray-500 dark:text-gray-400 pb-4',
   bookmarkletsForm: 'flex flex-col gap-4',
+  bookmarkletsFormActions: 'flex items-center justify-end gap-2',
   bookmarkletsTitleRow: 'flex items-center gap-2',
   bookmarkletsFavicon:
     'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-tool border border-gray-300 bg-white dark:border-gray-700 dark:bg-gray-800',
@@ -176,6 +177,9 @@ export const ui = {
     'flex cursor-pointer flex-col gap-1 rounded-tool border border-gray-200 p-4 text-left transition-colors hover:border-cyan-500 dark:border-gray-800 dark:hover:border-cyan-400',
   bookmarkletsTagResultCategory:
     'w-fit rounded-full bg-gray-100 px-2 py-0.5 text-[11px] font-medium uppercase tracking-wide text-gray-500 dark:bg-gray-800 dark:text-gray-400',
+  bookmarkletsTagResultTopRow: 'flex items-center justify-between gap-2',
+  bookmarkletsTagResultOpenButton:
+    'flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-tool text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200',
   bookmarkletsTagResultTitleRow: 'flex items-center gap-1.5',
   bookmarkletsTagResultTitle: 'truncate text-sm font-semibold text-gray-900 dark:text-gray-100',
   bookmarkletsTagResultDescription: 'text-xs text-gray-500 dark:text-gray-400',

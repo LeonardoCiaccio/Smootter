@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed } from 'vue'
-import { GlobeAltIcon } from '@heroicons/vue/24/outline'
+import { ArrowTopRightOnSquareIcon, GlobeAltIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import type { StoredBookmarklet, StoredCategory } from '@/shared/bookmarkletsDb'
 import { useFaviconCache } from '../composables/bookmarkletFavicons'
@@ -33,6 +33,8 @@ const sorted = computed(() =>
 )
 
 const { faviconFor } = useFaviconCache(computed(() => props.bookmarklets))
+
+const openInNewTabLabel = chrome.i18n.getMessage('bookmarkletsOpenInNewTab')
 </script>
 
 <template>
@@ -48,7 +50,19 @@ const { faviconFor } = useFaviconCache(computed(() => props.bookmarklets))
         :class="ui.bookmarkletsTagResultRecord"
         @click="emit('select', bookmarklet.id)"
       >
-        <span :class="ui.bookmarkletsTagResultCategory">{{ categoryName(bookmarklet.categoryId) }}</span>
+        <div :class="ui.bookmarkletsTagResultTopRow">
+          <span :class="ui.bookmarkletsTagResultCategory">{{ categoryName(bookmarklet.categoryId) }}</span>
+          <a
+            :href="bookmarklet.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            :class="ui.bookmarkletsTagResultOpenButton"
+            :title="openInNewTabLabel"
+            @click.stop
+          >
+            <ArrowTopRightOnSquareIcon :class="ui.toolCardIcon" />
+          </a>
+        </div>
 
         <div :class="ui.bookmarkletsTagResultTitleRow">
           <img

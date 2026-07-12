@@ -26,6 +26,15 @@ export interface LlmGenerateResult {
   detail?: string
 }
 
+export interface LlmBookmarkletResult {
+  ok: boolean
+  description?: string
+  category?: string
+  tags?: string[]
+  errorCode?: LlmErrorCode
+  detail?: string
+}
+
 const WRITE_CODE_TOOL = {
   type: 'function',
   function: {
@@ -66,7 +75,39 @@ const FETCH_TOOL = {
   },
 } as const
 
-const TOOLS = [WRITE_CODE_TOOL, FETCH_TOOL] as const
+const CODE_TOOLS = [WRITE_CODE_TOOL, FETCH_TOOL] as const
+
+const FILL_BOOKMARKLET_TOOL = {
+  type: 'function',
+  function: {
+    name: 'fill_bookmarklet',
+    description:
+      'Deliver your answer: a short description, a category, and tags for this saved page. Call this when ready, after using fetch_url if you needed to.',
+    parameters: {
+      type: 'object',
+      properties: {
+        description: {
+          type: 'string',
+          description: 'A short, plain description (one or two sentences) of what this page is and why it is worth saving.',
+        },
+        category: {
+          type: 'string',
+          description:
+            'The category for this bookmark. Strongly prefer reusing one of the existing categories provided if it reasonably fits — only propose a new one when none fit. Categories can be nested paths, e.g. "Work/Projects".',
+        },
+        tags: {
+          type: 'array',
+          items: { type: 'string' },
+          description:
+            'A short list of tags (2-5). Strongly prefer reusing existing tags provided when they fit — only add new ones if needed.',
+        },
+      },
+      required: ['description', 'category', 'tags'],
+    },
+  },
+} as const
+
+const BOOKMARKLET_TOOLS = [FILL_BOOKMARKLET_TOOL, FETCH_TOOL] as const
 
 interface ToolCall {
   id?: string
@@ -110,9 +151,44 @@ async function executeFetchTool(url: string): Promise<string> {
   }
 }
 
+/** Resolves a fetch_url tool call's arguments and actually performs it. Shared by every tool loop. */
+async function resolveFetchToolCall(toolCall: ToolCall): Promise<string> {
+  let args: { url?: string } = {}
+  try {
+    args = JSON.parse(toolCall.function?.arguments ?? '{}')
+  } catch {
+    // fall through with an empty url — reported to the model below
+  }
+  return typeof args.url === 'string' && args.url.trim() !== ''
+    ? await executeFetchTool(args.url)
+    : JSON.stringify({ error: 'Missing url.', note: 'Another tool is still available — you can answer without this data.' })
+}
+
+/**
+ * Appends a tool call and its result to the conversation. The tool call is
+ * reconstructed explicitly (id + type: 'function' + function): some
+ * providers require this exact shape echoed back and won't reliably
+ * continue the conversation without it.
+ */
+function pushToolResult(
+  conversation: ConversationMessage[],
+  toolCall: ToolCall,
+  assistantContent: string | null,
+  toolResultContent: string,
+): void {
+  const toolCallId = toolCall.id ?? crypto.randomUUID()
+  conversation.push({
+    role: 'assistant',
+    content: assistantContent,
+    tool_calls: [{ id: toolCallId, type: 'function', function: toolCall.function }],
+  })
+  conversation.push({ role: 'tool', tool_call_id: toolCallId, content: toolResultContent })
+}
+
 async function callChatCompletions(
   config: LlmConfig,
   messages: ConversationMessage[],
+  tools: readonly unknown[],
 ): Promise<{ ok: true; message: ConversationMessage } | { ok: false; errorCode: LlmErrorCode; detail?: string }> {
   const headers: Record<string, string> = { 'Content-Type': 'application/json' }
   if (config.apiKey.trim() !== '') headers.Authorization = `Bearer ${config.apiKey}`
@@ -125,7 +201,7 @@ async function callChatCompletions(
       body: JSON.stringify({
         model: config.model,
         messages,
-        tools: TOOLS,
+        tools,
         // 'required' forces a tool call every turn, but some providers/gateways (e.g. OpenCode
         // Zen) reject it outright with a 400. 'auto' is honored everywhere and models still call
         // a tool on their own when one applies — the loop below already treats a plain-text,
@@ -162,12 +238,16 @@ async function callChatCompletions(
 
 /** Verifies the endpoint is reachable, the key is accepted, and the model actually calls tools. */
 export async function testLlmConfig(config: LlmConfig): Promise<LlmTestResult> {
-  const result = await callChatCompletions(config, [
-    {
-      role: 'user',
-      content: 'You have tool calling available. Call the write_code tool with a single console.log("ok"); statement and any short reply.',
-    },
-  ])
+  const result = await callChatCompletions(
+    config,
+    [
+      {
+        role: 'user',
+        content: 'You have tool calling available. Call the write_code tool with a single console.log("ok"); statement and any short reply.',
+      },
+    ],
+    CODE_TOOLS,
+  )
 
   if (!result.ok) return { ok: false, errorCode: result.errorCode, detail: result.detail }
   if (!result.message.tool_calls?.[0]?.function?.name) {
@@ -233,7 +313,7 @@ export async function generateCode(
   ]
 
   for (let iteration = 0; iteration < MAX_TOOL_ITERATIONS; iteration++) {
-    const result = await callChatCompletions(config, conversation)
+    const result = await callChatCompletions(config, conversation, CODE_TOOLS)
     if (!result.ok) return { ok: false, errorCode: result.errorCode, detail: result.detail }
 
     const toolCall = result.message.tool_calls?.[0]
@@ -249,27 +329,8 @@ export async function generateCode(
     }
 
     if (name === 'fetch_url') {
-      let args: { url?: string } = {}
-      try {
-        args = JSON.parse(toolCall.function?.arguments ?? '{}')
-      } catch {
-        // fall through with an empty url — reported to the model below
-      }
-      const toolResult =
-        typeof args.url === 'string' && args.url.trim() !== ''
-          ? await executeFetchTool(args.url)
-          : JSON.stringify({ error: 'Missing url.', note: 'write_code is still available — you can answer without this data.' })
-
-      // Reconstruct the tool call explicitly (id + type: 'function' + function):
-      // some providers require this exact shape to be echoed back, and won't
-      // reliably continue the conversation without it.
-      const toolCallId = toolCall.id ?? crypto.randomUUID()
-      conversation.push({
-        role: 'assistant',
-        content: result.message.content ?? null,
-        tool_calls: [{ id: toolCallId, type: 'function', function: toolCall.function }],
-      })
-      conversation.push({ role: 'tool', tool_call_id: toolCallId, content: toolResult })
+      const toolResult = await resolveFetchToolCall(toolCall)
+      pushToolResult(conversation, toolCall, result.message.content ?? null, toolResult)
       continue
     }
 
@@ -279,6 +340,91 @@ export async function generateCode(
         // code is optional — the model leaves it out for plain conversation, not every turn writes code.
         const code = typeof args.code === 'string' && args.code.trim() !== '' ? args.code : undefined
         return { ok: true, code, reply: args.reply ?? '' }
+      } catch (error) {
+        return { ok: false, errorCode: 'unknown', detail: describeError(error) }
+      }
+    }
+
+    return { ok: false, errorCode: 'unknown', detail: `Unexpected tool call: ${name}` }
+  }
+
+  return { ok: false, errorCode: 'unknown', detail: 'Too many tool calls without a final answer.' }
+}
+
+/**
+ * Builds the system prompt for bookmarklet metadata generation: an explicit
+ * statement that tool calling IS available, the page being saved (so
+ * fetch_url has something concrete to look at instead of guessing), and the
+ * existing tags/categories — the model is told to strongly prefer reusing
+ * them over inventing near-duplicates.
+ */
+function buildBookmarkletSystemPrompt(url: string, existingTags: string[], existingCategories: string[]): string {
+  const parts = [
+    'You are the metadata assistant for Smootter, a browser extension where users save bookmarks ("bookmarklets") organized by category and tags.',
+    'Tool calling is available and working in this conversation: you have `fill_bookmarklet` (deliver your final answer) and `fetch_url` (fetch the real page content before answering). You DO support tool calling here — never claim otherwise, never answer with plain text, always call one of these two tools.',
+    `The page being saved is: ${url}. Use fetch_url on it to see its actual title and content before writing the description — do not guess.`,
+    `Write \`description\` in the language of locale "${chrome.i18n.getUILanguage()}" (Smootter's interface language).`,
+  ]
+
+  parts.push(
+    existingCategories.length > 0
+      ? `Existing categories already in use: ${existingCategories.join(', ')}. Strongly prefer reusing one of these for \`category\` if it reasonably fits — only propose a new one when none fit. Categories can be nested paths, e.g. "Work/Projects".`
+      : 'No categories exist yet — propose a single, sensible one.',
+  )
+
+  parts.push(
+    existingTags.length > 0
+      ? `Existing tags already in use: ${existingTags.join(', ')}. Strongly prefer reusing these for \`tags\` when they fit — only add new ones if needed. Keep the list short (2-5 tags).`
+      : 'No tags exist yet — propose a short, sensible set (2-5).',
+  )
+
+  return parts.join('\n\n')
+}
+
+/**
+ * Asks the model to write a description, category, and tags for `url`,
+ * given the tags/categories already in use as context. The model may call
+ * fetch_url first (one or more times, actually executed here) to see the
+ * real page before calling fill_bookmarklet with its final answer.
+ */
+export async function generateBookmarkletMetadata(
+  config: LlmConfig,
+  url: string,
+  existingTags: string[],
+  existingCategories: string[],
+): Promise<LlmBookmarkletResult> {
+  const conversation: ConversationMessage[] = [
+    { role: 'system', content: buildBookmarkletSystemPrompt(url, existingTags, existingCategories) },
+    { role: 'user', content: `Generate the description, category, and tags for this page: ${url}` },
+  ]
+
+  for (let iteration = 0; iteration < MAX_TOOL_ITERATIONS; iteration++) {
+    const result = await callChatCompletions(config, conversation, BOOKMARKLET_TOOLS)
+    if (!result.ok) return { ok: false, errorCode: result.errorCode, detail: result.detail }
+
+    const toolCall = result.message.tool_calls?.[0]
+    const name = toolCall?.function?.name
+    if (!toolCall || !name) return { ok: false, errorCode: 'noToolSupport' }
+
+    if (name === 'fetch_url') {
+      const toolResult = await resolveFetchToolCall(toolCall)
+      pushToolResult(conversation, toolCall, result.message.content ?? null, toolResult)
+      continue
+    }
+
+    if (name === 'fill_bookmarklet') {
+      try {
+        const args = JSON.parse(toolCall.function?.arguments ?? '{}') as {
+          description?: string
+          category?: string
+          tags?: unknown
+        }
+        return {
+          ok: true,
+          description: typeof args.description === 'string' ? args.description : '',
+          category: typeof args.category === 'string' ? args.category : '',
+          tags: Array.isArray(args.tags) ? args.tags.filter((tag): tag is string => typeof tag === 'string') : [],
+        }
       } catch (error) {
         return { ok: false, errorCode: 'unknown', detail: describeError(error) }
       }

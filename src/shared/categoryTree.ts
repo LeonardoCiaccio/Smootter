@@ -15,15 +15,29 @@ export interface CategoryTreeNode {
   children: CategoryTreeNode[]
 }
 
+/** The segments of a category name/path, trimmed and stripped of empties. */
+function pathSegments(name: string): string[] {
+  return name
+    .split('/')
+    .map((segment) => segment.trim())
+    .filter((segment) => segment !== '')
+}
+
+/**
+ * Canonical form of a category name/path: consistent segment spacing, so
+ * "AA/BB" and "AA / BB " (same path, sloppy typing) can't ever end up as two
+ * separate category records. Must be applied before ever saving a category.
+ */
+export function normalizeCategoryName(name: string): string {
+  return pathSegments(name).join('/')
+}
+
 export function buildCategoryTree(categories: StoredCategory[]): CategoryTreeNode[] {
   const roots: CategoryTreeNode[] = []
   const nodesByPath = new Map<string, CategoryTreeNode>()
 
   for (const category of categories) {
-    const segments = category.name
-      .split('/')
-      .map((segment) => segment.trim())
-      .filter((segment) => segment !== '')
+    const segments = pathSegments(category.name)
     if (segments.length === 0) continue
 
     let path = ''

@@ -3,6 +3,7 @@ import { computed, nextTick, onUnmounted, ref } from 'vue'
 import { CheckIcon, ChevronDownIcon, PlusIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { saveCategory, type StoredCategory } from '@/shared/bookmarkletsDb'
+import { normalizeCategoryName } from '@/shared/categoryTree'
 
 const props = defineProps<{ categories: StoredCategory[] }>()
 const categoryId = defineModel<string>('categoryId', { required: true })
@@ -54,8 +55,18 @@ async function onStartNewCategory(): Promise<void> {
 }
 
 async function onCreateCategory(): Promise<void> {
-  const name = newCategoryName.value.trim()
+  const name = normalizeCategoryName(newCategoryName.value)
   if (name === '') return
+
+  // Same path, sloppy spacing (e.g. "AA / BB" vs "AA/BB") must never become two records —
+  // reuse the existing one instead of creating a duplicate with the same visible name.
+  const existing = props.categories.find((category) => category.name === name)
+  if (existing) {
+    categoryId.value = existing.id
+    newCategoryName.value = ''
+    addingNew.value = false
+    return
+  }
 
   const category: StoredCategory = { id: crypto.randomUUID(), name }
   await saveCategory(category)

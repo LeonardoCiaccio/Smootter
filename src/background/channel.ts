@@ -15,12 +15,13 @@ import {
   type TestCodeRequest,
   type TestLlmConfigRequest,
   type GenerateCodeRequest,
+  type GenerateBookmarkletRequest,
 } from '@/shared/messages'
 import { getPreference, setPreference, removePreference, type Preferences } from '@/shared/preferences'
 import { isLocalLlmEndpoint } from '@/shared/llmEndpoint'
 import { isUserScriptsEnabled } from './userScripts'
 import { runCodeTest } from './testRunner'
-import { testLlmConfig, generateCode } from './llmClient'
+import { testLlmConfig, generateCode, generateBookmarkletMetadata } from './llmClient'
 
 interface Context {
   sender: chrome.runtime.MessageSender
@@ -193,6 +194,34 @@ grip.register({
   },
 })
 grip.hook('generateCode', {
+  after({ result }, context: Context) {
+    if (result.isSuccess) context.sendResponse(result.result)
+  },
+})
+
+grip.register({
+  name: 'generateBookmarklet',
+  validate(args: GenerateBookmarkletRequest) {
+    if (typeof args.url !== 'string' || args.url.trim() === '') throw new Error('url is required.')
+  },
+  async business(args: GenerateBookmarkletRequest) {
+    const config = await getPreference('llmConfig')
+    if (!config) {
+      return { type: 'generateBookmarkletResult', ok: false, errorCode: 'unknown', detail: 'No LLM configured.' }
+    }
+    const result = await generateBookmarkletMetadata(config, args.url, args.existingTags, args.existingCategories)
+    return {
+      type: 'generateBookmarkletResult',
+      ok: result.ok,
+      description: result.description,
+      category: result.category,
+      tags: result.tags,
+      errorCode: result.errorCode,
+      detail: result.detail,
+    }
+  },
+})
+grip.hook('generateBookmarklet', {
   after({ result }, context: Context) {
     if (result.isSuccess) context.sendResponse(result.result)
   },

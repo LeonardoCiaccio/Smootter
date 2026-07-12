@@ -154,6 +154,30 @@ export interface GenerateCodeResult {
   detail?: string
 }
 
+/**
+ * Sent by the Bookmarklets form's "Generate with AI" button: asks the model
+ * to write a description, category, and tags for `url`. `existingTags`/
+ * `existingCategories` are passed as context so the model prefers reusing
+ * them over inventing near-duplicates.
+ */
+export interface GenerateBookmarkletRequest {
+  type: 'generateBookmarklet'
+  url: string
+  existingTags: string[]
+  existingCategories: string[]
+}
+
+/** Reply to generateBookmarklet. */
+export interface GenerateBookmarkletResult {
+  type: 'generateBookmarkletResult'
+  ok: boolean
+  description?: string
+  category?: string
+  tags?: string[]
+  errorCode?: LlmErrorCode
+  detail?: string
+}
+
 /** Messages sent from the UI to the background. */
 export type ChannelRequest =
   | PingRequest
@@ -166,6 +190,7 @@ export type ChannelRequest =
   | TestCodeRequest
   | TestLlmConfigRequest
   | GenerateCodeRequest
+  | GenerateBookmarkletRequest
 
 /** Messages sent from the background to the UI. */
 export type ChannelResponse =
@@ -177,4 +202,5 @@ export type ChannelResponse =
   | CurrentPageResponse
   | TestCodeResult
   | TestLlmConfigResult
+  | GenerateBookmarkletResult
   | GenerateCodeResult

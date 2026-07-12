@@ -1,11 +1,22 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { GlobeAltIcon } from '@heroicons/vue/24/outline'
+import { computed, inject, ref, watch } from 'vue'
+import { ArrowPathIcon, GlobeAltIcon, SparklesIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import CategoryCombobox from './CategoryCombobox.vue'
 import TagsInput from './TagsInput.vue'
-import { ensureFavicon, saveBookmarklet, type StoredBookmarklet, type StoredCategory } from '@/shared/bookmarkletsDb'
+import LlmConfigModal from './wizard/LlmConfigModal.vue'
+import {
+  ensureFavicon,
+  saveBookmarklet,
+  saveCategory,
+  type StoredBookmarklet,
+  type StoredCategory,
+} from '@/shared/bookmarkletsDb'
+import { normalizeCategoryName } from '@/shared/categoryTree'
 import { hostnameOf } from '@/shared/url'
+import { channelKey } from '@/shared/vuePlugins/messaging'
+import { llmErrorText } from '@/shared/llmErrorText'
+import { useToast } from '../plugins/toast'
 
 const props = defineProps<{
   currentUrl: string
@@ -35,6 +46,10 @@ const descriptionLabel = chrome.i18n.getMessage('bookmarkletsFormDescriptionLabe
 const descriptionPlaceholder = chrome.i18n.getMessage('bookmarkletsFormDescriptionPlaceholder')
 const tagsLabel = chrome.i18n.getMessage('bookmarkletsFormTagsLabel')
 const saveLabel = chrome.i18n.getMessage('bookmarkletsSave')
+const generateLabel = chrome.i18n.getMessage('bookmarkletsGenerate')
+
+const channel = inject(channelKey)
+const toast = useToast()
 
 function resetFrom(existing: StoredBookmarklet | null): void {
   title.value = existing?.title ?? props.initialTitle
@@ -77,6 +92,69 @@ watch(
 )
 
 const canSave = computed(() => title.value.trim() !== '' && categoryId.value !== '')
+
+const generating = ref(false)
+const showConfigModal = ref(false)
+
+/** Reuses an existing category by (normalized) name if one matches, otherwise creates it. */
+async function resolveCategoryByName(name: string): Promise<void> {
+  const normalized = normalizeCategoryName(name)
+  if (normalized === '') return
+
+  const existing = props.categories.find((category) => category.name === normalized)
+  if (existing) {
+    categoryId.value = existing.id
+    return
+  }
+
+  const category: StoredCategory = { id: crypto.randomUUID(), name: normalized }
+  await saveCategory(category)
+  emit('categoryCreated', category)
+  categoryId.value = category.id
+}
+
+/**
+ * Same workflow as the wizard's "Generate with AI": if the LLM isn't configured yet, open the
+ * setup popup and retry automatically once it's saved. On success, fills description/category/
+ * tags — the existing ones (passed as context to the model) are what it's told to prefer reusing.
+ */
+async function onGenerate(): Promise<void> {
+  if (!channel || generating.value) return
+
+  const configResponse = await channel.send({ type: 'getPreference', key: 'llmConfig' })
+  const configured = configResponse.type === 'preferenceValue' && Boolean(configResponse.value)
+  if (!configured) {
+    showConfigModal.value = true
+    return
+  }
+
+  generating.value = true
+  const response = await channel.send({
+    type: 'generateBookmarklet',
+    url: linkUrl.value,
+    existingTags: props.tagSuggestions,
+    existingCategories: props.categories.map((category) => category.name),
+  })
+  generating.value = false
+
+  if (response.type !== 'generateBookmarkletResult' || !response.ok) {
+    const errorCode = response.type === 'generateBookmarkletResult' ? response.errorCode : 'unknown'
+    const detail = response.type === 'generateBookmarkletResult' ? response.detail : undefined
+    toast.error(llmErrorText(errorCode, detail))
+    return
+  }
+
+  console.log('[Smootter debug] generateBookmarklet response:', response)
+  if (response.description) description.value = response.description
+  if (response.tags) tags.value = response.tags
+  if (response.category) await resolveCategoryByName(response.category)
+  console.log('[Smootter debug] categoryId after resolve:', categoryId.value, 'categories:', props.categories)
+}
+
+function onConfigSaved(): void {
+  showConfigModal.value = false
+  void onGenerate()
+}
 
 const alreadySavedNotice = computed(() => {
   if (!props.existingBookmarklet) return ''
@@ -145,7 +223,16 @@ async function onSubmit(): Promise<void> {
         @created="(category) => emit('categoryCreated', category)"
       />
 
-      <button type="submit" :class="ui.primaryButton" :disabled="!canSave">{{ saveLabel }}</button>
+      <div :class="ui.bookmarkletsFormActions">
+        <button type="button" :class="ui.secondaryButton" :disabled="generating" @click="onGenerate">
+          <ArrowPathIcon v-if="generating" :class="[ui.toolbarIcon, 'animate-spin']" />
+          <SparklesIcon v-else :class="ui.toolbarIcon" />
+          {{ generateLabel }}
+        </button>
+        <button type="submit" :class="ui.primaryButton" :disabled="!canSave">{{ saveLabel }}</button>
+      </div>
     </form>
+
+    <LlmConfigModal v-if="showConfigModal" @close="showConfigModal = false" @saved="onConfigSaved" />
   </div>
 </template>
