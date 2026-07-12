@@ -9,6 +9,7 @@ import {
   ensureFavicon,
   saveBookmarklet,
   saveCategory,
+  UNCATEGORIZED_CATEGORY_ID,
   type StoredBookmarklet,
   type StoredCategory,
 } from '@/shared/bookmarkletsDb'
@@ -133,7 +134,12 @@ async function onGenerate(): Promise<void> {
     type: 'generateBookmarklet',
     url: linkUrl.value,
     existingTags: props.tagSuggestions,
-    existingCategories: props.categories.map((category) => category.name),
+    // The fixed "uncategorized" category is a fallback label, not a real content category —
+    // leaving it in this list gives the model an easy out to always "reuse" it instead of
+    // proposing something specific.
+    existingCategories: props.categories
+      .filter((category) => category.id !== UNCATEGORIZED_CATEGORY_ID)
+      .map((category) => category.name),
   })
   generating.value = false
 
@@ -144,11 +150,9 @@ async function onGenerate(): Promise<void> {
     return
   }
 
-  console.log('[Smootter debug] generateBookmarklet response:', response)
   if (response.description) description.value = response.description
   if (response.tags) tags.value = response.tags
   if (response.category) await resolveCategoryByName(response.category)
-  console.log('[Smootter debug] categoryId after resolve:', categoryId.value, 'categories:', props.categories)
 }
 
 function onConfigSaved(): void {
