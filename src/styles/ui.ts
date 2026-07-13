@@ -33,6 +33,8 @@ export const ui = {
   // Accessory tools stand out from the plain-gray actions on the right: bigger, accent-colored.
   toolbarAccessoryButton:
     'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-cyan-600 transition-colors hover:bg-cyan-50 dark:text-cyan-400 dark:hover:bg-cyan-950',
+  // Same footprint as toolbarAccessoryButton, filled instead of hover-only — the current view's icon.
+  toolbarAccessoryButtonActive: 'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-cyan-600 text-white dark:bg-cyan-500',
   toolbarAccessoryIcon: 'h-6 w-6',
   toolbarActions: 'flex items-center gap-2 justify-self-end',
   toolbarIconButton:

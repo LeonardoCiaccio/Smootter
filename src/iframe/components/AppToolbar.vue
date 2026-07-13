@@ -1,6 +1,17 @@
 <script setup lang="ts">
 import { computed, inject, ref } from 'vue'
-import { ArrowDownTrayIcon, ArrowUpTrayIcon, Cog6ToothIcon, FolderIcon, HomeIcon, MoonIcon, SignalIcon, SunIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { useRoute } from 'vue-router'
+import {
+  ArrowDownTrayIcon,
+  ArrowUpTrayIcon,
+  Cog6ToothIcon,
+  FolderIcon,
+  MoonIcon,
+  SignalIcon,
+  SunIcon,
+  WrenchScrewdriverIcon,
+  XMarkIcon,
+} from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { useTheme } from '@/shared/vuePlugins/theme'
@@ -16,6 +27,12 @@ const channel = inject(channelKey)
 const homeLabel = chrome.i18n.getMessage('home')
 const bookmarkletsLabel = chrome.i18n.getMessage('bookmarklets')
 const networkLabel = chrome.i18n.getMessage('network')
+
+const route = useRoute()
+// Home covers the tool factory as a whole — the builder is reached from there, not a separate area.
+const isHomeActive = computed(() => route.path === '/' || route.path === '/builder')
+const isBookmarkletsActive = computed(() => route.path === '/bookmarklets')
+const isNetworkActive = computed(() => route.path === '/network')
 
 const { theme, toggle } = useTheme()
 const ThemeIcon = computed(() => (theme.value === 'dark' ? SunIcon : MoonIcon))
@@ -54,13 +71,17 @@ async function onImportFileChange(event: Event): Promise<void> {
     </div>
 
     <div :class="ui.toolbarAccessories">
-      <RouterLink to="/" :class="ui.toolbarAccessoryButton" :title="homeLabel">
-        <HomeIcon :class="ui.toolbarAccessoryIcon" />
+      <RouterLink to="/" :class="isHomeActive ? ui.toolbarAccessoryButtonActive : ui.toolbarAccessoryButton" :title="homeLabel">
+        <WrenchScrewdriverIcon :class="ui.toolbarAccessoryIcon" />
       </RouterLink>
-      <RouterLink to="/bookmarklets" :class="ui.toolbarAccessoryButton" :title="bookmarkletsLabel">
+      <RouterLink
+        to="/bookmarklets"
+        :class="isBookmarkletsActive ? ui.toolbarAccessoryButtonActive : ui.toolbarAccessoryButton"
+        :title="bookmarkletsLabel"
+      >
         <FolderIcon :class="ui.toolbarAccessoryIcon" />
       </RouterLink>
-      <RouterLink to="/network" :class="ui.toolbarAccessoryButton" :title="networkLabel">
+      <RouterLink to="/network" :class="isNetworkActive ? ui.toolbarAccessoryButtonActive : ui.toolbarAccessoryButton" :title="networkLabel">
         <SignalIcon :class="ui.toolbarAccessoryIcon" />
       </RouterLink>
     </div>
