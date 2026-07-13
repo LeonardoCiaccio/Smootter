@@ -4,11 +4,23 @@
     "message": "Basta abbonamenti: descrivi il tool che ti serve, l'AI lo scrive, tu lo usi. Il tuo browser, piegato alla tua volontà."
   },
   "homeHeader": {
-    "message": "Il tuo browser, i tuoi strumenti."
+    "message": "Benvenuto in Smootter"
   },
   "homeSubheader": {
+    "message": "La tua cassetta degli attrezzi per il browser — scegli da dove iniziare."
+  },
+  "toolsHeader": {
+    "message": "Il tuo browser, i tuoi strumenti."
+  },
+  "toolsSubheader": {
     "message": "Senza abbonamenti. Basta scrivere cosa ti serve."
   },
+  "homeToolsCardTitle": { "message": "Tool" },
+  "homeToolsCardDescription": { "message": "Crea strumenti su misura descrivendoli a parole." },
+  "homeBookmarkletsCardTitle": { "message": "Bookmarklet" },
+  "homeBookmarkletsCardDescription": { "message": "Organizza i link utili, con tag e categorie." },
+  "homeNetworkCardTitle": { "message": "Rete" },
+  "homeNetworkCardDescription": { "message": "Ispeziona e scarica le risorse caricate dalla pagina." },
   "createFirstTool": {
     "message": "Crea il tuo primo tool"
   },
@@ -17,6 +29,7 @@
   },
   "bookmarklets": { "message": "Bookmarklet" },
   "network": { "message": "Rete" },
+  "tools": { "message": "Tool" },
   "home": {
     "message": "Home"
   },

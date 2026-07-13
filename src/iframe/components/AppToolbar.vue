@@ -6,6 +6,7 @@ import {
   ArrowUpTrayIcon,
   Cog6ToothIcon,
   FolderIcon,
+  HomeIcon,
   MoonIcon,
   SignalIcon,
   SunIcon,
@@ -25,12 +26,14 @@ const logoUrl = chrome.runtime.getURL('icons/icon-32.png')
 
 const channel = inject(channelKey)
 const homeLabel = chrome.i18n.getMessage('home')
+const toolsLabel = chrome.i18n.getMessage('tools')
 const bookmarkletsLabel = chrome.i18n.getMessage('bookmarklets')
 const networkLabel = chrome.i18n.getMessage('network')
 
 const route = useRoute()
-// Home covers the tool factory as a whole — the builder is reached from there, not a separate area.
-const isHomeActive = computed(() => route.path === '/' || route.path === '/builder')
+const isHomeActive = computed(() => route.path === '/')
+// Builder is reached from the tools list, not a separate area — same active state as Tools.
+const isToolsActive = computed(() => route.path === '/tools' || route.path === '/builder')
 const isBookmarkletsActive = computed(() => route.path === '/bookmarklets')
 const isNetworkActive = computed(() => route.path === '/network')
 
@@ -72,6 +75,9 @@ async function onImportFileChange(event: Event): Promise<void> {
 
     <div :class="ui.toolbarAccessories">
       <RouterLink to="/" :class="isHomeActive ? ui.toolbarAccessoryButtonActive : ui.toolbarAccessoryButton" :title="homeLabel">
+        <HomeIcon :class="ui.toolbarAccessoryIcon" />
+      </RouterLink>
+      <RouterLink to="/tools" :class="isToolsActive ? ui.toolbarAccessoryButtonActive : ui.toolbarAccessoryButton" :title="toolsLabel">
         <WrenchScrewdriverIcon :class="ui.toolbarAccessoryIcon" />
       </RouterLink>
       <RouterLink

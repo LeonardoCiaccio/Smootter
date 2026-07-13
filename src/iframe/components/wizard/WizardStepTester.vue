@@ -68,8 +68,8 @@ async function save(): Promise<void> {
   if (verdict.value !== 'ok') return
   await saveTool(toStoredTool(data.value))
   toast.success(chrome.i18n.getMessage('wizardToolSaved'))
-  // ToolsPanel fetches its list on mount, so returning Home reloads it fresh.
-  router.push('/')
+  // ToolsPanel fetches its list on mount, so returning to Tools reloads it fresh.
+  router.push('/tools')
 }
 
 const saveLabel = chrome.i18n.getMessage('wizardSave')

@@ -4,11 +4,23 @@
     "message": "Tool factory in the browser: build custom tools, at zero cost per use."
   },
   "homeHeader": {
-    "message": "Your browser, your tools."
+    "message": "Welcome to Smootter"
   },
   "homeSubheader": {
+    "message": "Your browser toolbox — pick where to start."
+  },
+  "toolsHeader": {
+    "message": "Your browser, your tools."
+  },
+  "toolsSubheader": {
     "message": "No subscriptions. Just write what you need."
   },
+  "homeToolsCardTitle": { "message": "Tool" },
+  "homeToolsCardDescription": { "message": "Build custom tools by describing what you need." },
+  "homeBookmarkletsCardTitle": { "message": "Bookmarklet" },
+  "homeBookmarkletsCardDescription": { "message": "Organize useful links, with tags and categories." },
+  "homeNetworkCardTitle": { "message": "Network" },
+  "homeNetworkCardDescription": { "message": "Inspect and download resources loaded by the page." },
   "createFirstTool": {
     "message": "Create your first tool"
   },
@@ -17,6 +29,7 @@
   },
   "bookmarklets": { "message": "Bookmarklet" },
   "network": { "message": "Network" },
+  "tools": { "message": "Tool" },
   "home": {
     "message": "Home"
   },

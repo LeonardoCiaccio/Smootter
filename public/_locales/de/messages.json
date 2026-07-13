@@ -4,11 +4,23 @@
     "message": "Werkzeugfabrik im Browser: Erstelle maßgeschneiderte Tools, zu null Kosten pro Nutzung."
   },
   "homeHeader": {
-    "message": "Dein Browser, deine Tools."
+    "message": "Willkommen bei Smootter"
   },
   "homeSubheader": {
+    "message": "Deine Browser-Werkzeugkiste — wähle, wo du starten möchtest."
+  },
+  "toolsHeader": {
+    "message": "Dein Browser, deine Tools."
+  },
+  "toolsSubheader": {
     "message": "Ohne Abo. Schreib einfach, was du brauchst."
   },
+  "homeToolsCardTitle": { "message": "Tool" },
+  "homeToolsCardDescription": { "message": "Erstelle maßgeschneiderte Tools, indem du sie in Worten beschreibst." },
+  "homeBookmarkletsCardTitle": { "message": "Bookmarklet" },
+  "homeBookmarkletsCardDescription": { "message": "Organisiere nützliche Links mit Tags und Kategorien." },
+  "homeNetworkCardTitle": { "message": "Netzwerk" },
+  "homeNetworkCardDescription": { "message": "Untersuche und lade Ressourcen herunter, die von der Seite geladen wurden." },
   "createFirstTool": {
     "message": "Erstelle dein erstes Tool"
   },
@@ -17,6 +29,7 @@
   },
   "bookmarklets": { "message": "Bookmarklet" },
   "network": { "message": "Netzwerk" },
+  "tools": { "message": "Tool" },
   "home": {
     "message": "Start"
   },

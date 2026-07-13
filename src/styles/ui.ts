@@ -68,6 +68,14 @@ export const ui = {
   heroHeader:
     'font-heading bg-gradient-to-r from-violet-600 to-cyan-400 bg-clip-text pb-1 text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl',
   heroSubheader: 'font-subheading max-w-md text-base text-gray-600 dark:text-gray-400',
+  // Landing page: 3 cards linking to Tools/Bookmarklets/Network, below the hero.
+  homeCardsWrapper: 'mx-auto mt-16 grid w-full max-w-3xl grid-cols-1 gap-4 px-6 sm:grid-cols-3',
+  homeCard:
+    'flex flex-col items-center gap-3 rounded-tool border border-gray-200 bg-white p-6 text-center shadow-sm transition-colors hover:border-cyan-300 hover:bg-cyan-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-cyan-700 dark:hover:bg-cyan-950',
+  homeCardIconWrapper: 'flex h-12 w-12 items-center justify-center rounded-full bg-cyan-100 text-cyan-600 dark:bg-cyan-950 dark:text-cyan-400',
+  homeCardIcon: 'h-6 w-6',
+  homeCardTitle: 'text-sm font-semibold text-gray-900 dark:text-gray-100',
+  homeCardDescription: 'text-xs text-gray-500 dark:text-gray-400',
   // Tools panel: empty state, illustration + plain icon/label (icon follows text color via currentColor).
   toolsPanel: 'mt-16 flex flex-col items-center',
   toolsEmptyWrapper: 'flex flex-col items-center gap-6',

@@ -4,11 +4,23 @@
     "message": "Fábrica de herramientas en el navegador: crea herramientas a medida, con coste cero por uso."
   },
   "homeHeader": {
-    "message": "Tu navegador, tus herramientas."
+    "message": "Bienvenido a Smootter"
   },
   "homeSubheader": {
+    "message": "Tu caja de herramientas del navegador — elige por dónde empezar."
+  },
+  "toolsHeader": {
+    "message": "Tu navegador, tus herramientas."
+  },
+  "toolsSubheader": {
     "message": "Sin suscripciones. Solo escribe lo que necesitas."
   },
+  "homeToolsCardTitle": { "message": "Herramienta" },
+  "homeToolsCardDescription": { "message": "Crea herramientas a medida describiéndolas con palabras." },
+  "homeBookmarkletsCardTitle": { "message": "Bookmarklet" },
+  "homeBookmarkletsCardDescription": { "message": "Organiza enlaces útiles, con etiquetas y categorías." },
+  "homeNetworkCardTitle": { "message": "Red" },
+  "homeNetworkCardDescription": { "message": "Inspecciona y descarga los recursos cargados por la página." },
   "createFirstTool": {
     "message": "Crea tu primera herramienta"
   },
@@ -17,6 +29,7 @@
   },
   "bookmarklets": { "message": "Bookmarklet" },
   "network": { "message": "Red" },
+  "tools": { "message": "Herramienta" },
   "home": {
     "message": "Inicio"
   },

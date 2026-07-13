@@ -7,7 +7,8 @@ import { openEnvironment } from './openEnvironment'
 const ROOT_ID = 'smootter-root'
 
 const MENU_ENTRIES: ReadonlyArray<{ id: string; messageKey: string; route: string }> = [
-  { id: 'smootter-open-tools', messageKey: 'home', route: '/' },
+  { id: 'smootter-open-home', messageKey: 'home', route: '/' },
+  { id: 'smootter-open-tools', messageKey: 'tools', route: '/tools' },
   { id: 'smootter-open-bookmarklets', messageKey: 'bookmarklets', route: '/bookmarklets' },
   { id: 'smootter-open-network', messageKey: 'network', route: '/network' },
   { id: 'smootter-open-options', messageKey: 'options', route: '/options' },

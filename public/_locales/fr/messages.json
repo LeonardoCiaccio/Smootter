@@ -4,11 +4,23 @@
     "message": "Fabrique d'outils dans le navigateur : créez des outils sur mesure, à coût zéro à l'usage."
   },
   "homeHeader": {
-    "message": "Votre navigateur, vos outils."
+    "message": "Bienvenue sur Smootter"
   },
   "homeSubheader": {
+    "message": "Votre boîte à outils du navigateur — choisissez par où commencer."
+  },
+  "toolsHeader": {
+    "message": "Votre navigateur, vos outils."
+  },
+  "toolsSubheader": {
     "message": "Sans abonnement. Écrivez simplement ce dont vous avez besoin."
   },
+  "homeToolsCardTitle": { "message": "Outil" },
+  "homeToolsCardDescription": { "message": "Créez des outils sur mesure en les décrivant avec des mots." },
+  "homeBookmarkletsCardTitle": { "message": "Bookmarklet" },
+  "homeBookmarkletsCardDescription": { "message": "Organisez vos liens utiles, avec tags et catégories." },
+  "homeNetworkCardTitle": { "message": "Réseau" },
+  "homeNetworkCardDescription": { "message": "Inspectez et téléchargez les ressources chargées par la page." },
   "createFirstTool": {
     "message": "Créez votre premier outil"
   },
@@ -17,6 +29,7 @@
   },
   "bookmarklets": { "message": "Bookmarklet" },
   "network": { "message": "Réseau" },
+  "tools": { "message": "Outil" },
   "home": {
     "message": "Accueil"
   },
