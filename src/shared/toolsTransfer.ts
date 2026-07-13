@@ -8,12 +8,17 @@ import type { StoredTool } from './toolsDb'
 
 /** UTF-8-safe base64 encode — btoa alone chokes on non-Latin1 characters. */
 function encodeBase64(text: string): string {
-  return btoa(unescape(encodeURIComponent(text)))
+  const bytes = new TextEncoder().encode(text)
+  let binary = ''
+  for (const byte of bytes) binary += String.fromCharCode(byte)
+  return btoa(binary)
 }
 
 /** Inverse of encodeBase64. Throws if the input isn't valid base64. */
 function decodeBase64(text: string): string {
-  return decodeURIComponent(escape(atob(text)))
+  const binary = atob(text)
+  const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0))
+  return new TextDecoder('utf-8', { fatal: true }).decode(bytes)
 }
 
 function slugify(name: string): string {
@@ -58,8 +63,14 @@ function isImportCandidate(value: unknown): value is ImportCandidate {
   return typeof record.name === 'string' && typeof record.code === 'string'
 }
 
+// Real JS code almost always contains whitespace, parens, or other characters outside the
+// base64 alphabet, so this rarely misfires — but it isn't proof either way, hence the
+// try/catch below still deciding the final answer.
+const BASE64_SHAPE = /^[A-Za-z0-9+/]+={0,2}$/
+
 /** Our own exports have base64 `code`; plain-text code (hand-written files) is accepted too. */
 function decodeCode(raw: string): string {
+  if (raw.length % 4 !== 0 || !BASE64_SHAPE.test(raw)) return raw
   try {
     return decodeBase64(raw)
   } catch {

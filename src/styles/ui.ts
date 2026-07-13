@@ -247,6 +247,9 @@ export const ui = {
   optionsSection: 'flex w-full max-w-md flex-col gap-4 text-left',
   optionsSectionTitle: 'text-base font-semibold text-gray-900 dark:text-gray-100',
   optionsSectionDescription: 'text-xs text-gray-500 dark:text-gray-400 pb-2',
+  // Data-usage disclosure: what gets sent to the configured LLM endpoint, and when.
+  llmPrivacyNotice:
+    'rounded-tool border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs text-cyan-800 dark:border-cyan-900 dark:bg-cyan-950 dark:text-cyan-300',
   optionsSectionActions: 'flex items-center justify-between gap-3',
   creditsList: 'flex flex-col divide-y divide-gray-100 dark:divide-gray-800',
   creditsItem: 'flex items-center justify-between py-2 text-sm',
@@ -382,6 +385,7 @@ export const ui = {
   wizardTesterSpinnerIcon: 'h-6 w-6 animate-pulse text-cyan-500 dark:text-cyan-400',
   testStatusWaiting: 'text-lg font-semibold text-gray-500 dark:text-gray-400',
   testStatusOk: 'text-lg font-semibold text-emerald-600 dark:text-emerald-400',
+  wizardTesterReviewNotice: 'max-w-sm text-xs text-gray-500 dark:text-gray-400',
   testStatusError: 'text-lg font-semibold text-rose-600 dark:text-rose-400',
   wizardTesterActions: 'flex items-center gap-3',
   // Generic modal: dim overlay + centered panel, reused by the LLM config popup.
@@ -395,6 +399,7 @@ export const ui = {
   importConfirmOption: 'flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300',
   importConfirmCheckbox:
     'h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500 dark:border-gray-700 dark:bg-gray-800',
+  importConfirmEndpoint: 'ml-1 break-all rounded bg-gray-100 px-1 py-0.5 text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-400',
   modalStatusOk: 'break-words text-sm font-medium text-emerald-600 dark:text-emerald-400',
   modalStatusError: 'break-words text-sm font-medium text-rose-600 dark:text-rose-400',
   // Network inspector: left sidebar (fixed categories) + center scrollable log, same

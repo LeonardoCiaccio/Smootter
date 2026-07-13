@@ -16,6 +16,7 @@ import {
   type StoredCategory,
 } from './bookmarkletsDb'
 import { normalizeCategoryName } from './categoryTree'
+import { isSafeWebUrl } from './url'
 
 export interface ExportedBookmarklet {
   title: string
@@ -45,7 +46,7 @@ type ImportCandidate = BookmarkletImportCandidate
 function isImportCandidate(value: unknown): value is ImportCandidate {
   if (typeof value !== 'object' || value === null) return false
   const record = value as Record<string, unknown>
-  return typeof record.url === 'string' && record.url.trim() !== ''
+  return typeof record.url === 'string' && isSafeWebUrl(record.url)
 }
 
 /** Normalizes an already-JSON.parsed value as either a single bookmarklet or a collection. */

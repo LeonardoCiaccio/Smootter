@@ -2,12 +2,11 @@
  * Service worker (background) — event-driven.
  * On toolbar click, injects environment on demand into the active tab.
  * The private UI ⇄ background channel lives in ./channel.
- * The generated-tool execution bridge (chrome.userScripts) lives in ./userScripts.
+ * The "Allow User Scripts" status check lives in ./userScripts.
  * Running saved tools for real, as the user browses, lives in ./toolsEngine.
  * The right-click "jump to a specific view" entries live in ./contextMenu.
  */
 import { registerChannel } from './channel'
-import { registerUserScriptBridge } from './userScripts'
 import { registerToolsEngine } from './toolsEngine'
 import { registerNetworkInspector } from './networkInspector'
 import { registerContextMenu } from './contextMenu'
@@ -15,7 +14,6 @@ import { openEnvironment } from './openEnvironment'
 import { seedDefaultTools } from './defaultTools'
 
 registerChannel()
-registerUserScriptBridge()
 registerToolsEngine()
 registerNetworkInspector()
 registerContextMenu()

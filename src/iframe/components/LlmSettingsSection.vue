@@ -54,6 +54,7 @@ const saveLabel = chrome.i18n.getMessage('wizardSave')
 const resetLabel = chrome.i18n.getMessage('llmConfigResetButton')
 const resetConfirmLabel = chrome.i18n.getMessage('llmConfigResetConfirm')
 const okText = chrome.i18n.getMessage('llmTestOk')
+const privacyNoticeText = chrome.i18n.getMessage('llmPrivacyNotice')
 </script>
 
 <template>
@@ -62,6 +63,8 @@ const okText = chrome.i18n.getMessage('llmTestOk')
       <p :class="ui.optionsSectionTitle">{{ sectionTitle }}</p>
       <p :class="ui.optionsSectionDescription">{{ sectionDescription }}</p>
     </div>
+
+    <p :class="ui.llmPrivacyNotice">{{ privacyNoticeText }}</p>
 
     <label :class="ui.wizardField">
       <span :class="ui.wizardFieldLabel">{{ endpointLabel }}</span>

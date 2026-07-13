@@ -14,6 +14,8 @@ import {
 import { ui } from '@/styles/ui'
 import type { NetworkEntry } from '@/shared/messages'
 import { formatBytes } from '@/shared/bytes'
+import { isSafeWebUrl } from '@/shared/url'
+import { copyToClipboard } from '../composables/clipboard'
 import { useToast } from '../plugins/toast'
 
 const props = defineProps<{ entry: NetworkEntry }>()
@@ -46,15 +48,16 @@ const formattedSize = computed(() => formatBytes(props.entry.size))
 const formattedTime = computed(() => new Date(props.entry.timestamp).toLocaleTimeString())
 
 async function onCopyUrl(): Promise<void> {
-  try {
-    await navigator.clipboard.writeText(props.entry.url)
-    toast.success(chrome.i18n.getMessage('networkUrlCopied'))
-  } catch {
-    toast.error(chrome.i18n.getMessage('networkCopyUrlError'))
-  }
+  const ok = await copyToClipboard(props.entry.url)
+  if (ok) toast.success(chrome.i18n.getMessage('networkUrlCopied'))
+  else toast.error(chrome.i18n.getMessage('networkCopyUrlError'))
 }
 
 async function onDownload(): Promise<void> {
+  if (!isSafeWebUrl(props.entry.url)) {
+    toast.error(chrome.i18n.getMessage('networkDownloadBlocked'))
+    return
+  }
   try {
     await chrome.downloads.download({ url: props.entry.url, saveAs: false })
   } catch {
@@ -66,7 +69,14 @@ async function onDownload(): Promise<void> {
 <template>
   <div :class="ui.networkRow">
     <span :class="ui.networkRowThumb">
-      <img v-if="isImage" :src="entry.url" :class="ui.networkRowThumbImage" alt="" />
+      <img
+        v-if="isImage"
+        :src="entry.url"
+        :class="ui.networkRowThumbImage"
+        alt=""
+        loading="lazy"
+        referrerpolicy="no-referrer"
+      />
       <component :is="RowIcon" v-else :class="ui.networkRowThumbIcon" />
     </span>
 

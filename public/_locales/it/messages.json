@@ -79,6 +79,7 @@
   "wizardSave": { "message": "Salva" },
   "wizardSaveChanges": { "message": "Salva le modifiche" },
   "wizardTestPassed": { "message": "Test superato: il codice gira senza errori." },
+  "wizardTesterReviewNotice": { "message": "\"Superato\" significa solo che il codice non ha generato errori — non che sia sicuro o che faccia esattamente ciò che hai chiesto. Dai un'occhiata al codice prima di salvarlo." },
   "wizardRuntimeError": { "message": "Errore di esecuzione" },
   "wizardCodeEmpty": { "message": "Scrivi prima del codice" },
   "wizardCodeInvalid": { "message": "Errore di sintassi" },
@@ -111,6 +112,7 @@
   "wizardClearCode": { "message": "Svuota codice" },
   "wizardClearCodeConfirm": { "message": "Clicca di nuovo per svuotare" },
   "llmSettingsDescription": { "message": "Collega il tuo modello AI per generare il codice dei tool da una descrizione." },
+  "llmPrivacyNotice": { "message": "Smootter invia all'endpoint configurato qui l'URL della pagina corrente, il suo titolo e — quando l'assistente ne ha bisogno — il contenuto della pagina. Nient'altro viene inviato altrove, e nulla parte finché non usi una funzione AI." },
   "llmConfigSaved": { "message": "Configurazione AI salvata" },
   "llmConfigReset": { "message": "Configurazione AI rimossa" },
   "llmConfigResetButton": { "message": "Reimposta" },
@@ -181,6 +183,7 @@
   "networkCopyUrlError": { "message": "Impossibile copiare l'URL." },
   "networkDownload": { "message": "Scarica file" },
   "networkDownloadError": { "message": "Impossibile scaricare il file." },
+  "networkDownloadBlocked": { "message": "Questo URL non può essere scaricato." },
   "llmApiKeyReminderTitle": { "message": "Serve una API key" },
   "llmApiKeyReminderMessage": {
     "message": "Hai importato una configurazione AI che non è un runtime locale (come Ollama) — questo provider richiede una API key. Vai nelle Opzioni per inserirla."

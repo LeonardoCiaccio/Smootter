@@ -6,14 +6,17 @@ import { cancelImport, confirmImport, pendingImport } from '../composables/impor
 
 const includeTools = ref(true)
 const includeBookmarklets = ref(true)
-const includeLlmConfig = ref(true)
+// Opt-in, not opt-out: this endpoint is where every future prompt (page URLs, page content,
+// the API key the user re-enters afterward) gets sent. A shared bundle could point it anywhere —
+// importing it by default, pre-checked like everything else, is how that goes unnoticed.
+const includeLlmConfig = ref(false)
 const includeNetworkConfig = ref(true)
 
-// Re-arm all checkboxes (checked) each time a new pending import shows up.
+// Re-arm each time a new pending import shows up (llmConfig always starts unchecked).
 watch(pendingImport, () => {
   includeTools.value = true
   includeBookmarklets.value = true
-  includeLlmConfig.value = true
+  includeLlmConfig.value = false
   includeNetworkConfig.value = true
 })
 
@@ -60,7 +63,12 @@ function onConfirm(): void {
         </label>
         <label v-if="pendingImport.llmConfig" :class="ui.importConfirmOption">
           <input v-model="includeLlmConfig" type="checkbox" :class="ui.importConfirmCheckbox" />
-          <span>{{ llmConfigLabel }}</span>
+          <span>
+            {{ llmConfigLabel }}
+            <!-- The endpoint every future prompt would be sent to — shown in the clear so the
+                 user can recognize (or reject) it before accepting it from someone else's file. -->
+            <code :class="ui.importConfirmEndpoint">{{ pendingImport.llmConfig.endpoint }}</code>
+          </span>
         </label>
         <label v-if="pendingImport.networkConfig" :class="ui.importConfirmOption">
           <input v-model="includeNetworkConfig" type="checkbox" :class="ui.importConfirmCheckbox" />

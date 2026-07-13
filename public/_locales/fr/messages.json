@@ -87,6 +87,7 @@
   "wizardSave": { "message": "Enregistrer" },
   "wizardSaveChanges": { "message": "Enregistrer les modifications" },
   "wizardTestPassed": { "message": "Test réussi : le code s'exécute sans erreur." },
+  "wizardTesterReviewNotice": { "message": "\"Réussi\" signifie seulement que le code n'a pas généré d'erreur — pas qu'il est sûr ou qu'il fait exactement ce que vous avez demandé. Jetez un œil au code avant de l'enregistrer." },
   "wizardRuntimeError": { "message": "Erreur d'exécution" },
   "wizardCodeEmpty": { "message": "Écrivez d'abord du code" },
   "wizardCodeInvalid": { "message": "Erreur de syntaxe" },
@@ -119,6 +120,7 @@
   "wizardClearCode": { "message": "Effacer le code" },
   "wizardClearCodeConfirm": { "message": "Cliquez à nouveau pour effacer" },
   "llmSettingsDescription": { "message": "Connectez votre propre modèle d'IA pour générer le code des outils à partir d'une description." },
+  "llmPrivacyNotice": { "message": "Smootter envoie l'URL de la page actuelle, son titre et — lorsque l'assistant en a besoin — le contenu de la page au endpoint LLM que vous configurez ici. Rien n'est envoyé ailleurs, et rien n'est envoyé tant que vous n'utilisez pas une fonctionnalité IA." },
   "llmConfigSaved": { "message": "Configuration IA enregistrée" },
   "llmConfigReset": { "message": "Configuration IA supprimée" },
   "llmConfigResetButton": { "message": "Réinitialiser" },
@@ -189,6 +191,7 @@
   "networkCopyUrlError": { "message": "Impossible de copier l'URL." },
   "networkDownload": { "message": "Télécharger le fichier" },
   "networkDownloadError": { "message": "Impossible de télécharger le fichier." },
+  "networkDownloadBlocked": { "message": "Cette URL ne peut pas être téléchargée." },
   "llmApiKeyReminderTitle": { "message": "Une clé API est nécessaire" },
   "llmApiKeyReminderMessage": {
     "message": "Vous avez importé une configuration IA qui n'est pas un runtime local (comme Ollama) — ce fournisseur nécessite une clé API. Rendez-vous dans les Options pour la saisir."

@@ -8,6 +8,17 @@ import type { Preferences, LlmConfig } from './preferences'
 /** Machine-readable outcome of an LLM call; the UI owns translating it. */
 export type LlmErrorCode = 'network' | 'timeout' | 'http' | 'noToolSupport' | 'unknown'
 
+/**
+ * Sent when a channel function's validate() or business() throws — the one reply every request
+ * is guaranteed to get, even on an unexpected failure. Without this, a thrown error left the UI's
+ * awaited channel.send() hanging forever with no response and no visible error (see channel.ts).
+ */
+export interface ChannelError {
+  type: 'channelError'
+  request: string
+  detail: string
+}
+
 export interface PingRequest {
   type: 'ping'
 }
@@ -283,3 +294,4 @@ export type ChannelResponse =
   | SearchBookmarkletsResult
   | NetworkLogResult
   | NetworkEntryCapturedBroadcast
+  | ChannelError

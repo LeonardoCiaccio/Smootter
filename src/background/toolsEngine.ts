@@ -24,9 +24,17 @@ function matchesTarget(entry: string, url: URL): boolean {
   const hostPart = slashIndex === -1 ? withoutScheme : withoutScheme.slice(0, slashIndex)
   const pathPart = slashIndex === -1 ? '' : withoutScheme.slice(slashIndex)
 
-  const hostMatches = hostPart.startsWith('*.')
-    ? url.hostname === hostPart.slice(2) || url.hostname.endsWith('.' + hostPart.slice(2))
-    : url.hostname === hostPart
+  let hostMatches: boolean
+  if (hostPart.startsWith('*.')) {
+    const suffix = hostPart.slice(2)
+    // The Wizard's own DOMAIN_PATTERN already requires 2+ labels after "*." (rejecting "*.com"),
+    // but a hand-edited or imported tool can carry a scopeTargets string that skipped that UI
+    // check — this is the last line of defense against a wildcard matching every domain under a
+    // public TLD.
+    hostMatches = suffix.includes('.') && (url.hostname === suffix || url.hostname.endsWith('.' + suffix))
+  } else {
+    hostMatches = url.hostname === hostPart
+  }
 
   if (!hostMatches) return false
   return pathPart === '' || url.pathname.startsWith(pathPart)
@@ -65,7 +73,12 @@ async function runTool(tool: StoredTool, tabId: number): Promise<void> {
     const results = await chrome.userScripts.execute({
       target: { tabId },
       js: [{ code: buildGuardedCode(tool.code) }],
-      world: 'MAIN',
+      // USER_SCRIPT, not MAIN: a separate JS realm from the page's own scripts — the page's CSP
+      // doesn't apply, and the page can't observe or tamper with the tool's execution (or vice
+      // versa). The DOM is still the same, so DOM automation (what every tool actually does)
+      // works identically; only reaching the page's own JS globals/functions would need MAIN,
+      // which is not something Smootter's tools are meant to do.
+      world: 'USER_SCRIPT',
     })
     const outcome = results[0]?.result as { ok: boolean; error?: string } | undefined
     if (outcome && !outcome.ok) {

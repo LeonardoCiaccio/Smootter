@@ -288,12 +288,55 @@ grip.hook('setPreference', {
   },
 })
 
+// Every function above replies in its own `after` hook — but only on success. If validate() or
+// business() throws (a bad argument, a rejected chrome.* call, an unexpected error), that local
+// hook never runs and sendResponse() is never called: the UI's awaited channel.send() hangs
+// until the message port is garbage-collected, then rejects with an opaque "message port closed"
+// error that nothing catches — a stuck spinner with no error shown. This closes that hole once
+// for every function, instead of duplicating an else-branch in each hook above.
+// setPreference is excluded: its own hook already replies unconditionally (success or not), so
+// adding this here too would call sendResponse a second time on failure.
+const CHANNEL_FUNCTIONS_NEEDING_FAILURE_REPLY = [
+  'ping',
+  'getPreference',
+  'removePreference',
+  'closeModal',
+  'getUserScriptsStatus',
+  'getCurrentPage',
+  'testCode',
+  'testLlmConfig',
+  'generateCode',
+  'generateBookmarklet',
+  'searchBookmarklets',
+  'getNetworkLog',
+] as const
+
+for (const name of CHANNEL_FUNCTIONS_NEEDING_FAILURE_REPLY) {
+  grip.hook(name, {
+    after({ result }, context: Context) {
+      if (result.isSuccess) return
+      console.error(`[Smootter] channel "${name}" failed:`, result.message)
+      context.sendResponse({ type: 'channelError', request: name, detail: result.message })
+    },
+  })
+}
+
 /** Start listening for one-off channel requests. */
 export function registerChannel(): void {
   chrome.runtime.onMessage.addListener((message: ChannelRequest, sender, sendResponse) => {
-    // Unregistered message.type is a developer bug: GRIP throws intentionally,
-    // surfacing as an unhandled rejection in the worker console. Do not catch it.
-    void grip.fire(message.type, message, { sender, sendResponse })
+    // Only our own contexts may drive this channel: it can write preferences (including the
+    // LLM endpoint/key) and execute arbitrary code on a tab. There's no externally_connectable
+    // today, so this is currently unreachable from a web page — but it's a single check against
+    // that ever changing (or a content script ever proxying messages) turning into a full
+    // escalation. userScripts.ts's own channel is where tool-authored code talks to the worker.
+    if (sender.id !== chrome.runtime.id) return false
+    // Unregistered message.type: GRIP's fire() rejects for it. Any extension context could send
+    // one (a future surface, a stale build after a rename) — log it and reply instead of letting
+    // it become an unhandled rejection in the worker console with the caller left hanging.
+    grip.fire(message.type, message, { sender, sendResponse }).catch((error: unknown) => {
+      console.error(`[Smootter] unknown channel message type "${message.type}":`, error)
+      sendResponse({ type: 'channelError', request: message.type, detail: String(error) })
+    })
     // Every handler above replies via sendResponse in its `after` hook, which
     // may run after this listener returns — keep the channel open for it.
     return true

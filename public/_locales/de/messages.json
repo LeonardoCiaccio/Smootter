@@ -87,6 +87,7 @@
   "wizardSave": { "message": "Speichern" },
   "wizardSaveChanges": { "message": "Änderungen speichern" },
   "wizardTestPassed": { "message": "Test bestanden: Der Code läuft ohne Fehler." },
+  "wizardTesterReviewNotice": { "message": "\"Bestanden\" bedeutet nur, dass der Code keinen Fehler ausgelöst hat — nicht, dass er sicher ist oder genau das tut, was du verlangt hast. Wirf einen Blick auf den Code, bevor du ihn speicherst." },
   "wizardRuntimeError": { "message": "Laufzeitfehler" },
   "wizardCodeEmpty": { "message": "Schreibe zuerst etwas Code" },
   "wizardCodeInvalid": { "message": "Syntaxfehler" },
@@ -119,6 +120,7 @@
   "wizardClearCode": { "message": "Code leeren" },
   "wizardClearCodeConfirm": { "message": "Erneut klicken zum Leeren" },
   "llmSettingsDescription": { "message": "Verbinde dein eigenes KI-Modell, um Tool-Code aus einer Beschreibung zu generieren." },
+  "llmPrivacyNotice": { "message": "Smootter sendet die URL der aktuellen Seite, ihren Titel und — wenn der Assistent es braucht — den Seiteninhalt an den hier konfigurierten LLM-Endpoint. Es wird sonst nichts irgendwohin gesendet, und nichts wird gesendet, bevor du eine KI-Funktion nutzt." },
   "llmConfigSaved": { "message": "KI-Konfiguration gespeichert" },
   "llmConfigReset": { "message": "KI-Konfiguration entfernt" },
   "llmConfigResetButton": { "message": "Zurücksetzen" },
@@ -189,6 +191,7 @@
   "networkCopyUrlError": { "message": "URL konnte nicht kopiert werden." },
   "networkDownload": { "message": "Datei herunterladen" },
   "networkDownloadError": { "message": "Datei konnte nicht heruntergeladen werden." },
+  "networkDownloadBlocked": { "message": "Diese URL kann nicht heruntergeladen werden." },
   "llmApiKeyReminderTitle": { "message": "Ein API-Schlüssel wird benötigt" },
   "llmApiKeyReminderMessage": {
     "message": "Du hast eine KI-Konfiguration importiert, die keine lokale Laufzeitumgebung ist (wie Ollama) — dieser Anbieter benötigt einen API-Schlüssel. Gehe zu den Optionen, um ihn einzugeben."

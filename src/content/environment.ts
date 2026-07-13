@@ -76,21 +76,18 @@ function connectChannel(): void {
 }
 
 // ---- Build ----
-function getMaxZIndex(): number {
-  let max = 999999999
-  for (const el of document.querySelectorAll('*')) {
-    const value = Number.parseInt(getComputedStyle(el).zIndex, 10)
-    if (Number.isFinite(value) && value > max) max = value
-  }
-  return max
-}
+// The maximum valid CSS z-index (2^31 - 1): nothing on the page can legitimately stack above
+// it, so there's no need to scan the DOM for the current highest value — querySelectorAll('*')
+// + getComputedStyle() on every element forces a full layout pass, which freezes the tab for a
+// noticeable moment on a heavy page (thousands of nodes) right when the user opens Smootter.
+const MODAL_Z_INDEX = 2147483647
 
 function buildIframe(route: string): HTMLIFrameElement {
   const iframe = document.createElement('iframe')
   iframe.src = `${iframeUrl}#${route}`
-  // Without this, navigator.clipboard.writeText() inside the iframe (a different origin from
-  // the host page) is silently blocked by the Permissions Policy — "Copy URL" in NetworkView
-  // would fail with no visible error, leaving whatever was already on the clipboard untouched.
+  // Declared for completeness, but a known Chromium constraint denies clipboard-write to
+  // cross-origin iframes regardless (https://crbug.com/414348233) — the real fallback lives in
+  // the iframe's own copyToClipboard() composable (execCommand('copy')).
   iframe.allow = 'clipboard-write'
   iframe.style.display = 'block'
   iframe.style.width = '100%'
@@ -104,7 +101,7 @@ function createModal(route: string): void {
   modal.id = modalId
   modal.style.position = 'fixed'
   modal.style.inset = '0'
-  modal.style.zIndex = String(getMaxZIndex() + 10)
+  modal.style.zIndex = String(MODAL_Z_INDEX)
   modal.appendChild(buildIframe(route))
   document.body.appendChild(modal)
   lockHostScroll()

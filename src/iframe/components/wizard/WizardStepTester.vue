@@ -74,6 +74,7 @@ async function save(): Promise<void> {
 
 const saveLabel = chrome.i18n.getMessage('wizardSave')
 const cancelLabel = chrome.i18n.getMessage('wizardTesterCancel')
+const reviewNoticeText = chrome.i18n.getMessage('wizardTesterReviewNotice')
 </script>
 
 <template>
@@ -85,6 +86,9 @@ const cancelLabel = chrome.i18n.getMessage('wizardTesterCancel')
     </div>
 
     <p :class="statusClass">{{ statusText }}</p>
+    <!-- "Passed" only means it ran without throwing — never a claim that the code is safe or
+         does what was asked. The user is the last check before it runs on real pages. -->
+    <p v-if="verdict === 'ok'" :class="ui.wizardTesterReviewNotice">{{ reviewNoticeText }}</p>
 
     <div v-if="verdict !== 'running'" :class="ui.wizardTesterActions">
       <button type="button" :class="ui.secondaryButton" @click="emit('cancel')">
