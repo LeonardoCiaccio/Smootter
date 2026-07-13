@@ -36,6 +36,17 @@
   "bookmarklets": { "message": "Bookmarklet" },
   "network": { "message": "Netzwerk" },
   "tools": { "message": "Tool" },
+  "chat": { "message": "Chat" },
+  "chatViewTitle": { "message": "Chatte mit Smootter" },
+  "chatViewSubtitle": {
+    "message": "Stelle Fragen zur aktuellen Seite oder suche online nach Informationen."
+  },
+  "chatClear": { "message": "Chat dieser Seite löschen" },
+  "chatClearConfirm": { "message": "Nochmal klicken zum Löschen" },
+  "chatEmptyText": { "message": "Stelle eine Frage oder wähle unten einen Vorschlag." },
+  "chatSuggestionSummary": { "message": "Fasse diese Seite zusammen" },
+  "chatSuggestionKeyPoints": { "message": "Liste die 5 wichtigsten Punkte auf" },
+  "chatSuggestionExplain": { "message": "Erkläre es einfach" },
   "home": {
     "message": "Start"
   },

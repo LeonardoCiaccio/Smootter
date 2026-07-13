@@ -131,7 +131,7 @@ export interface ChatMessage {
  * conversation as context, so letting it grow unbounded would keep
  * inflating both storage and every request's token cost.
  */
-export const MAX_CHAT_MESSAGES = 40
+export const MAX_CHAT_MESSAGES = 200
 
 /** Keeps only the most recent messages, per MAX_CHAT_MESSAGES. */
 export function capChatMessages(messages: ChatMessage[]): ChatMessage[] {

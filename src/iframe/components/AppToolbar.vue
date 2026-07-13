@@ -4,6 +4,7 @@ import { useRoute } from 'vue-router'
 import {
   ArrowDownTrayIcon,
   ArrowUpTrayIcon,
+  ChatBubbleLeftRightIcon,
   Cog6ToothIcon,
   FolderIcon,
   HomeIcon,
@@ -29,6 +30,7 @@ const homeLabel = chrome.i18n.getMessage('home')
 const toolsLabel = chrome.i18n.getMessage('tools')
 const bookmarkletsLabel = chrome.i18n.getMessage('bookmarklets')
 const networkLabel = chrome.i18n.getMessage('network')
+const chatLabel = chrome.i18n.getMessage('chat')
 
 const route = useRoute()
 const isHomeActive = computed(() => route.path === '/')
@@ -36,6 +38,7 @@ const isHomeActive = computed(() => route.path === '/')
 const isToolsActive = computed(() => route.path === '/tools' || route.path === '/builder')
 const isBookmarkletsActive = computed(() => route.path === '/bookmarklets')
 const isNetworkActive = computed(() => route.path === '/network')
+const isChatActive = computed(() => route.path === '/chat')
 
 const { theme, toggle } = useTheme()
 const ThemeIcon = computed(() => (theme.value === 'dark' ? SunIcon : MoonIcon))
@@ -89,6 +92,9 @@ async function onImportFileChange(event: Event): Promise<void> {
       </RouterLink>
       <RouterLink to="/network" :class="isNetworkActive ? ui.toolbarAccessoryButtonActive : ui.toolbarAccessoryButton" :title="networkLabel">
         <SignalIcon :class="ui.toolbarAccessoryIcon" />
+      </RouterLink>
+      <RouterLink to="/chat" :class="isChatActive ? ui.toolbarAccessoryButtonActive : ui.toolbarAccessoryButton" :title="chatLabel">
+        <ChatBubbleLeftRightIcon :class="ui.toolbarAccessoryIcon" />
       </RouterLink>
     </div>
 

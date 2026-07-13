@@ -280,6 +280,10 @@ export const ui = {
     'font-semibold text-cyan-600 transition-colors hover:text-cyan-500 dark:text-cyan-400 dark:hover:text-cyan-300',
   // Wizard viewport: centers the wizard both ways within the view
   wizardViewport: 'flex flex-1 items-center justify-center px-6 pb-6 pt-6',
+  // Chat view: same LlmChatPanel as the wizard, stretched to the view's full height instead of
+  // the wizard's fixed 64vh grid cell, but capped in width and centered a chat that spans the
+  // entire 1280px content column reads as an empty, oversized text log, not a conversation.
+  chatViewport: 'mx-auto flex min-h-0 w-full max-w-2xl flex-1 flex-col px-6 pb-6 pt-6',
   // Wizard: fixed 3-row layout (header / body / dots), 78% of the viewport height.
   // Width is split base/modifier (never combine two max-w-* at once same class wins on cascade order, not attribute order).
   wizardWrapperBase: 'flex h-[78%] w-full flex-col items-center text-center',
@@ -375,13 +379,19 @@ export const ui = {
   wizardChatGrid: 'grid h-[64vh] w-full grid-cols-[1fr_2fr] gap-6 overflow-hidden',
   wizardChatColumn:
     'flex h-full min-h-0 flex-col gap-3 overflow-hidden rounded-tool border border-gray-200 p-4 text-left dark:border-gray-800',
-  wizardChatHeader: 'flex flex-col gap-1 pb-1',
+  // Row wraps the title/subtitle stack plus an optional trailing action (e.g. Chat view's clear button).
+  wizardChatHeaderRow: 'flex items-start justify-between gap-2 pb-1',
+  wizardChatHeader: 'flex flex-col gap-1',
   wizardChatTitle: 'font-heading font-extrabold text-lg text-gray-900 dark:text-gray-100',
   wizardChatSubtitle: 'font-sans text-xs text-gray-500 dark:text-gray-400',
   wizardChatMessages:
     'flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pr-1 [scrollbar-gutter:stable]',
   wizardChatEmpty:
-    'flex flex-1 items-center justify-center px-4 text-center text-xs text-gray-400 dark:text-gray-500',
+    'flex flex-1 flex-col items-center justify-center gap-4 px-4 text-center text-xs text-gray-400 dark:text-gray-500',
+  // Chat view's empty-state quick-start prompts (e.g. "Summarize this page").
+  chatSuggestionsWrapper: 'flex flex-wrap items-center justify-center gap-2',
+  chatSuggestionButton:
+    'rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:border-cyan-300 hover:bg-cyan-50 hover:text-cyan-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-cyan-700 dark:hover:bg-cyan-950 dark:hover:text-cyan-300',
   wizardChatBubbleUser:
     'max-w-[85%] flex-shrink-0 break-words self-end rounded-2xl rounded-br-sm bg-cyan-600 px-3.5 py-2 text-sm text-white',
   wizardChatBubbleAssistant:

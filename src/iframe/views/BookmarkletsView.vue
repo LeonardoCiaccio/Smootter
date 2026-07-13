@@ -6,7 +6,7 @@ import BookmarkletForm from '../components/BookmarkletForm.vue'
 import BookmarkletsSidebar from '../components/BookmarkletsSidebar.vue'
 import BookmarkletsTagsSidebar from '../components/BookmarkletsTagsSidebar.vue'
 import BookmarkletsResultsList from '../components/BookmarkletsResultsList.vue'
-import BookmarkletsSearchPanel from '../components/BookmarkletsSearchPanel.vue'
+import BookmarkletsSearchPanel, { type BookmarkletsSearchState } from '../components/BookmarkletsSearchPanel.vue'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { useToast } from '../plugins/toast'
 import {
@@ -33,6 +33,9 @@ const categories = ref<StoredCategory[]>([])
 const selectedId = ref<string | null>(null)
 const selectedTag = ref<string | null>(null)
 const searchActive = ref(false)
+// Owned here, not by BookmarkletsSearchPanel selecting a result unmounts that panel (the
+// form takes its place), so its own local state would reset on every return trip.
+const searchState = ref<BookmarkletsSearchState>({ query: '', aiResultIds: null, aiQueryUsed: '' })
 
 // Categories always include the fixed "uncategorized" one (seeded by getAllCategories), so
 // emptiness is purely about whether any bookmarklet has been saved yet.
@@ -197,6 +200,7 @@ watch(bookmarkletsRefreshSignal, reloadData)
           />
           <BookmarkletsSearchPanel
             v-else-if="searchActive"
+            v-model:state="searchState"
             :bookmarklets="bookmarklets"
             :categories="categories"
             @select="onSelectBookmarklet"

@@ -11,6 +11,7 @@ const MENU_ENTRIES: ReadonlyArray<{ id: string; messageKey: string; route: strin
   { id: 'smootter-open-tools', messageKey: 'tools', route: '/tools' },
   { id: 'smootter-open-bookmarklets', messageKey: 'bookmarklets', route: '/bookmarklets' },
   { id: 'smootter-open-network', messageKey: 'network', route: '/network' },
+  { id: 'smootter-open-chat', messageKey: 'chat', route: '/chat' },
   { id: 'smootter-open-options', messageKey: 'options', route: '/options' },
 ]
 

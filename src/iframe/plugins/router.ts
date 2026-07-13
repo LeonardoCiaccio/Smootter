@@ -16,6 +16,7 @@ import ToolsView from '../views/ToolsView.vue'
 import OptionsView from '../views/OptionsView.vue'
 import BookmarkletsView from '../views/BookmarkletsView.vue'
 import NetworkView from '../views/NetworkView.vue'
+import ChatView from '../views/ChatView.vue'
 
 export const router = createRouter({
   history: createWebHashHistory(),
@@ -26,5 +27,6 @@ export const router = createRouter({
     { path: '/options', component: OptionsView },
     { path: '/bookmarklets', component: BookmarkletsView },
     { path: '/network', component: NetworkView },
+    { path: '/chat', component: ChatView },
   ],
 })
