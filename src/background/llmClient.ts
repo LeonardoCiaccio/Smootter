@@ -473,6 +473,100 @@ export async function generateCode(
   return { ok: false, errorCode: 'unknown', detail: 'Too many tool calls without a final answer.' }
 }
 
+const CHAT_REPLY_TOOL = {
+  type: 'function',
+  function: {
+    name: 'reply',
+    description:
+      'Deliver your final answer to the user, as plain chat text. Call this when you are ready to reply, after using fetch_url if you needed real information first.',
+    parameters: {
+      type: 'object',
+      properties: {
+        reply: {
+          type: 'string',
+          description:
+            'Your reply. Plain language; if the user explicitly asked for code, include it inline as a fenced code block within this text.',
+        },
+      },
+      required: ['reply'],
+    },
+  },
+} as const
+
+const CHAT_TOOLS = [CHAT_REPLY_TOOL, FETCH_TOOL] as const
+
+/**
+ * The Chat view's system prompt. Deliberately says nothing about Smootter, tool-building, or
+ * "tool calling" as a concept the wizard's buildSystemPrompt() gives the model no other
+ * identity, so asking it something like "explain it simply" made it describe itself as a code
+ * generator instead of answering. This prompt gives it no product identity to fall back on at
+ * all just a plain assistant persona, with fetch_url mentioned as a capability, not a "tool".
+ */
+function buildChatSystemPrompt(pageUrl: string | undefined): string {
+  const parts = [
+    'You are a helpful, general-purpose assistant chatting directly with the user. Answer whatever they ask: questions, explanations, summaries, research, brainstorming, casual conversation. There is nothing to build and no fixed subject.',
+    "You can fetch a URL to get real data before answering (research something online, or read a page's raw HTML) whenever guessing would be worse than checking. Always deliver your final answer through `reply` never as plain text outside of it.",
+    FETCH_URL_TRUST_NOTICE,
+    `Reply in the language of locale "${chrome.i18n.getUILanguage()}", regardless of what language the user writes in unless they clearly want another language.`,
+  ]
+
+  if (pageUrl) {
+    parts.push(
+      `The user currently has this page open: ${pageUrl}. If they say "this page" or similar, they mean this URL fetch it if you need to see its content. Note: fetching only returns the server-rendered HTML, so it will be empty or incomplete for a page built by client-side JavaScript (most modern web apps) say so rather than guessing at content you can't actually see.`,
+    )
+  }
+
+  return parts.join('\n\n')
+}
+
+/**
+ * Asks the model to continue a free-form conversation (the Chat view, not the wizard) the
+ * model may call fetch_url first (one or more times, actually executed here) to gather real
+ * data before delivering its reply.
+ */
+export async function generalChat(
+  config: LlmConfig,
+  messages: ChatMessage[],
+  pageUrl: string | undefined,
+): Promise<LlmGenerateResult> {
+  const conversation: ConversationMessage[] = [
+    { role: 'system', content: buildChatSystemPrompt(pageUrl) },
+    ...messages.map((message) => ({ role: message.role, content: message.content })),
+  ]
+
+  for (let iteration = 0; iteration < MAX_TOOL_ITERATIONS; iteration++) {
+    const result = await callChatCompletions(config, conversation, CHAT_TOOLS)
+    if (!result.ok) return { ok: false, errorCode: result.errorCode, detail: result.detail }
+
+    const toolCall = result.message.tool_calls?.[0]
+    const name = toolCall?.function?.name
+    if (!toolCall || !name) {
+      const content = result.message.content?.trim()
+      if (content) return { ok: true, reply: content }
+      return { ok: false, errorCode: 'noToolSupport' }
+    }
+
+    if (name === 'fetch_url') {
+      const toolResult = await resolveFetchToolCall(toolCall)
+      pushToolResult(conversation, toolCall, result.message.content ?? null, toolResult)
+      continue
+    }
+
+    if (name === 'reply') {
+      try {
+        const args = JSON.parse(toolCall.function?.arguments ?? '{}') as { reply?: string }
+        return { ok: true, reply: typeof args.reply === 'string' ? args.reply : '' }
+      } catch (error) {
+        return { ok: false, errorCode: 'unknown', detail: describeError(error) }
+      }
+    }
+
+    return { ok: false, errorCode: 'unknown', detail: `Unexpected tool call: ${name}` }
+  }
+
+  return { ok: false, errorCode: 'unknown', detail: 'Too many tool calls without a final answer.' }
+}
+
 /**
  * Builds the system prompt for bookmarklet metadata generation: an explicit
  * statement that tool calling IS available, the page being saved (so

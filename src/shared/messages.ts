@@ -168,6 +168,25 @@ export interface GenerateCodeResult {
 }
 
 /**
+ * Sent by the Chat view's panel: same shape as generateCode, but for a plain, general-purpose
+ * conversation not tied to building a tool (see generalChat() in llmClient.ts, and its own
+ * system prompt, deliberately separate from the wizard's tool-building one). No pageUrl field
+ * the background reads it straight off the sender's tab, same as generateCode does.
+ */
+export interface ChatMessageRequest {
+  type: 'chatMessage'
+  messages: ChatMessage[]
+}
+
+export interface ChatMessageResult {
+  type: 'chatMessageResult'
+  ok: boolean
+  reply?: string
+  errorCode?: LlmErrorCode
+  detail?: string
+}
+
+/**
  * Sent by the Bookmarklets form's "Generate with AI" button: asks the model
  * to write a description, category, and tags for `url`. `existingTags`/
  * `existingCategories` are passed as context so the model prefers reusing
@@ -267,6 +286,7 @@ export type ChannelRequest =
   | TestCodeRequest
   | TestLlmConfigRequest
   | GenerateCodeRequest
+  | ChatMessageRequest
   | GenerateBookmarkletRequest
   | SearchBookmarkletsRequest
   | GetNetworkLogRequest
@@ -283,6 +303,7 @@ export type ChannelResponse =
   | TestLlmConfigResult
   | GenerateBookmarkletResult
   | GenerateCodeResult
+  | ChatMessageResult
   | SearchBookmarkletsResult
   | NetworkLogResult
   | NetworkEntryCapturedBroadcast

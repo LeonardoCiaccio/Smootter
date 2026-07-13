@@ -25,6 +25,8 @@
   "homeNetworkCardDescription": {
     "message": "Ispeziona tutte le risorse caricate dalla pagina, comprese quelle nascoste alla vista."
   },
+  "homeChatCardTitle": { "message": "Chat" },
+  "homeChatCardDescription": { "message": "Fai domande sulla pagina che stai guardando, o cerca informazioni online." },
   "createFirstTool": {
     "message": "Crea il tuo primo tool"
   },

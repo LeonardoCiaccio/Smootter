@@ -62,6 +62,7 @@ const emptyText = chrome.i18n.getMessage('chatEmptyText')
     <div :class="ui.chatViewport">
       <LlmChatPanel
         ref="chatPanel"
+        mode="chat"
         :messages="messages"
         existing-code=""
         :title="title"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { FolderIcon, SignalIcon, WrenchScrewdriverIcon } from '@heroicons/vue/24/outline'
+import { ChatBubbleLeftRightIcon, FolderIcon, SignalIcon, WrenchScrewdriverIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 
 const headerText = chrome.i18n.getMessage('homeHeader')
@@ -23,6 +23,12 @@ const cards = [
     icon: SignalIcon,
     title: chrome.i18n.getMessage('homeNetworkCardTitle'),
     description: chrome.i18n.getMessage('homeNetworkCardDescription'),
+  },
+  {
+    to: '/chat',
+    icon: ChatBubbleLeftRightIcon,
+    title: chrome.i18n.getMessage('homeChatCardTitle'),
+    description: chrome.i18n.getMessage('homeChatCardDescription'),
   },
 ]
 </script>

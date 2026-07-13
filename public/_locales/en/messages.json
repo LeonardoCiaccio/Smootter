@@ -25,6 +25,8 @@
   "homeNetworkCardDescription": {
     "message": "Inspect every resource the page loads, including ones hidden from view."
   },
+  "homeChatCardTitle": { "message": "Chat" },
+  "homeChatCardDescription": { "message": "Ask questions about the page you're looking at, or search for information online." },
   "createFirstTool": {
     "message": "Create your first tool"
   },

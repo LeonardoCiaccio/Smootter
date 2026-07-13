@@ -15,6 +15,10 @@ const props = defineProps<{
   title?: string
   subtitle?: string
   emptyText?: string
+  // 'code' (default) drives the wizard's tool-building conversation (generateCode, applies
+  // `code` to the editor via the `generated` event). 'chat' drives the Chat view's plain,
+  // general-purpose conversation (chatMessage, its own separate system prompt no code applied).
+  mode?: 'code' | 'chat'
 }>()
 const emit = defineEmits<{ 'update:messages': [messages: ChatMessage[]]; generated: [code: string] }>()
 
@@ -54,16 +58,16 @@ async function send(overrideText?: string): Promise<void> {
   if (overrideText === undefined) prompt.value = ''
 
   generating.value = true
-  const response = await channel.send({
-    type: 'generateCode',
-    messages: nextMessages,
-    existingCode: props.existingCode,
-  })
+  const response =
+    props.mode === 'chat'
+      ? await channel.send({ type: 'chatMessage', messages: nextMessages })
+      : await channel.send({ type: 'generateCode', messages: nextMessages, existingCode: props.existingCode })
   generating.value = false
 
-  if (response.type !== 'generateCodeResult' || !response.ok) {
-    const errorCode = response.type === 'generateCodeResult' ? response.errorCode : 'unknown'
-    const detail = response.type === 'generateCodeResult' ? response.detail : undefined
+  const expectedType = props.mode === 'chat' ? 'chatMessageResult' : 'generateCodeResult'
+  if (response.type !== expectedType || !response.ok) {
+    const errorCode = response.type === expectedType ? response.errorCode : 'unknown'
+    const detail = response.type === expectedType ? response.detail : undefined
     emit('update:messages', capChatMessages([
       ...nextMessages,
       { role: 'assistant', content: llmErrorText(errorCode, detail) },
@@ -75,7 +79,7 @@ async function send(overrideText?: string): Promise<void> {
   // to the editor directly, never printed here. Not every turn writes code
   // (a greeting or question doesn't) only touch the editor when it does.
   emit('update:messages', capChatMessages([...nextMessages, { role: 'assistant', content: response.reply ?? '' }]))
-  if (response.code) emit('generated', response.code)
+  if (response.type === 'generateCodeResult' && response.code) emit('generated', response.code)
 }
 
 function onConfigSaved(): void {

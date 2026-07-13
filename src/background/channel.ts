@@ -15,6 +15,7 @@ import {
   type TestCodeRequest,
   type TestLlmConfigRequest,
   type GenerateCodeRequest,
+  type ChatMessageRequest,
   type GenerateBookmarkletRequest,
   type SearchBookmarkletsRequest,
 } from '@/shared/messages'
@@ -30,6 +31,7 @@ import { runCodeTest } from './testRunner'
 import {
   testLlmConfig,
   generateCode,
+  generalChat,
   generateBookmarkletMetadata,
   searchBookmarklets,
 } from './llmClient'
@@ -222,6 +224,35 @@ grip.hook('generateCode', {
 })
 
 grip.register({
+  name: 'chatMessage',
+  validate(args: ChatMessageRequest) {
+    if (!Array.isArray(args.messages) || args.messages.length === 0) {
+      throw new Error('messages is required.')
+    }
+  },
+  async business(args: ChatMessageRequest, context?: object) {
+    const config = await getPreference('llmConfig')
+    if (!config) {
+      return { type: 'chatMessageResult', ok: false, errorCode: 'unknown', detail: 'No LLM configured.' }
+    }
+    const pageUrl = (context as Context | undefined)?.sender.tab?.url
+    const result = await generalChat(config, args.messages, pageUrl)
+    return {
+      type: 'chatMessageResult',
+      ok: result.ok,
+      reply: result.reply,
+      errorCode: result.errorCode,
+      detail: result.detail,
+    }
+  },
+})
+grip.hook('chatMessage', {
+  after({ result }, context: Context) {
+    if (result.isSuccess) context.sendResponse(result.result)
+  },
+})
+
+grip.register({
   name: 'generateBookmarklet',
   validate(args: GenerateBookmarkletRequest) {
     if (typeof args.url !== 'string' || args.url.trim() === '') throw new Error('url is required.')
@@ -343,6 +374,7 @@ const CHANNEL_FUNCTIONS_NEEDING_FAILURE_REPLY = [
   'testCode',
   'testLlmConfig',
   'generateCode',
+  'chatMessage',
   'generateBookmarklet',
   'searchBookmarklets',
   'getNetworkLog',

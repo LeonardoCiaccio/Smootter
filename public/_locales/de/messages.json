@@ -27,6 +27,8 @@
   "homeNetworkCardDescription": {
     "message": "Untersuche alle von der Seite geladenen Ressourcen, auch die vor dir versteckten."
   },
+  "homeChatCardTitle": { "message": "Chat" },
+  "homeChatCardDescription": { "message": "Stelle Fragen zur aktuellen Seite oder suche online nach Informationen." },
   "createFirstTool": {
     "message": "Erstelle dein erstes Tool"
   },
