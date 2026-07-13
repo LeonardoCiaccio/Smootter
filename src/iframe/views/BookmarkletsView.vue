@@ -163,7 +163,7 @@ watch(bookmarkletsRefreshSignal, reloadData)
   <div :class="ui.viewShell">
     <Breadcrumb view-key="bookmarklets" />
 
-    <div v-if="isEmpty" :class="ui.bookmarkletsWrapper">
+    <div v-if="isEmpty" :class="ui.bookmarkletsEmptyWrapper">
       <BookmarkletForm
         :current-url="currentUrl"
         :initial-title="pageTitle"

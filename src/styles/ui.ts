@@ -131,10 +131,14 @@ export const ui = {
   // Non-home views: a fixed breadcrumb on top, content filling the rest.
   viewShell: 'flex h-full flex-col',
   viewContent: 'flex flex-1 items-center justify-center',
-  // Bookmarklets: empty state is just the centered form; once there's at least one category
-  // or bookmarklet, a sidebar appears alongside a main area (detail or, by default, the form).
-  bookmarkletsWrapper:
+  // Bookmarklets: empty state is just the centered form, standalone in the view, so it stays
+  // narrow. Once there's at least one category or bookmarklet, a sidebar appears alongside a
+  // main area (detail, search results, or the form) full width, its own scroll owner it
+  // sits directly against bookmarkletsMain's edge, so the scrollbar lands flush right instead
+  // of floating at a narrower centered column's edge with dead space beyond it.
+  bookmarkletsEmptyWrapper:
     'mx-auto flex w-full max-w-xl flex-1 flex-col gap-8 overflow-y-auto px-6 pb-10 pt-10',
+  bookmarkletsWrapper: 'flex w-full flex-1 flex-col gap-8 overflow-y-auto px-6 pb-10 pt-10',
   bookmarkletsHeaderGroup: 'mb-2 flex flex-col gap-1.5',
   bookmarkletsHeader: 'font-heading text-2xl font-bold text-gray-900 dark:text-gray-100',
   bookmarkletsSubheader: 'font-subheading text-sm text-gray-500 dark:text-gray-400 pb-4',
@@ -182,7 +186,7 @@ export const ui = {
   bookmarkletsSidebarItemFavicon: 'h-3.5 w-3.5 flex-shrink-0',
   bookmarkletsSidebarItemFaviconFallback:
     'h-3.5 w-3.5 flex-shrink-0 text-gray-400 dark:text-gray-500',
-  bookmarkletsMain: 'flex flex-1 overflow-y-auto',
+  bookmarkletsMain: 'flex min-w-0 flex-1',
   // Right sidebar: every tag across all bookmarklets, deletable (strips it everywhere it's used).
   bookmarkletsTagsSidebar:
     'flex w-56 flex-shrink-0 flex-col gap-4 overflow-y-auto border-l border-gray-200 px-4 pb-6 pt-10 dark:border-gray-800',

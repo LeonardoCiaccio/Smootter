@@ -496,15 +496,15 @@ const CHAT_REPLY_TOOL = {
 const CHAT_TOOLS = [CHAT_REPLY_TOOL, FETCH_TOOL] as const
 
 /**
- * The Chat view's system prompt. Deliberately says nothing about Smootter, tool-building, or
- * "tool calling" as a concept the wizard's buildSystemPrompt() gives the model no other
- * identity, so asking it something like "explain it simply" made it describe itself as a code
- * generator instead of answering. This prompt gives it no product identity to fall back on at
- * all just a plain assistant persona, with fetch_url mentioned as a capability, not a "tool".
+ * The Chat view's system prompt. Gives it an identity (Smootter's assistant) so it doesn't
+ * fall back on disclosing the underlying model/provider when asked who it is but deliberately
+ * says nothing about tool-building or "tool calling" as a concept, unlike buildSystemPrompt()
+ * above, whose only identity ("code generator") made it describe itself in coding terms even
+ * when asked something unrelated, like "explain it simply".
  */
 function buildChatSystemPrompt(pageUrl: string | undefined): string {
   const parts = [
-    'You are a helpful, general-purpose assistant chatting directly with the user. Answer whatever they ask: questions, explanations, summaries, research, brainstorming, casual conversation. There is nothing to build and no fixed subject.',
+    "You are Smootter's assistant, in a general-purpose Chat view — not the tool-building wizard elsewhere in the app. If asked who you are or what your name is, say you're Smootter's assistant never the underlying model or provider you run on. Otherwise, this is an ordinary conversation: answer whatever the user asks questions, explanations, summaries, research, brainstorming, casual conversation. There is nothing to build here and no fixed subject.",
     "You can fetch a URL to get real data before answering (research something online, or read a page's raw HTML) whenever guessing would be worse than checking. Always deliver your final answer through `reply` never as plain text outside of it.",
     FETCH_URL_TRUST_NOTICE,
     `Reply in the language of locale "${chrome.i18n.getUILanguage()}", regardless of what language the user writes in unless they clearly want another language.`,
