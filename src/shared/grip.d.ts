@@ -1,6 +1,6 @@
 /**
  * Minimal type shim for @leonardo.ciaccio/grip (ships no .d.ts).
- * Kept intentionally loose — only what this project actually calls.
+ * Kept intentionally loose only what this project actually calls.
  */
 declare module '@leonardo.ciaccio/grip' {
   export interface GripResponse {
@@ -35,10 +35,7 @@ declare module '@leonardo.ciaccio/grip' {
   export class Grip {
     constructor(options?: { logger?: { error: Function; warn: Function }; strict?: boolean })
     register<Args = unknown, Result = unknown>(config: RegisterConfig<Args, Result>): void
-    hook<Args = unknown, Context = object>(
-      name: string,
-      hooks: HookDescriptor<Args, Context>,
-    ): void
+    hook<Args = unknown, Context = object>(name: string, hooks: HookDescriptor<Args, Context>): void
     fire(name: string, args?: unknown, context?: object): Promise<GripResponse>
   }
 }

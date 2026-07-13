@@ -1,5 +1,5 @@
 /**
- * contextMenu — right-click entries that jump straight to a specific Smootter view, instead of
+ * contextMenu right-click entries that jump straight to a specific Smootter view, instead of
  * always opening at Home.
  */
 import { openEnvironment } from './openEnvironment'
@@ -32,7 +32,7 @@ function createMenu(): void {
 }
 
 export function registerContextMenu(): void {
-  // onInstalled fires on 'install', but also on 'update' and 'chrome_update' — and menu items
+  // onInstalled fires on 'install', but also on 'update' and 'chrome_update' and menu items
   // persist across service worker restarts, so on an update these ids already exist and
   // creating them again throws "duplicate id". Wiping first makes this idempotent regardless
   // of which onInstalled reason triggered it.

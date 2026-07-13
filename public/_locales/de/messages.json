@@ -16,7 +16,9 @@
     "message": "Ohne Abo. Schreib einfach, was du brauchst."
   },
   "homeToolsCardTitle": { "message": "Tool" },
-  "homeToolsCardDescription": { "message": "Erstelle maßgeschneiderte Tools, indem du sie in Worten beschreibst." },
+  "homeToolsCardDescription": {
+    "message": "Erstelle maßgeschneiderte Tools, indem du sie in Worten beschreibst."
+  },
   "homeBookmarkletsCardTitle": { "message": "Bookmarklet" },
   "homeBookmarkletsCardDescription": {
     "message": "Speichere Links mit Beschreibungen, Tags, Kategorien und KI-Suche."
@@ -67,7 +69,9 @@
   "wizardNameLabel": { "message": "Name" },
   "wizardNamePlaceholder": { "message": "z. B. Alle Links erfassen" },
   "wizardDescriptionLabel": { "message": "Kurzbeschreibung" },
-  "wizardDescriptionPlaceholder": { "message": "z. B. Alle Links von der aktuellen Seite extrahieren" },
+  "wizardDescriptionPlaceholder": {
+    "message": "z. B. Alle Links von der aktuellen Seite extrahieren"
+  },
   "wizardBack": { "message": "Zurück" },
   "wizardNext": { "message": "Weiter" },
   "comingSoon": { "message": "Demnächst verfügbar" },
@@ -85,7 +89,9 @@
   },
   "wizardScopeDomainTitle": { "message": "Bestimmte Domain oder Seite" },
   "wizardScopeDomainDescription": { "message": "Funktioniert nur dort, wo du es erlaubst." },
-  "wizardScopeTargetsPlaceholder": { "message": "Einer pro Zeile, z. B.\nexample.com\nexample.com/pfad" },
+  "wizardScopeTargetsPlaceholder": {
+    "message": "Einer pro Zeile, z. B.\nexample.com\nexample.com/pfad"
+  },
   "wizardBasicsRequiredError": {
     "message": "Gib sowohl den Namen als auch die Beschreibung ein, bevor du fortfährst."
   },
@@ -104,7 +110,9 @@
   "wizardSave": { "message": "Speichern" },
   "wizardSaveChanges": { "message": "Änderungen speichern" },
   "wizardTestPassed": { "message": "Test bestanden: Der Code läuft ohne Fehler." },
-  "wizardTesterReviewNotice": { "message": "\"Bestanden\" bedeutet nur, dass der Code keinen Fehler ausgelöst hat — nicht, dass er sicher ist oder genau das tut, was du verlangt hast. Wirf einen Blick auf den Code, bevor du ihn speicherst." },
+  "wizardTesterReviewNotice": {
+    "message": "\"Bestanden\" bedeutet nur, dass der Code keinen Fehler ausgelöst hat nicht, dass er sicher ist oder genau das tut, was du verlangt hast. Wirf einen Blick auf den Code, bevor du ihn speicherst."
+  },
   "wizardRuntimeError": { "message": "Laufzeitfehler" },
   "wizardCodeEmpty": { "message": "Schreibe zuerst etwas Code" },
   "wizardCodeInvalid": { "message": "Syntaxfehler" },
@@ -121,7 +129,9 @@
   "llmButtonLabel": { "message": "Mit KI generieren" },
   "llmConfigTitle": { "message": "KI-Modell verbinden" },
   "llmEndpointLabel": { "message": "Endpoint" },
-  "llmApiKeyLabel": { "message": "API-Schlüssel (optional — nicht nötig bei lokalen Runtimes wie Ollama)" },
+  "llmApiKeyLabel": {
+    "message": "API-Schlüssel (optional nicht nötig bei lokalen Runtimes wie Ollama)"
+  },
   "llmModelLabel": { "message": "Modell" },
   "llmMaxOutputTokensLabel": { "message": "Max. Ausgabe-Tokens" },
   "llmFieldsRequired": { "message": "Fülle alle Felder aus" },
@@ -136,15 +146,21 @@
   "llmChatEmpty": { "message": "Beschreibe das Tool, das du bauen möchtest." },
   "wizardClearCode": { "message": "Code leeren" },
   "wizardClearCodeConfirm": { "message": "Erneut klicken zum Leeren" },
-  "llmSettingsDescription": { "message": "Verbinde dein eigenes KI-Modell, um Tool-Code aus einer Beschreibung zu generieren." },
-  "llmPrivacyNotice": { "message": "Smootter sendet die URL der aktuellen Seite, ihren Titel und — wenn der Assistent es braucht — den Seiteninhalt an den hier konfigurierten LLM-Endpoint. Es wird sonst nichts irgendwohin gesendet, und nichts wird gesendet, bevor du eine KI-Funktion nutzt." },
+  "llmSettingsDescription": {
+    "message": "Verbinde dein eigenes KI-Modell, um Tool-Code aus einer Beschreibung zu generieren."
+  },
+  "llmPrivacyNotice": {
+    "message": "Smootter sendet die URL der aktuellen Seite, ihren Titel und wenn der Assistent es braucht den Seiteninhalt an den hier konfigurierten LLM-Endpoint. Es wird sonst nichts irgendwohin gesendet, und nichts wird gesendet, bevor du eine KI-Funktion nutzt."
+  },
   "llmConfigSaved": { "message": "KI-Konfiguration gespeichert" },
   "llmConfigReset": { "message": "KI-Konfiguration entfernt" },
   "llmConfigResetButton": { "message": "Zurücksetzen" },
   "llmConfigResetConfirm": { "message": "Erneut klicken zum Zurücksetzen" },
   "llmGroupTitle": { "message": "LLM" },
   "networkGroupTitle": { "message": "Netzwerk" },
-  "networkSettingsDescription": { "message": "Filtere, was bei der Netzwerkuntersuchung erfasst wird." },
+  "networkSettingsDescription": {
+    "message": "Filtere, was bei der Netzwerkuntersuchung erfasst wird."
+  },
   "networkMinSizeLabel": { "message": "Mindestdateigröße (Byte)" },
   "networkConfigSaved": { "message": "Netzwerkeinstellungen gespeichert" },
   "toolsSearchPlaceholder": { "message": "Tools durchsuchen..." },
@@ -158,11 +174,15 @@
     "message": "$COUNT$ Element(e) importiert",
     "placeholders": { "count": { "content": "$1" } }
   },
-  "toolsImportError": { "message": "Datei konnte nicht importiert werden — ist es ein gültiger Tool-Export?" },
+  "toolsImportError": {
+    "message": "Datei konnte nicht importiert werden ist es ein gültiger Tool-Export?"
+  },
   "toolsDropHint": { "message": "Zum Importieren ablegen" },
   "bookmarkletsHeader": { "message": "Diese Seite speichern" },
   "bookmarkletsEditHeader": { "message": "Diese Seite bearbeiten" },
-  "bookmarkletsSubheader": { "message": "Organisiere nützliche Links nach Domain, mit Tags und Kategorien." },
+  "bookmarkletsSubheader": {
+    "message": "Organisiere nützliche Links nach Domain, mit Tags und Kategorien."
+  },
   "bookmarkletsFormTitleLabel": { "message": "Titel" },
   "bookmarkletsFormTitlePlaceholder": { "message": "Seitentitel" },
   "bookmarkletsFormLinkLabel": { "message": "Link" },
@@ -172,14 +192,18 @@
   "bookmarkletsFormTagsPlaceholder": { "message": "Tag hinzufügen und Enter drücken" },
   "bookmarkletsFormCategoryLabel": { "message": "Kategorie" },
   "bookmarkletsCategoryNewOption": { "message": "+ Neue Kategorie" },
-  "bookmarkletsCategoryNewPlaceholder": { "message": "Kategoriename, z. B. AA/BB/CC für Unterkategorien" },
+  "bookmarkletsCategoryNewPlaceholder": {
+    "message": "Kategoriename, z. B. AA/BB/CC für Unterkategorien"
+  },
   "bookmarkletsSave": { "message": "Speichern" },
   "bookmarkletsGenerate": { "message": "Mit KI generieren" },
   "bookmarkletsSaved": { "message": "Bookmarklet gespeichert" },
   "bookmarkletsCategoriesTitle": { "message": "Kategorien" },
   "bookmarkletsAddNew": { "message": "Seite hinzufügen" },
   "bookmarkletsSearch": { "message": "Suchen" },
-  "bookmarkletsSearchPlaceholder": { "message": "Suche nach Titel, Beschreibung, Link oder Tag..." },
+  "bookmarkletsSearchPlaceholder": {
+    "message": "Suche nach Titel, Beschreibung, Link oder Tag..."
+  },
   "bookmarkletsSearchClear": { "message": "Suche löschen" },
   "bookmarkletsAiSearch": { "message": "Mit KI suchen" },
   "importConfirmTitle": { "message": "Was möchtest du importieren?" },
@@ -191,7 +215,7 @@
     "message": "Bookmarklets ($COUNT$)",
     "placeholders": { "count": { "content": "$1" } }
   },
-  "importConfirmLlmConfig": { "message": "KI-Konfiguration (Endpoint, Modell — ohne Key)" },
+  "importConfirmLlmConfig": { "message": "KI-Konfiguration (Endpoint, Modell ohne Key)" },
   "importConfirmNetworkConfig": { "message": "Netzwerkeinstellungen (Mindestgröße)" },
   "importConfirmButton": { "message": "Importieren" },
   "importConfirmCancel": { "message": "Abbrechen" },
@@ -211,7 +235,7 @@
   "networkDownloadBlocked": { "message": "Diese URL kann nicht heruntergeladen werden." },
   "llmApiKeyReminderTitle": { "message": "Ein API-Schlüssel wird benötigt" },
   "llmApiKeyReminderMessage": {
-    "message": "Du hast eine KI-Konfiguration importiert, die keine lokale Laufzeitumgebung ist (wie Ollama) — dieser Anbieter benötigt einen API-Schlüssel. Gehe zu den Optionen, um ihn einzugeben."
+    "message": "Du hast eine KI-Konfiguration importiert, die keine lokale Laufzeitumgebung ist (wie Ollama) dieser Anbieter benötigt einen API-Schlüssel. Gehe zu den Optionen, um ihn einzugeben."
   },
   "llmApiKeyReminderOk": { "message": "Verstanden" },
   "bookmarkletsAiSearchResultsHeader": {
@@ -232,7 +256,7 @@
     "placeholders": { "tag": { "content": "$1" } }
   },
   "bookmarkletsAlreadySaved": {
-    "message": "Du hast diese Seite bereits am $DATE$ gespeichert — bearbeiten und speichern, um sie zu aktualisieren.",
+    "message": "Du hast diese Seite bereits am $DATE$ gespeichert bearbeiten und speichern, um sie zu aktualisieren.",
     "placeholders": { "date": { "content": "$1" } }
   }
 }

@@ -32,7 +32,7 @@ const networkLabel = chrome.i18n.getMessage('network')
 
 const route = useRoute()
 const isHomeActive = computed(() => route.path === '/')
-// Builder is reached from the tools list, not a separate area — same active state as Tools.
+// Builder is reached from the tools list, not a separate area same active state as Tools.
 const isToolsActive = computed(() => route.path === '/tools' || route.path === '/builder')
 const isBookmarkletsActive = computed(() => route.path === '/bookmarklets')
 const isNetworkActive = computed(() => route.path === '/network')

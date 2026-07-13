@@ -1,5 +1,5 @@
 /**
- * networkCategories — the fixed, system-defined sidebar buckets for NetworkView. Not user
+ * networkCategories the fixed, system-defined sidebar buckets for NetworkView. Not user
  * configurable, not stored in preferences, not exported/imported: just a curated constant.
  */
 
@@ -7,7 +7,7 @@ export interface MimeTypeEntry {
   /** Substring matched against the response's content-type (case-insensitive, "includes"). */
   mime: string
   /**
-   * File extensions known for this specific mimetype — search aliases only, never used for
+   * File extensions known for this specific mimetype search aliases only, never used for
    * classification (that's `mime` above, matched against the real content-type header). Can be
    * empty for a broad prefix that implies no single extension (e.g. "video/" itself), and the
    * same extension can legitimately appear under more than one mime entry (e.g. "ts" for both
@@ -21,7 +21,7 @@ export interface MimeCategoryRule {
   mimeTypes: MimeTypeEntry[]
 }
 
-// Order matters — first match wins. More specific/narrow rules (e.g. Video's "f4m+xml", which
+// Order matters first match wins. More specific/narrow rules (e.g. Video's "f4m+xml", which
 // would otherwise also satisfy the broad XML rule below) are listed before the broad generic
 // ones they could collide with.
 export const NETWORK_MIME_CATEGORIES: MimeCategoryRule[] = [
@@ -43,7 +43,7 @@ export const NETWORK_MIME_CATEGORIES: MimeCategoryRule[] = [
     ],
   },
   // The "video/" prefix and the streaming/legacy container mimes below (which don't carry a
-  // video/ prefix at all — HLS playlists, old Flash-based video) both classify as Video; only
+  // video/ prefix at all HLS playlists, old Flash-based video) both classify as Video; only
   // the specific entries carry extensions, aligned with GrabAnyMedia's own mimetype list.
   {
     name: 'Video',

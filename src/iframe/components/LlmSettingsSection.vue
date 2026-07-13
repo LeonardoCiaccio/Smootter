@@ -25,7 +25,7 @@ async function save(): Promise<void> {
 }
 
 // Reset needs two clicks: the first arms it (auto-disarms after a few
-// seconds), the second actually clears — same pattern as deleting a tool.
+// seconds), the second actually clears same pattern as deleting a tool.
 const confirmingReset = ref(false)
 let disarmTimer: ReturnType<typeof setTimeout> | undefined
 

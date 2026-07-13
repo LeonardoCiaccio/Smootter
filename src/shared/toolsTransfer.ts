@@ -1,12 +1,12 @@
 /**
- * toolsTransfer — export tools to JSON and import them back. The parsing/normalizing half
+ * toolsTransfer export tools to JSON and import them back. The parsing/normalizing half
  * (parseToolsValue/parseToolsText) is also reused by the default-tools seed and by
- * exportImport.ts's combined tools+bookmarklets bundle — saving to the DB is left to the
+ * exportImport.ts's combined tools+bookmarklets bundle saving to the DB is left to the
  * caller so those different entry points can each tally their own results.
  */
 import type { StoredTool } from './toolsDb'
 
-/** UTF-8-safe base64 encode — btoa alone chokes on non-Latin1 characters. */
+/** UTF-8-safe base64 encode btoa alone chokes on non-Latin1 characters. */
 function encodeBase64(text: string): string {
   const bytes = new TextEncoder().encode(text)
   let binary = ''
@@ -30,7 +30,7 @@ function slugify(name: string): string {
   return slug === '' ? 'tool' : slug
 }
 
-/** Triggers a browser download of `data` as pretty-printed JSON — shared by every exporter. */
+/** Triggers a browser download of `data` as pretty-printed JSON shared by every exporter. */
 export function downloadJson(filename: string, data: unknown): void {
   const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
   const url = URL.createObjectURL(blob)
@@ -42,7 +42,7 @@ export function downloadJson(filename: string, data: unknown): void {
 }
 
 /**
- * Exported `code` is base64 — keeps multi-line/quoted code safe to eyeball or paste around.
+ * Exported `code` is base64 keeps multi-line/quoted code safe to eyeball or paste around.
  * `enabled` is dropped entirely: imported tools always start disabled (see normalizeTool),
  * so carrying the exporter's own on/off state over would just be misleading.
  */
@@ -64,7 +64,7 @@ function isImportCandidate(value: unknown): value is ImportCandidate {
 }
 
 // Real JS code almost always contains whitespace, parens, or other characters outside the
-// base64 alphabet, so this rarely misfires — but it isn't proof either way, hence the
+// base64 alphabet, so this rarely misfires but it isn't proof either way, hence the
 // try/catch below still deciding the final answer.
 const BASE64_SHAPE = /^[A-Za-z0-9+/]+={0,2}$/
 
@@ -89,7 +89,7 @@ function normalizeTool(raw: ImportCandidate): StoredTool {
     scope: raw.scope === 'domain' ? 'domain' : 'everywhere',
     scopeTargets: raw.scopeTargets ?? '',
     code: decodeCode(raw.code),
-    // Imported tools always start disabled — the user opts in after reviewing them.
+    // Imported tools always start disabled the user opts in after reviewing them.
     enabled: false,
     chatMessages: Array.isArray(raw.chatMessages) ? raw.chatMessages : [],
     createdAt: typeof raw.createdAt === 'number' ? raw.createdAt : now,
@@ -106,7 +106,7 @@ export function parseToolsValue(parsed: unknown): StoredTool[] {
 }
 
 /**
- * Parses raw JSON text as either a single tool or a collection of tools — the core of
+ * Parses raw JSON text as either a single tool or a collection of tools the core of
  * import, shared by the file-picker/drag-and-drop import path and the default-tools seed.
  */
 export function parseToolsText(text: string): StoredTool[] {

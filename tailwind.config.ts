@@ -9,7 +9,7 @@ export default {
         tool: '0.375rem',
       },
       // Every `cyan-*` utility across the app is retinted to a dodgerblue-based ramp
-      // (500 = dodgerblue itself) — one place, propagates everywhere it's used.
+      // (500 = dodgerblue itself) one place, propagates everywhere it's used.
       colors: {
         cyan: {
           50: '#eff8ff',

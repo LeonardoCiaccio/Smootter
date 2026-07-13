@@ -1,5 +1,5 @@
 /**
- * theme — Vue plugin that owns the SaaS theme.
+ * theme Vue plugin that owns the SaaS theme.
  * Applies it to <html>, keeps it synced with the background, and exposes a
  * toggle for any component. Single source of truth: no other context paints
  * a theme anymore, so nothing can drift out of sync.

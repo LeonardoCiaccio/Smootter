@@ -1,5 +1,5 @@
 /**
- * toolsDb — IndexedDB-backed storage for generated tools.
+ * toolsDb IndexedDB-backed storage for generated tools.
  * Preferences use chrome.storage.local (simple key-value); tools are
  * structured records (name, config, generated code) that need real
  * indexing/querying as the library grows, so they get a real database.
@@ -23,7 +23,7 @@ export interface StoredTool {
   createdAt: number
   updatedAt: number
   // The build chat, so reopening a tool to edit it picks the conversation
-  // back up instead of starting cold. Capped at save time — see WizardStepTester.
+  // back up instead of starting cold. Capped at save time see WizardStepTester.
   chatMessages: ChatMessage[]
 }
 
@@ -50,7 +50,7 @@ export async function saveTool(tool: StoredTool): Promise<void> {
   const db = await openDb()
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(STORE_NAME, 'readwrite')
-    // `tool` often comes from Vue reactive state — its Proxy wrapper isn't
+    // `tool` often comes from Vue reactive state its Proxy wrapper isn't
     // structured-clone-safe ("DataCloneError"). A JSON round-trip strips it
     // down to plain, cloneable data; every field here is JSON-safe already.
     transaction.objectStore(STORE_NAME).put(JSON.parse(JSON.stringify(tool)))

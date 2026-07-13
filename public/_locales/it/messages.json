@@ -57,9 +57,13 @@
   "wizardStepScopeTitle": { "message": "Ambito" },
   "wizardStepScopeSubtitle": { "message": "Scegli dove deve funzionare." },
   "wizardStepChatTitle": { "message": "Costruzione" },
-  "wizardStepChatSubtitle": { "message": "Scrivi o incolla il codice. Lo testeremo al passo successivo." },
+  "wizardStepChatSubtitle": {
+    "message": "Scrivi o incolla il codice. Lo testeremo al passo successivo."
+  },
   "wizardStepTesterTitle": { "message": "Esegui il test" },
-  "wizardStepTesterSubtitle": { "message": "Eseguiamo davvero il tuo codice e ti diciamo se funziona." },
+  "wizardStepTesterSubtitle": {
+    "message": "Eseguiamo davvero il tuo codice e ti diciamo se funziona."
+  },
   "wizardNameLabel": { "message": "Nome" },
   "wizardNamePlaceholder": { "message": "es. Cattura tutti i link" },
   "wizardDescriptionLabel": { "message": "Descrizione breve" },
@@ -79,8 +83,12 @@
   "wizardScopeEverywhereDescription": { "message": "Funziona su qualsiasi sito visiti." },
   "wizardScopeDomainTitle": { "message": "Dominio o pagina specifica" },
   "wizardScopeDomainDescription": { "message": "Funziona solo dove lo autorizzi." },
-  "wizardScopeTargetsPlaceholder": { "message": "Uno per riga, es.\nexample.com\nexample.com/percorso" },
-  "wizardBasicsRequiredError": { "message": "Compila sia il nome che la descrizione per continuare." },
+  "wizardScopeTargetsPlaceholder": {
+    "message": "Uno per riga, es.\nexample.com\nexample.com/percorso"
+  },
+  "wizardBasicsRequiredError": {
+    "message": "Compila sia il nome che la descrizione per continuare."
+  },
   "wizardScopeRequiredError": {
     "message": "Inserisci almeno un dominio o una pagina per continuare."
   },
@@ -96,7 +104,9 @@
   "wizardSave": { "message": "Salva" },
   "wizardSaveChanges": { "message": "Salva le modifiche" },
   "wizardTestPassed": { "message": "Test superato: il codice gira senza errori." },
-  "wizardTesterReviewNotice": { "message": "\"Superato\" significa solo che il codice non ha generato errori — non che sia sicuro o che faccia esattamente ciò che hai chiesto. Dai un'occhiata al codice prima di salvarlo." },
+  "wizardTesterReviewNotice": {
+    "message": "\"Superato\" significa solo che il codice non ha generato errori non che sia sicuro o che faccia esattamente ciò che hai chiesto. Dai un'occhiata al codice prima di salvarlo."
+  },
   "wizardRuntimeError": { "message": "Errore di esecuzione" },
   "wizardCodeEmpty": { "message": "Scrivi prima del codice" },
   "wizardCodeInvalid": { "message": "Errore di sintassi" },
@@ -113,7 +123,7 @@
   "llmButtonLabel": { "message": "Genera con AI" },
   "llmConfigTitle": { "message": "Collega un modello AI" },
   "llmEndpointLabel": { "message": "Endpoint" },
-  "llmApiKeyLabel": { "message": "API key (opzionale — non serve per runtime locali come Ollama)" },
+  "llmApiKeyLabel": { "message": "API key (opzionale non serve per runtime locali come Ollama)" },
   "llmModelLabel": { "message": "Modello" },
   "llmMaxOutputTokensLabel": { "message": "Token massimi in output" },
   "llmFieldsRequired": { "message": "Compila tutti i campi" },
@@ -128,15 +138,21 @@
   "llmChatEmpty": { "message": "Descrivi il tool che vuoi costruire." },
   "wizardClearCode": { "message": "Svuota codice" },
   "wizardClearCodeConfirm": { "message": "Clicca di nuovo per svuotare" },
-  "llmSettingsDescription": { "message": "Collega il tuo modello AI per generare il codice dei tool da una descrizione." },
-  "llmPrivacyNotice": { "message": "Smootter invia all'endpoint configurato qui l'URL della pagina corrente, il suo titolo e — quando l'assistente ne ha bisogno — il contenuto della pagina. Nient'altro viene inviato altrove, e nulla parte finché non usi una funzione AI." },
+  "llmSettingsDescription": {
+    "message": "Collega il tuo modello AI per generare il codice dei tool da una descrizione."
+  },
+  "llmPrivacyNotice": {
+    "message": "Smootter invia all'endpoint configurato qui l'URL della pagina corrente, il suo titolo e quando l'assistente ne ha bisogno il contenuto della pagina. Nient'altro viene inviato altrove, e nulla parte finché non usi una funzione AI."
+  },
   "llmConfigSaved": { "message": "Configurazione AI salvata" },
   "llmConfigReset": { "message": "Configurazione AI rimossa" },
   "llmConfigResetButton": { "message": "Reimposta" },
   "llmConfigResetConfirm": { "message": "Clicca di nuovo per reimpostare" },
   "llmGroupTitle": { "message": "LLM" },
   "networkGroupTitle": { "message": "Rete" },
-  "networkSettingsDescription": { "message": "Filtra cosa registrare durante l'ispezione della rete." },
+  "networkSettingsDescription": {
+    "message": "Filtra cosa registrare durante l'ispezione della rete."
+  },
   "networkMinSizeLabel": { "message": "Dimensione minima file (byte)" },
   "networkConfigSaved": { "message": "Impostazioni rete salvate" },
   "toolsSearchPlaceholder": { "message": "Cerca tool..." },
@@ -150,11 +166,15 @@
     "message": "$COUNT$ elementi importati",
     "placeholders": { "count": { "content": "$1" } }
   },
-  "toolsImportError": { "message": "Impossibile importare il file — verifica che sia un export valido." },
+  "toolsImportError": {
+    "message": "Impossibile importare il file verifica che sia un export valido."
+  },
   "toolsDropHint": { "message": "Rilascia per importare" },
   "bookmarkletsHeader": { "message": "Salva questa pagina" },
   "bookmarkletsEditHeader": { "message": "Modifica questa pagina" },
-  "bookmarkletsSubheader": { "message": "Organizza i link utili per dominio, con tag e categorie." },
+  "bookmarkletsSubheader": {
+    "message": "Organizza i link utili per dominio, con tag e categorie."
+  },
   "bookmarkletsFormTitleLabel": { "message": "Titolo" },
   "bookmarkletsFormTitlePlaceholder": { "message": "Titolo della pagina" },
   "bookmarkletsFormLinkLabel": { "message": "Link" },
@@ -164,7 +184,9 @@
   "bookmarkletsFormTagsPlaceholder": { "message": "Aggiungi un tag e premi invio" },
   "bookmarkletsFormCategoryLabel": { "message": "Categoria" },
   "bookmarkletsCategoryNewOption": { "message": "+ Nuova categoria" },
-  "bookmarkletsCategoryNewPlaceholder": { "message": "Nome categoria, es. AA/BB/CC per sottocategorie" },
+  "bookmarkletsCategoryNewPlaceholder": {
+    "message": "Nome categoria, es. AA/BB/CC per sottocategorie"
+  },
   "bookmarkletsSave": { "message": "Salva" },
   "bookmarkletsGenerate": { "message": "Genera con AI" },
   "bookmarkletsSaved": { "message": "Bookmarklet salvato" },
@@ -183,7 +205,7 @@
     "message": "Bookmarklet ($COUNT$)",
     "placeholders": { "count": { "content": "$1" } }
   },
-  "importConfirmLlmConfig": { "message": "Configurazione AI (endpoint, modello — senza la key)" },
+  "importConfirmLlmConfig": { "message": "Configurazione AI (endpoint, modello senza la key)" },
   "importConfirmNetworkConfig": { "message": "Impostazioni rete (soglia byte minima)" },
   "importConfirmButton": { "message": "Importa" },
   "importConfirmCancel": { "message": "Annulla" },
@@ -203,7 +225,7 @@
   "networkDownloadBlocked": { "message": "Questo URL non può essere scaricato." },
   "llmApiKeyReminderTitle": { "message": "Serve una API key" },
   "llmApiKeyReminderMessage": {
-    "message": "Hai importato una configurazione AI che non è un runtime locale (come Ollama) — questo provider richiede una API key. Vai nelle Opzioni per inserirla."
+    "message": "Hai importato una configurazione AI che non è un runtime locale (come Ollama) questo provider richiede una API key. Vai nelle Opzioni per inserirla."
   },
   "llmApiKeyReminderOk": { "message": "Ho capito" },
   "bookmarkletsAiSearchResultsHeader": {
@@ -224,7 +246,7 @@
     "placeholders": { "tag": { "content": "$1" } }
   },
   "bookmarkletsAlreadySaved": {
-    "message": "Avevi già salvato questa pagina il $DATE$ — modifica e salva per aggiornarla.",
+    "message": "Avevi già salvato questa pagina il $DATE$ modifica e salva per aggiornarla.",
     "placeholders": { "date": { "content": "$1" } }
   }
 }

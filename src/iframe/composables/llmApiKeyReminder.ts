@@ -1,5 +1,5 @@
 /**
- * llmApiKeyReminder — module-level singleton (same pattern as toast.ts) so an import
+ * llmApiKeyReminder module-level singleton (same pattern as toast.ts) so an import
  * triggered from AppToolbar or HomeView can pop this modal, always mounted once in App.vue.
  */
 import { ref } from 'vue'

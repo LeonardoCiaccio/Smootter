@@ -1,5 +1,5 @@
 /**
- * importFlow — the single entry point every import trigger goes through (toolbar button,
+ * importFlow the single entry point every import trigger goes through (toolbar button,
  * app-wide drag & drop). Module-level singleton (same pattern as toast.ts): parses the
  * files, and either applies directly (plain tools-only file) or holds the parsed result in
  * `pendingImport` for ImportConfirmModal.vue (mounted once in App.vue) to resolve.
@@ -22,7 +22,10 @@ const toast = useToast()
 export const pendingImport = ref<ParsedImport | null>(null)
 
 async function finishImport(parsed: ParsedImport, selection: ImportSelection): Promise<void> {
-  const { toolsImported, bookmarkletsImported, llmConfigNeedsApiKey } = await applyParsedImport(parsed, selection)
+  const { toolsImported, bookmarkletsImported, llmConfigNeedsApiKey } = await applyParsedImport(
+    parsed,
+    selection,
+  )
   if (toolsImported > 0) notifyToolsChanged()
   if (bookmarkletsImported > 0) notifyBookmarkletsChanged()
 
@@ -48,7 +51,12 @@ export async function startImport(files: File[]): Promise<void> {
   if (files.length === 0) return
 
   const parsed = await parseImportFiles(files)
-  if (parsed.tools.length === 0 && parsed.bookmarkletCandidates.length === 0 && parsed.llmConfig === null && parsed.networkConfig === null) {
+  if (
+    parsed.tools.length === 0 &&
+    parsed.bookmarkletCandidates.length === 0 &&
+    parsed.llmConfig === null &&
+    parsed.networkConfig === null
+  ) {
     if (parsed.failed > 0) toast.error(chrome.i18n.getMessage('toolsImportError'))
     return
   }
@@ -58,5 +66,10 @@ export async function startImport(files: File[]): Promise<void> {
     return
   }
 
-  await finishImport(parsed, { tools: true, bookmarklets: true, llmConfig: true, networkConfig: true })
+  await finishImport(parsed, {
+    tools: true,
+    bookmarklets: true,
+    llmConfig: true,
+    networkConfig: true,
+  })
 }

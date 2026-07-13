@@ -33,8 +33,9 @@ export const ui = {
   // Accessory tools stand out from the plain-gray actions on the right: bigger, accent-colored.
   toolbarAccessoryButton:
     'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full text-cyan-600 transition-colors hover:bg-cyan-50 dark:text-cyan-400 dark:hover:bg-cyan-950',
-  // Same footprint as toolbarAccessoryButton, filled instead of hover-only — the current view's icon.
-  toolbarAccessoryButtonActive: 'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-cyan-600 text-white dark:bg-cyan-500',
+  // Same footprint as toolbarAccessoryButton, filled instead of hover-only the current view's icon.
+  toolbarAccessoryButtonActive:
+    'flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full bg-cyan-600 text-white dark:bg-cyan-500',
   toolbarAccessoryIcon: 'h-6 w-6',
   toolbarActions: 'flex items-center gap-2 justify-self-end',
   toolbarIconButton:
@@ -54,7 +55,7 @@ export const ui = {
     'pointer-events-none fixed inset-0 z-40 flex flex-col items-center justify-center gap-3 bg-white/90 dark:bg-gray-900/90',
   toolsDropOverlayIcon: 'h-10 w-10 text-cyan-600 dark:text-cyan-400',
   toolsDropOverlayText: 'text-sm font-medium text-gray-700 dark:text-gray-300',
-  // Decorative blurred blobs behind the whole app (all views) — fixed to appShell's own box,
+  // Decorative blurred blobs behind the whole app (all views) fixed to appShell's own box,
   // so nothing (like layoutCenter's overflow-hidden) can clip the blur bleed.
   heroGlow: 'pointer-events-none absolute inset-0 -z-10',
   heroGlowBlobA:
@@ -72,7 +73,8 @@ export const ui = {
   homeCardsWrapper: 'mx-auto mt-16 grid w-full max-w-3xl grid-cols-1 gap-4 px-6 sm:grid-cols-3',
   homeCard:
     'flex flex-col items-center gap-3 rounded-tool border border-gray-200 bg-white p-6 text-center shadow-sm transition-colors hover:border-cyan-300 hover:bg-cyan-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-cyan-700 dark:hover:bg-cyan-950',
-  homeCardIconWrapper: 'flex h-12 w-12 items-center justify-center rounded-full bg-cyan-100 text-cyan-600 dark:bg-cyan-950 dark:text-cyan-400',
+  homeCardIconWrapper:
+    'flex h-12 w-12 items-center justify-center rounded-full bg-cyan-100 text-cyan-600 dark:bg-cyan-950 dark:text-cyan-400',
   homeCardIcon: 'h-6 w-6',
   homeCardTitle: 'text-sm font-semibold text-gray-900 dark:text-gray-100',
   homeCardDescription: 'text-xs text-gray-500 dark:text-gray-400',
@@ -93,7 +95,7 @@ export const ui = {
     'absolute right-2.5 top-1/2 flex h-5 w-5 -translate-y-1/2 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-800 dark:hover:text-gray-200',
   toolsSearchClearIcon: 'h-3.5 w-3.5',
   toolsNoResults: 'w-full py-10 text-center text-sm text-gray-400 dark:text-gray-500',
-  // Fixed vh height + its own scroll — a percentage-height chain up through the app shell
+  // Fixed vh height + its own scroll a percentage-height chain up through the app shell
   // doesn't reliably contain this content, so it's sized independently instead (like the wizard chat grid).
   toolsScrollArea:
     'flex max-h-[58vh] w-full justify-center overflow-y-auto px-6 pb-10 [scrollbar-gutter:stable]',
@@ -151,11 +153,11 @@ export const ui = {
   bookmarkletsSidebarTitle:
     'text-xs font-medium uppercase tracking-wide text-gray-400 dark:text-gray-500',
   bookmarkletsCategoryGroup: 'flex flex-col gap-0.5',
-  // Category header: distinct from items on purpose — bold, dark, its own row with a folder icon
+  // Category header: distinct from items on purpose bold, dark, its own row with a folder icon
   // and a chevron that rotates to show collapsed/expanded state.
   bookmarkletsCategoryHeader:
     'flex min-w-0 flex-1 items-center gap-1.5 rounded-tool px-1 py-1.5 text-left transition-colors hover:bg-gray-100 dark:hover:bg-gray-800',
-  // Shown while dragging a bookmarklet over a real category — a ring, not a background swap,
+  // Shown while dragging a bookmarklet over a real category a ring, not a background swap,
   // so it stays visible over the hover background too.
   bookmarkletsCategoryHeaderDropTarget: 'ring-2 ring-cyan-500',
   bookmarkletsCategoryChevron:
@@ -164,7 +166,7 @@ export const ui = {
   bookmarkletsCategoryIcon: 'h-4 w-4 flex-shrink-0 text-gray-500 dark:text-gray-400',
   bookmarkletsCategoryName: 'truncate text-sm font-semibold text-gray-900 dark:text-gray-100',
   bookmarkletsSidebarRow: 'group flex items-center',
-  // Action icons only earn their place on hover — collapsed to zero width the rest of the
+  // Action icons only earn their place on hover collapsed to zero width the rest of the
   // time (not just opacity-0), so the title gets the full row width instead of always leaving
   // room for buttons nobody's looking at.
   bookmarkletsRowActionButton:
@@ -188,7 +190,7 @@ export const ui = {
     'group flex max-w-full items-center gap-1 rounded-full border border-gray-300 py-1 pl-2.5 pr-1 transition-colors hover:border-cyan-500 dark:border-gray-700 dark:hover:border-cyan-400',
   bookmarkletsTagPillActive: 'border-cyan-500 bg-cyan-50 dark:border-cyan-400 dark:bg-cyan-950',
   bookmarkletsTagPillLabel: 'truncate text-xs text-gray-700 dark:text-gray-300',
-  // The remove "x" only earns its place on hover — same reasoning as the row delete icons.
+  // The remove "x" only earns its place on hover same reasoning as the row delete icons.
   bookmarkletsTagPillDelete:
     'flex h-3.5 w-3.5 flex-shrink-0 items-center justify-center rounded-full text-gray-400 opacity-0 transition-opacity hover:text-gray-700 group-hover:opacity-100 dark:hover:text-gray-200',
   bookmarkletsTagPillDeleteConfirm:
@@ -226,7 +228,7 @@ export const ui = {
     'flex w-full items-center justify-between gap-2 rounded-tool border border-gray-300 bg-white px-3 py-2 text-left text-sm text-gray-900 transition-colors hover:border-cyan-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:hover:border-cyan-400',
   categoryComboboxTriggerText: 'truncate',
   categoryComboboxChevron: 'h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500',
-  // Shared dropdown menu look — also used by the tag input's suggestion list.
+  // Shared dropdown menu look also used by the tag input's suggestion list.
   categoryComboboxMenu:
     'absolute left-0 right-0 top-full z-20 mt-1 max-h-48 overflow-y-auto rounded-tool border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-800',
   categoryComboboxOption:
@@ -244,7 +246,7 @@ export const ui = {
     'text-cyan-500 transition-colors hover:text-cyan-700 dark:text-cyan-400 dark:hover:text-cyan-200',
   tagsInput:
     'min-w-[6rem] flex-1 border-none bg-transparent p-0.5 text-sm text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-0 dark:text-gray-100',
-  // Options: same two-pane shape as Bookmarklets/Network — sidebar picks one group,
+  // Options: same two-pane shape as Bookmarklets/Network sidebar picks one group,
   // isolating it in the main area instead of stacking every section at once.
   optionsLayout: 'flex min-h-0 flex-1',
   optionsSidebar:
@@ -277,7 +279,7 @@ export const ui = {
   // Wizard viewport: centers the wizard both ways within the view
   wizardViewport: 'flex flex-1 items-center justify-center px-6 pb-6 pt-6',
   // Wizard: fixed 3-row layout (header / body / dots), 78% of the viewport height.
-  // Width is split base/modifier (never combine two max-w-* at once — same class wins on cascade order, not attribute order).
+  // Width is split base/modifier (never combine two max-w-* at once same class wins on cascade order, not attribute order).
   wizardWrapperBase: 'flex h-[78%] w-full flex-col items-center text-center',
   wizardWrapperWidth: 'max-w-xl',
   wizardWrapperWidthWide: 'max-w-none',
@@ -288,7 +290,7 @@ export const ui = {
   wizardBody:
     'flex w-full min-h-0 flex-1 flex-col justify-center overflow-y-auto pr-1 [scrollbar-gutter:stable]',
   wizardStepBody: 'flex w-full flex-col gap-4 text-left',
-  // Fills the body instead of being centered — for steps whose content should occupy all available space (e.g. the code editor).
+  // Fills the body instead of being centered for steps whose content should occupy all available space (e.g. the code editor).
   wizardField: 'flex flex-col gap-1.5 text-left',
   wizardFieldLabel: 'text-sm font-medium text-gray-700 dark:text-gray-300',
   wizardCounter: 'self-end text-xs text-gray-400 dark:text-gray-500',
@@ -328,17 +330,21 @@ export const ui = {
   wizardOptionText: 'flex flex-col gap-0.5',
   wizardOptionTitle: 'text-sm font-semibold text-gray-900 dark:text-gray-100',
   wizardOptionDescription: 'text-xs text-gray-500 dark:text-gray-400',
-  // Toast notifications: stacked bottom-right, one neutral card style — the variant colors
+  // Toast notifications: stacked bottom-right, one neutral card style the variant colors
   // only the icon (plus a thin left accent), not the whole card. Calmer than a fully-tinted box.
   toastContainer:
     'pointer-events-none fixed inset-x-0 bottom-4 z-50 flex flex-col items-end gap-2 px-4 sm:inset-x-auto sm:right-4',
   toast:
     'pointer-events-auto flex max-w-sm items-start gap-2 rounded-xl border border-l-4 border-gray-200 bg-white px-4 py-3 text-sm text-gray-700 shadow-lg dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200',
   toastIcon: 'h-5 w-5 flex-shrink-0',
-  toastInfo: 'border-l-sky-400 dark:border-l-sky-500 [&>svg]:text-sky-500 dark:[&>svg]:text-sky-400',
-  toastSuccess: 'border-l-emerald-400 dark:border-l-emerald-500 [&>svg]:text-emerald-500 dark:[&>svg]:text-emerald-400',
-  toastWarning: 'border-l-amber-400 dark:border-l-amber-500 [&>svg]:text-amber-500 dark:[&>svg]:text-amber-400',
-  toastError: 'border-l-rose-400 dark:border-l-rose-500 [&>svg]:text-rose-500 dark:[&>svg]:text-rose-400',
+  toastInfo:
+    'border-l-sky-400 dark:border-l-sky-500 [&>svg]:text-sky-500 dark:[&>svg]:text-sky-400',
+  toastSuccess:
+    'border-l-emerald-400 dark:border-l-emerald-500 [&>svg]:text-emerald-500 dark:[&>svg]:text-emerald-400',
+  toastWarning:
+    'border-l-amber-400 dark:border-l-amber-500 [&>svg]:text-amber-500 dark:[&>svg]:text-amber-400',
+  toastError:
+    'border-l-rose-400 dark:border-l-rose-500 [&>svg]:text-rose-500 dark:[&>svg]:text-rose-400',
   // Capability banner (e.g. "Allow User Scripts" not enabled yet)
   banner:
     'mx-6 mt-8 flex items-start gap-3 rounded-2xl border border-gray-200 bg-gray-50 p-4 text-left dark:border-gray-800 dark:bg-gray-800/50',
@@ -359,7 +365,7 @@ export const ui = {
   codeEditorActionIcon: 'h-4 w-4',
   codeEditorTestButton:
     'flex h-8 items-center justify-center rounded-full bg-cyan-600 px-3.5 text-xs font-semibold text-white shadow-sm transition-colors hover:bg-cyan-500 disabled:cursor-not-allowed disabled:opacity-40 dark:bg-cyan-500 dark:hover:bg-cyan-400',
-  // Step 4: two columns — chat with the LLM on the left, code editor at full height on the right.
+  // Step 4: two columns chat with the LLM on the left, code editor at full height on the right.
   // Fixed viewport-relative height: decoupled from the ancestor flex/grid
   // chain entirely (percentage heights there kept silently resolving to
   // "auto" through some link, letting content grow past its box no matter
@@ -409,7 +415,8 @@ export const ui = {
   importConfirmOption: 'flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300',
   importConfirmCheckbox:
     'h-4 w-4 rounded border-gray-300 text-cyan-600 focus:ring-cyan-500 dark:border-gray-700 dark:bg-gray-800',
-  importConfirmEndpoint: 'ml-1 break-all rounded bg-gray-100 px-1 py-0.5 text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-400',
+  importConfirmEndpoint:
+    'ml-1 break-all rounded bg-gray-100 px-1 py-0.5 text-xs text-gray-600 dark:bg-gray-800 dark:text-gray-400',
   modalStatusOk: 'break-words text-sm font-medium text-emerald-600 dark:text-emerald-400',
   modalStatusError: 'break-words text-sm font-medium text-rose-600 dark:text-rose-400',
   // Network inspector: left sidebar (fixed categories) + center scrollable log, same

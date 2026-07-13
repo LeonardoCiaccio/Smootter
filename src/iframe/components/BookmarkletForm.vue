@@ -24,10 +24,10 @@ const props = defineProps<{
   initialTitle: string
   categories: StoredCategory[]
   tagSuggestions: string[]
-  // Set when currentUrl matches an already-saved bookmarklet — the form edits it in place
+  // Set when currentUrl matches an already-saved bookmarklet the form edits it in place
   // instead of creating a duplicate, and prefills what was saved before.
   existingBookmarklet: StoredBookmarklet | null
-  // The live tab's own resolved favicon URL — only usable to fetch a fresh favicon when
+  // The live tab's own resolved favicon URL only usable to fetch a fresh favicon when
   // editing the current page itself (an arbitrary past bookmarklet has no live tab to ask).
   faviconUrl?: string
 }>()
@@ -65,12 +65,12 @@ const tags = ref<string[]>([])
 const categoryId = ref('')
 resetFrom(props.existingBookmarklet)
 
-// The URL can change (navigating the sidebar's "add" action re-checks the current page) —
+// The URL can change (navigating the sidebar's "add" action re-checks the current page) 
 // re-sync the form each time so it keeps reflecting the right existing-or-blank state.
 watch(() => props.existingBookmarklet, resetFrom)
 
 // initialTitle arrives asynchronously (BookmarkletsView fetches it via a message after mount),
-// so it's often still '' the moment resetFrom first runs — pick it up once it resolves, but
+// so it's often still '' the moment resetFrom first runs pick it up once it resolves, but
 // only for a brand-new entry (editing an existing bookmarklet keeps its own saved title).
 watch(
   () => props.initialTitle,
@@ -80,12 +80,12 @@ watch(
 )
 
 // Editing a bookmarklet selected from the sidebar/tag results keeps its own URL, which may
-// not be the page currently open — only a brand-new entry uses the live current page's URL.
+// not be the page currently open only a brand-new entry uses the live current page's URL.
 const linkUrl = computed(() => props.existingBookmarklet?.url ?? props.currentUrl)
 
 const currentDomain = computed(() => hostnameOf(props.currentUrl))
 
-// Favicons are cached per domain (bookmarkletsDb.ensureFavicon), not per bookmarklet — several
+// Favicons are cached per domain (bookmarkletsDb.ensureFavicon), not per bookmarklet several
 // saved pages on the same site share one. Falls back to a generic icon when nothing's cached
 // and there's no live tab to fetch a fresh one from (editing a past bookmarklet on another site).
 const faviconDataUrl = ref<string | null>(null)
@@ -127,7 +127,7 @@ async function resolveCategoryByName(name: string): Promise<void> {
 /**
  * Same workflow as the wizard's "Generate with AI": if the LLM isn't configured yet, open the
  * setup popup and retry automatically once it's saved. On success, fills description/category/
- * tags — the existing ones (passed as context to the model) are what it's told to prefer reusing.
+ * tags the existing ones (passed as context to the model) are what it's told to prefer reusing.
  */
 async function onGenerate(): Promise<void> {
   if (!channel || generating.value) return
@@ -145,7 +145,7 @@ async function onGenerate(): Promise<void> {
     url: linkUrl.value,
     currentTitle: title.value,
     existingTags: props.tagSuggestions,
-    // The fixed "uncategorized" category is a fallback label, not a real content category —
+    // The fixed "uncategorized" category is a fallback label, not a real content category 
     // leaving it in this list gives the model an easy out to always "reuse" it instead of
     // proposing something specific.
     existingCategories: props.categories

@@ -24,7 +24,7 @@ async function scrollToBottom(): Promise<void> {
 
 watch(() => props.messages.length, scrollToBottom)
 
-/** The conversation carries the context — every turn resends the full history so far. */
+/** The conversation carries the context every turn resends the full history so far. */
 async function send(): Promise<void> {
   if (!channel || generating.value) return
   const text = prompt.value.trim()
@@ -59,9 +59,9 @@ async function send(): Promise<void> {
     return
   }
 
-  // Only the chat-facing reply goes in the transcript — the code is applied
+  // Only the chat-facing reply goes in the transcript the code is applied
   // to the editor directly, never printed here. Not every turn writes code
-  // (a greeting or question doesn't) — only touch the editor when it does.
+  // (a greeting or question doesn't) only touch the editor when it does.
   emit('update:messages', capChatMessages([...nextMessages, { role: 'assistant', content: response.reply ?? '' }]))
   if (response.code) emit('generated', response.code)
 }

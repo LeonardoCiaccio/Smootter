@@ -13,14 +13,14 @@ const props = defineProps<{
   bookmarklets: StoredBookmarklet[]
   selectedId: string | null
   depth: number
-  // Cached favicon data URLs by domain — read-only here, populated by BookmarkletsSidebar.
+  // Cached favicon data URLs by domain read-only here, populated by BookmarkletsSidebar.
   faviconsByDomain: Record<string, string>
 }>()
 const emit = defineEmits<{
   select: [id: string]
   delete: [id: string]
   deleteCategory: [id: string]
-  // categoryPath: the target node's fullPath — BookmarkletsView resolves it to a category,
+  // categoryPath: the target node's fullPath BookmarkletsView resolves it to a category,
   // creating one by that name first if it's still just a structural path segment.
   move: [id: string, categoryPath: string]
 }>()
@@ -39,7 +39,7 @@ const items = computed(() =>
 )
 const canExpand = computed(() => props.node.children.length > 0 || items.value.length > 0)
 const isUncategorized = computed(() => props.node.category?.id === UNCATEGORIZED_CATEGORY_ID)
-// Tailwind utilities can't express an arbitrary, unbounded nesting depth — the one spot
+// Tailwind utilities can't express an arbitrary, unbounded nesting depth the one spot
 // where an inline style is the only option, per project convention for that exact case.
 const indentStyle = computed(() => ({ paddingLeft: `${props.depth * 14}px` }))
 
@@ -69,10 +69,10 @@ function onDragStart(id: string, event: DragEvent): void {
 }
 
 // Every node is a valid drop target, including purely structural path segments (e.g. "AA"
-// when only "AA/BB" was ever created) — dropping there promotes it into a real category on
+// when only "AA/BB" was ever created) dropping there promotes it into a real category on
 // the fly (BookmarkletsView creates it by name if it doesn't exist yet).
 // dragenter/dragleave also fire when the pointer crosses the row's own children (the chevron,
-// icon, text) since they bubble — a plain boolean flickers on/off as it crosses them, so a
+// icon, text) since they bubble a plain boolean flickers on/off as it crosses them, so a
 // counter nets that out to "is the pointer still somewhere inside this row" (same pattern as
 // HomeView's file-drop overlay).
 const dropDepth = ref(0)

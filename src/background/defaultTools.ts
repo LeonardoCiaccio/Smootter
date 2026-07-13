@@ -1,8 +1,8 @@
 /**
- * defaultTools — built-in example tools, seeded once on fresh install.
+ * defaultTools built-in example tools, seeded once on fresh install.
  * The seed source is a real export file (defaultTools.json, produced the same way
  * a user would export their own tools) fed through the exact same import path
- * (parseToolsText) as a manual import — same base64 decoding, same defaults, same
+ * (parseToolsText) as a manual import same base64 decoding, same defaults, same
  * "starts disabled" rule. Editable and deletable like any other tool; never re-added
  * afterward (seeding only runs on chrome.runtime.onInstalled reason 'install').
  */

@@ -1,7 +1,7 @@
 /**
  * Shared message contracts for the UI ⇄ background channel.
  * No logic here, only types. Messages travel over chrome.runtime.sendMessage
- * / onMessage — stateless, no port names needed.
+ * / onMessage stateless, no port names needed.
  */
 import type { Preferences, LlmConfig } from './preferences'
 
@@ -9,7 +9,7 @@ import type { Preferences, LlmConfig } from './preferences'
 export type LlmErrorCode = 'network' | 'timeout' | 'http' | 'noToolSupport' | 'unknown'
 
 /**
- * Sent when a channel function's validate() or business() throws — the one reply every request
+ * Sent when a channel function's validate() or business() throws the one reply every request
  * is guaranteed to get, even on an unexpected failure. Without this, a thrown error left the UI's
  * awaited channel.send() hanging forever with no response and no visible error (see channel.ts).
  */
@@ -44,7 +44,7 @@ export type RemovePreferenceRequest = {
 /**
  * Close signal. The iframe can't reach the host page's DOM to hide the
  * modal itself, so it sends this to the worker, which broadcasts it to
- * every connected port — environment.ts is listening and hides on receipt.
+ * every connected port environment.ts is listening and hides on receipt.
  */
 export interface CloseModalSignal {
   type: 'closeModal'
@@ -84,7 +84,7 @@ export type PreferenceSaved = {
 
 /**
  * Sent by the wizard to test a tool's code for real. The worker runs it via
- * chrome.userScripts.execute() (never eval) — a direct, one-shot, controlled
+ * chrome.userScripts.execute() (never eval) a direct, one-shot, controlled
  * execution on the real webpage tab the wizard is already open on. Never
  * tied to a page-load trigger (document_start/idle): those only matter once
  * the tool actually runs for the end user, not during test.
@@ -96,7 +96,7 @@ export interface TestCodeRequest {
 
 /**
  * Reply to testCode: whether the code ran without throwing, straight from
- * the chrome.userScripts.execute() call itself — not a guess. Runs in a
+ * the chrome.userScripts.execute() call itself not a guess. Runs in a
  * disposable, invisible iframe the worker removes right after, so there's
  * nothing left to clean up on the wire.
  */
@@ -120,7 +120,7 @@ export interface TestLlmConfigResult {
   detail?: string
 }
 
-/** One turn in the wizard's LLM chat — the full conversation is sent as context on every request. */
+/** One turn in the wizard's LLM chat the full conversation is sent as context on every request. */
 export interface ChatMessage {
   role: 'user' | 'assistant'
   content: string
@@ -135,15 +135,17 @@ export const MAX_CHAT_MESSAGES = 40
 
 /** Keeps only the most recent messages, per MAX_CHAT_MESSAGES. */
 export function capChatMessages(messages: ChatMessage[]): ChatMessage[] {
-  return messages.length > MAX_CHAT_MESSAGES ? messages.slice(messages.length - MAX_CHAT_MESSAGES) : messages
+  return messages.length > MAX_CHAT_MESSAGES
+    ? messages.slice(messages.length - MAX_CHAT_MESSAGES)
+    : messages
 }
 
 /**
  * Sent by the wizard's chat panel: asks the configured LLM to continue the
  * conversation. `messages` is the full chat so far (ending with the user's
- * latest turn) — multi-turn context, not a single one-off prompt.
+ * latest turn) multi-turn context, not a single one-off prompt.
  * `existingCode` (the editor's current content, may be empty) is passed
- * separately — the user may be improving working code, not starting fresh.
+ * separately the user may be improving working code, not starting fresh.
  */
 export interface GenerateCodeRequest {
   type: 'generateCode'
@@ -153,7 +155,7 @@ export interface GenerateCodeRequest {
 
 /**
  * Reply to generateCode. `reply` is the assistant's chat-facing message
- * (never code, never reasoning) — shown in the transcript. `code` is applied
+ * (never code, never reasoning) shown in the transcript. `code` is applied
  * to the editor directly, never printed in the chat.
  */
 export interface GenerateCodeResult {
@@ -194,7 +196,7 @@ export interface GenerateBookmarkletResult {
 /**
  * Sent by the Bookmarklets search panel's AI button: asks the model to find which saved
  * bookmarklets match a free-text `query`, understanding typos/wording the way a plain substring
- * filter can't. The model queries the DB itself (see queryBookmarklets) — nothing is shipped
+ * filter can't. The model queries the DB itself (see queryBookmarklets) nothing is shipped
  * over this message besides the query text.
  */
 export interface SearchBookmarkletsRequest {
@@ -213,7 +215,7 @@ export interface SearchBookmarkletsResult {
 
 /**
  * The fixed fallback bucket for a response that matches none of the user's mime category
- * rules (see MimeCategoryRule in shared/preferences.ts) — always present in the sidebar,
+ * rules (see MimeCategoryRule in shared/preferences.ts) always present in the sidebar,
  * never one of the user-defined names.
  */
 export const NETWORK_OTHER_CATEGORY = 'other'
@@ -221,7 +223,7 @@ export const NETWORK_OTHER_CATEGORY = 'other'
 /**
  * A single captured network response, read-only metadata from headers only (never the body).
  * `category` is the name of the mime category rule it matched at capture time (or
- * NETWORK_OTHER_CATEGORY) — a plain string since categories are fully user-defined.
+ * NETWORK_OTHER_CATEGORY) a plain string since categories are fully user-defined.
  */
 export interface NetworkEntry {
   id: string
@@ -246,7 +248,7 @@ export interface NetworkLogResult {
   entries: NetworkEntry[]
 }
 
-/** Broadcast the moment a new response is captured for any tab — NetworkView filters by tabId. */
+/** Broadcast the moment a new response is captured for any tab NetworkView filters by tabId. */
 export interface NetworkEntryCapturedBroadcast {
   type: 'networkEntryCaptured'
   tabId: number

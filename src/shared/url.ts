@@ -20,7 +20,7 @@ export function fileExtensionOf(url: string): string {
 
 /**
  * Whether `url` is a plain, navigable web URL. Anything else (javascript:, data:, file:, ...)
- * must never reach an href binding or a downloads.download() call — Vue does not sanitize
+ * must never reach an href binding or a downloads.download() call Vue does not sanitize
  * href bindings, and a javascript: URI is only harmless today because of a CSP that isn't
  * declared explicitly.
  */

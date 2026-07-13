@@ -26,7 +26,7 @@ const aiResultsHeaderText = computed(() => chrome.i18n.getMessage('bookmarkletsA
 
 const query = ref('')
 
-// AI results stay shown only as long as the query hasn't changed since that search ran —
+// AI results stay shown only as long as the query hasn't changed since that search ran 
 // editing the text falls straight back to the plain live filter below.
 const aiSearching = ref(false)
 const aiResultIds = ref<string[] | null>(null)

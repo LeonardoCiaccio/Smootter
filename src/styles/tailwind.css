@@ -59,7 +59,7 @@
    flex/items-end toast stack, switching to absolute mid-transition makes the browser recompute
    a flex "static position" that doesn't match where the toast actually was, producing a wrong,
    janky jump. Left in normal flow, it just fades/slides in place, then the DOM removal (after
-   the transition ends) collapses the gap — instantly, since .toast-move below has no transition. */
+   the transition ends) collapses the gap instantly, since .toast-move below has no transition. */
 .toast-move {
   transition: none;
 }

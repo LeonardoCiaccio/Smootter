@@ -1,5 +1,5 @@
 /**
- * toast — Vue plugin exposing a global notification queue (info/success/warning/error).
+ * toast Vue plugin exposing a global notification queue (info/success/warning/error).
  * Module-level singleton state, exposed via useToast() to any component.
  */
 import { reactive } from 'vue'

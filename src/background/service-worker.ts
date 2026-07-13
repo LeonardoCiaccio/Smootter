@@ -1,5 +1,5 @@
 /**
- * Service worker (background) — event-driven.
+ * Service worker (background) event-driven.
  * On toolbar click, injects environment on demand into the active tab.
  * The private UI ⇄ background channel lives in ./channel.
  * The "Allow User Scripts" status check lives in ./userScripts.

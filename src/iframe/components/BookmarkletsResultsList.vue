@@ -9,7 +9,7 @@ const props = defineProps<{
   headerText?: string
   bookmarklets: StoredBookmarklet[]
   categories: StoredCategory[]
-  // Hides this one tag from each record's tag chips — used by the tag-filter view, where
+  // Hides this one tag from each record's tag chips used by the tag-filter view, where
   // the selected tag is already implied by being in this list.
   excludeTag?: string
   noResultsText?: string
@@ -24,7 +24,7 @@ function visibleTags(bookmarklet: StoredBookmarklet): string[] {
   return props.excludeTag ? bookmarklet.tags.filter((tag) => tag !== props.excludeTag) : bookmarklet.tags
 }
 
-// Grouped visually by category, alphabetical within it — a scannable, ordered record list.
+// Grouped visually by category, alphabetical within it a scannable, ordered record list.
 const sorted = computed(() =>
   [...props.bookmarklets].sort((a, b) => {
     const categoryCompare = categoryName(a.categoryId).localeCompare(categoryName(b.categoryId))

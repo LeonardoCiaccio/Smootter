@@ -1,8 +1,8 @@
 /**
- * clipboard — writes text to the clipboard, falling back to the legacy execCommand('copy')
+ * clipboard writes text to the clipboard, falling back to the legacy execCommand('copy')
  * when the modern Clipboard API is blocked. Cross-origin iframes are denied clipboard-write by
  * the browser's default Permissions Policy regardless of the iframe's own `allow` attribute (a
- * known Chromium constraint, https://crbug.com/414348233) — happens on every host page, not just
+ * known Chromium constraint, https://crbug.com/414348233) happens on every host page, not just
  * ones with a restrictive header. execCommand('copy') isn't gated by that policy and runs
  * synchronously in this same document, so it keeps working here.
  */

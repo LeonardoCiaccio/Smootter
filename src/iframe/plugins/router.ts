@@ -1,13 +1,13 @@
 /**
- * router — Vue Router plugin for the SaaS iframe.
+ * router Vue Router plugin for the SaaS iframe.
  * Hash mode: this page is served from chrome-extension://, no server to
  * resolve history-mode paths. environment.ts navigates by setting the
  * iframe's src with a `#/route` suffix.
  *
  * Home/Options/Bookmarklets/Network are loaded eagerly (not code-split): they're the routes
- * the context menu jumps straight to, sometimes into an already-open modal — a lazy `import()`
+ * the context menu jumps straight to, sometimes into an already-open modal a lazy `import()`
  * there leaves the previous route visible on screen for a beat while the chunk loads, which
- * reads as a glitch. Builder stays lazy (it's huge — CodeMirror/Acorn — and only ever reached
+ * reads as a glitch. Builder stays lazy (it's huge CodeMirror/Acorn and only ever reached
  * by an explicit in-app click, never by a direct jump, so there's no stale view to flash).
  */
 import { createRouter, createWebHashHistory } from 'vue-router'

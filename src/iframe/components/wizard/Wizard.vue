@@ -86,7 +86,7 @@ onMounted(async () => {
 })
 
 // Excludes chatMessages on purpose: sending a message to the LLM shouldn't itself flag the
-// form dirty (before it even replies) — chat activity goes through the test-then-save flow.
+// form dirty (before it even replies) chat activity goes through the test-then-save flow.
 watch(
   () => JSON.stringify({
     name: data.name,
@@ -104,7 +104,7 @@ watch(
 
 const toast = useToast()
 
-/** Persists every field as-is, without testing — the user decides where to go next. */
+/** Persists every field as-is, without testing the user decides where to go next. */
 async function quickSave(): Promise<void> {
   await saveTool(toStoredTool(data))
   dirty.value = false
@@ -145,7 +145,7 @@ function validateScope(): string | null {
 
 /**
  * The tester step needs real, syntactically valid code to run. Syntax check
- * only (Acorn, a pure parser — never eval, never executes the code); the
+ * only (Acorn, a pure parser never eval, never executes the code); the
  * tester step then runs it for real.
  */
 function validateChat(): string | null {
@@ -170,7 +170,7 @@ const stepValidators: Array<() => string | null> = [
 
 /**
  * Going back is always allowed. Going forward requires every step strictly
- * before the target to be complete (not just the current one — otherwise
+ * before the target to be complete (not just the current one otherwise
  * e.g. jumping from step 1 straight to the tester would skip the code step).
  */
 function goTo(index: number): void {
@@ -193,7 +193,7 @@ function goPrev(): void {
   if (currentIndex.value > 0) goTo(currentIndex.value - 1)
 }
 
-// The tester step (index 4) has no dot and isn't reachable via the arrows —
+// The tester step (index 4) has no dot and isn't reachable via the arrows 
 // only the Test button inside the chat step's editor advances into it.
 const dotSteps = computed(() => stepMeta.slice(0, 4))
 

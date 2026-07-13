@@ -1,26 +1,26 @@
 /**
- * preferences — persistent user preferences via chrome.storage.local.
+ * preferences persistent user preferences via chrome.storage.local.
  * Extension-scoped storage: works in every context (service worker, iframe,
  * content script) and persists across sessions. Async API.
  */
 
 const PREFIX = chrome.runtime.getManifest().short_name + '_pref_'
 
-/** The chrome.storage.local key a given preference is stored under — for reading raw chrome.storage.onChanged events. */
+/** The chrome.storage.local key a given preference is stored under for reading raw chrome.storage.onChanged events. */
 export function preferenceStorageKey<K extends keyof Preferences>(key: K): string {
   return PREFIX + key
 }
 
 /**
  * Open provider: the user supplies their own OpenAI-compatible endpoint and
- * model. The key is optional — local runtimes (Ollama, LM Studio, ...)
+ * model. The key is optional local runtimes (Ollama, LM Studio, ...)
  * don't require one.
  */
 export interface LlmConfig {
   endpoint: string
   apiKey: string
   model: string
-  // Sent as max_tokens on every request — providers often default this low
+  // Sent as max_tokens on every request providers often default this low
   // enough to truncate a longer generated tool. Not auto-detectable in a
   // provider-agnostic way, so it's a plain user-set number.
   maxOutputTokens: number
@@ -28,9 +28,9 @@ export interface LlmConfig {
 
 /**
  * Network inspector capture filter, user-tunable from Options: `minSizeBytes` is the size
- * floor below which a file/media response isn't captured at all (data calls — json/xml/html/
- * text — are exempt, see networkInspector.ts). Sidebar categories are a fixed, system-defined
- * set (see shared/networkCategories.ts) — not part of this config.
+ * floor below which a file/media response isn't captured at all (data calls json/xml/html/
+ * text are exempt, see networkInspector.ts). Sidebar categories are a fixed, system-defined
+ * set (see shared/networkCategories.ts) not part of this config.
  */
 export interface NetworkConfig {
   minSizeBytes: number

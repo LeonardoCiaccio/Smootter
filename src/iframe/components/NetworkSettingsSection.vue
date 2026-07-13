@@ -18,7 +18,7 @@ onMounted(async () => {
   }
 })
 
-// Keeps the form live if networkConfig changes from elsewhere (an import) — chrome.storage.onChanged
+// Keeps the form live if networkConfig changes from elsewhere (an import) chrome.storage.onChanged
 // fires regardless of which context wrote it, unlike the channel broadcast (only fired by
 // channel.ts's own setPreference handler, which a direct import write bypasses).
 const networkConfigKey = preferenceStorageKey('networkConfig')
@@ -33,7 +33,7 @@ onUnmounted(() => chrome.storage.onChanged.removeListener(onStorageChanged))
 async function save(): Promise<void> {
   if (!channel) return
   saving.value = true
-  // An emptied number input leaves v-model.number holding '' (not 0) — never send that through.
+  // An emptied number input leaves v-model.number holding '' (not 0) never send that through.
   const minSizeBytes = Number.isFinite(form.minSizeBytes) && form.minSizeBytes >= 0 ? Math.floor(form.minSizeBytes) : 0
   form.minSizeBytes = minSizeBytes
   await channel.send({ type: 'setPreference', key: 'networkConfig', value: { minSizeBytes } })
