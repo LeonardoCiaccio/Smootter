@@ -589,39 +589,56 @@ function toWordArray(value: unknown): string[] {
     : []
 }
 
+interface SearchToolExecution {
+  text: string
+  matched: boolean
+}
+
+// After this many consecutive empty attempts, the hint stops suggesting more synonyms (a
+// synonym is a near-exact match for the same concept — if several didn't work, more won't
+// either) and pushes toward a hypernym instead: a broader category the concept belongs to.
+// "video" is not a synonym of "film" (a film is a kind of video, not the same thing) but is
+// exactly the right broader term to fall back to once "film", "pellicola", "cinema" all failed.
+const HYPERNYM_HINT_THRESHOLD = 3
+
 /** Runs a real indexed DB query (see queryBookmarklets) never loads the whole store into memory. */
-async function executeSearchTool(args: { all?: unknown; any?: unknown }): Promise<string> {
+async function executeSearchTool(args: { all?: unknown; any?: unknown }, emptyStreak: number): Promise<SearchToolExecution> {
   const all = toWordArray(args.all)
   const any = toWordArray(args.any)
-  if (all.length === 0 && any.length === 0)
-    return JSON.stringify({ error: 'Provide at least one term in "all" or "any".' })
+  if (all.length === 0 && any.length === 0) {
+    return { text: JSON.stringify({ error: 'Provide at least one term in "all" or "any".' }), matched: false }
+  }
 
   const matches = await queryBookmarklets({ all, any })
   if (matches.length === 0) {
     // A reminder placed right here, at the moment it's actionable, holds up far better than a
     // single instruction back in the system prompt models are prone to giving up on the first
     // empty result otherwise.
-    return JSON.stringify({
-      count: 0,
-      hint: 'No matches for these exact words this is plain word matching, it will never infer synonyms on its own. Try again with different words: synonyms, a broader or narrower term, related concepts, or a translation.',
-    })
+    const hint =
+      emptyStreak >= HYPERNYM_HINT_THRESHOLD
+        ? 'Still nothing after several synonym attempts stop trying more synonyms for the same concept, they clearly aren\'t in the data. Instead try a hypernym: a broader, more general category the concept belongs to (e.g. if "film"/"pellicola"/"cinema" all failed, try the wider term "video" or "streaming").'
+        : 'No matches for these exact words this is plain word matching, it will never infer synonyms on its own. Try again with different words: synonyms or closely related terms for the same concept.'
+    return { text: JSON.stringify({ count: 0, hint }), matched: false }
   }
-  return JSON.stringify(
-    matches.slice(0, SEARCH_RESULT_CAP).map((item) => ({
-      id: item.id,
-      title: item.title,
-      description: item.description,
-      tags: item.tags,
-      url: item.url,
-    })),
-  )
+  return {
+    text: JSON.stringify(
+      matches.slice(0, SEARCH_RESULT_CAP).map((item) => ({
+        id: item.id,
+        title: item.title,
+        description: item.description,
+        tags: item.tags,
+        url: item.url,
+      })),
+    ),
+    matched: true,
+  }
 }
 
 function buildSearchSystemPrompt(): string {
   return [
     "You are the search assistant for Smootter's saved bookmarklets. The user typed a free-text query possibly with typos, vague wording, or a different language than the saved titles. Understand their intent, not just literal keyword overlap.",
     'Tool calling is available: you have `search_bookmarklets` (a real database query, with `all`/`any` for AND/OR call it repeatedly, adjusting terms, until you have enough signal) and `return_search_results` (deliver your final answer). Always use these never answer in plain text.',
-    "The search tool won't correct typos or match synonyms for you that's your job. Start with the words from the query split across `all`/`any` as makes sense. If a query comes back empty (or with results that clearly don't fit), do NOT give up or repeat the same words your next attempt MUST use different words: synonyms or related terms for the same concept, corrected spellings, a translation if the query might be in a different language than the saved content, or a broader/narrower term. Keep varying your wording like this for up to about ten attempts before concluding nothing matches. Then judge which of the returned candidates actually match what the user means, and call return_search_results with only those, most relevant first.",
+    "The search tool won't correct typos or match synonyms for you that's your job. Start with the words from the query split across `all`/`any` as makes sense. If a query comes back empty (or with results that clearly don't fit), do NOT give up or repeat the same words your next attempts MUST use different words. First try synonyms or very close variants of the same concept (corrected spellings, a translation if the query might be in a different language than the saved content). If several synonym attempts in a row still find nothing, stop looking for synonyms and switch to a hypernym instead a broader, more general category the concept belongs to (e.g. \"film\" is a kind of \"video\"; if the specific word fails, the broader one might hit). Keep varying your wording like this for up to about ten attempts before concluding nothing matches. Then judge which of the returned candidates actually match what the user means, and call return_search_results with only those, most relevant first.",
   ].join('\n\n')
 }
 
@@ -639,6 +656,10 @@ export async function searchBookmarklets(
     { role: 'user', content: `Search query: ${query}` },
   ]
 
+  // Consecutive empty search_bookmarklets calls the hint escalates from "try a synonym" to
+  // "try a hypernym" once this climbs past HYPERNYM_HINT_THRESHOLD. Resets on any real match.
+  let emptyStreak = 0
+
   for (let iteration = 0; iteration < SEARCH_MAX_ITERATIONS; iteration++) {
     const result = await callChatCompletions(config, conversation, SEARCH_TOOLS)
     if (!result.ok) return { ok: false, errorCode: result.errorCode, detail: result.detail }
@@ -654,8 +675,9 @@ export async function searchBookmarklets(
       } catch {
         // fall through with empty terms reported to the model below
       }
-      const toolResult = await executeSearchTool(args)
-      pushToolResult(conversation, toolCall, result.message.content ?? null, toolResult)
+      const { text, matched } = await executeSearchTool(args, emptyStreak)
+      emptyStreak = matched ? 0 : emptyStreak + 1
+      pushToolResult(conversation, toolCall, result.message.content ?? null, text)
       continue
     }
 
