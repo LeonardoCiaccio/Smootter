@@ -568,6 +568,15 @@ async function executeSearchTool(args: { all?: unknown; any?: unknown }): Promis
   if (all.length === 0 && any.length === 0) return JSON.stringify({ error: 'Provide at least one term in "all" or "any".' })
 
   const matches = await queryBookmarklets({ all, any })
+  if (matches.length === 0) {
+    // A reminder placed right here, at the moment it's actionable, holds up far better than a
+    // single instruction back in the system prompt — models are prone to giving up on the first
+    // empty result otherwise.
+    return JSON.stringify({
+      count: 0,
+      hint: 'No matches for these exact words — this is plain word matching, it will never infer synonyms on its own. Try again with different words: synonyms, a broader or narrower term, related concepts, or a translation.',
+    })
+  }
   return JSON.stringify(
     matches
       .slice(0, SEARCH_RESULT_CAP)

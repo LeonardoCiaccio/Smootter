@@ -87,7 +87,14 @@ function openDb(): Promise<IDBDatabase> {
         }
       }
     }
-    request.onsuccess = () => resolve(request.result)
+    request.onsuccess = () => {
+      const db = request.result
+      // Background and UI (iframe) each open this same database independently. Without this,
+      // whichever one opened first would block the other's future version bump forever — an
+      // open connection at the old version prevents onupgradeneeded from ever running elsewhere.
+      db.onversionchange = () => db.close()
+      resolve(db)
+    }
     request.onerror = () => reject(request.error)
   })
 }
