@@ -7,7 +7,7 @@
     "message": "Benvenuto in Smootter"
   },
   "homeSubheader": {
-    "message": "La tua cassetta degli attrezzi per il browser — scegli da dove iniziare."
+    "message": "Un browser che si adatta a te: crea strumenti su misura, organizza i tuoi link e tieni d'occhio ogni pagina che visiti. Scegli da dove iniziare."
   },
   "toolsHeader": {
     "message": "Il tuo browser, i tuoi strumenti."
@@ -18,9 +18,13 @@
   "homeToolsCardTitle": { "message": "Tool" },
   "homeToolsCardDescription": { "message": "Crea strumenti su misura descrivendoli a parole." },
   "homeBookmarkletsCardTitle": { "message": "Bookmarklet" },
-  "homeBookmarkletsCardDescription": { "message": "Organizza i link utili, con tag e categorie." },
+  "homeBookmarkletsCardDescription": {
+    "message": "Organizza i link utili con descrizioni, tag, categorie e ricerca intelligente via AI."
+  },
   "homeNetworkCardTitle": { "message": "Rete" },
-  "homeNetworkCardDescription": { "message": "Ispeziona e scarica le risorse caricate dalla pagina." },
+  "homeNetworkCardDescription": {
+    "message": "Ispeziona tutte le risorse caricate dalla pagina, comprese quelle nascoste alla vista."
+  },
   "createFirstTool": {
     "message": "Crea il tuo primo tool"
   },

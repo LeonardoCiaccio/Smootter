@@ -7,7 +7,7 @@
     "message": "Welcome to Smootter"
   },
   "homeSubheader": {
-    "message": "Your browser toolbox — pick where to start."
+    "message": "A browser that adapts to you: build custom tools, organize your links, and keep an eye on every page you visit. Pick where to start."
   },
   "toolsHeader": {
     "message": "Your browser, your tools."
@@ -18,9 +18,13 @@
   "homeToolsCardTitle": { "message": "Tool" },
   "homeToolsCardDescription": { "message": "Build custom tools by describing what you need." },
   "homeBookmarkletsCardTitle": { "message": "Bookmarklet" },
-  "homeBookmarkletsCardDescription": { "message": "Organize useful links, with tags and categories." },
+  "homeBookmarkletsCardDescription": {
+    "message": "Save links with descriptions, tags, categories, and AI-powered search."
+  },
   "homeNetworkCardTitle": { "message": "Network" },
-  "homeNetworkCardDescription": { "message": "Inspect and download resources loaded by the page." },
+  "homeNetworkCardDescription": {
+    "message": "Inspect every resource the page loads, including ones hidden from view."
+  },
   "createFirstTool": {
     "message": "Create your first tool"
   },

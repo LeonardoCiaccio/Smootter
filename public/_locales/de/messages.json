@@ -7,7 +7,7 @@
     "message": "Willkommen bei Smootter"
   },
   "homeSubheader": {
-    "message": "Deine Browser-Werkzeugkiste — wähle, wo du starten möchtest."
+    "message": "Ein Browser, der sich dir anpasst: erstelle maßgeschneiderte Tools, organisiere deine Links und behalte jede besuchte Seite im Blick. Wähle, wo du starten möchtest."
   },
   "toolsHeader": {
     "message": "Dein Browser, deine Tools."
@@ -18,9 +18,13 @@
   "homeToolsCardTitle": { "message": "Tool" },
   "homeToolsCardDescription": { "message": "Erstelle maßgeschneiderte Tools, indem du sie in Worten beschreibst." },
   "homeBookmarkletsCardTitle": { "message": "Bookmarklet" },
-  "homeBookmarkletsCardDescription": { "message": "Organisiere nützliche Links mit Tags und Kategorien." },
+  "homeBookmarkletsCardDescription": {
+    "message": "Speichere Links mit Beschreibungen, Tags, Kategorien und KI-Suche."
+  },
   "homeNetworkCardTitle": { "message": "Netzwerk" },
-  "homeNetworkCardDescription": { "message": "Untersuche und lade Ressourcen herunter, die von der Seite geladen wurden." },
+  "homeNetworkCardDescription": {
+    "message": "Untersuche alle von der Seite geladenen Ressourcen, auch die vor dir versteckten."
+  },
   "createFirstTool": {
     "message": "Erstelle dein erstes Tool"
   },
