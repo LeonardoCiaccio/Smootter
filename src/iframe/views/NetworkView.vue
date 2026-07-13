@@ -7,6 +7,7 @@ import NetworkCategorySidebar from '../components/NetworkCategorySidebar.vue'
 import NetworkEntryRow from '../components/NetworkEntryRow.vue'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { fileExtensionOf } from '@/shared/url'
+import { NETWORK_MIME_CATEGORIES } from '@/shared/networkCategories'
 import type { NetworkEntry } from '@/shared/messages'
 
 const channel = inject(channelKey)
@@ -24,10 +25,24 @@ const loadingText = chrome.i18n.getMessage('networkLoading')
 const searchPlaceholder = chrome.i18n.getMessage('networkSearchPlaceholder')
 const searchClearLabel = chrome.i18n.getMessage('networkSearchClear')
 
-// Omni-search: matches the url, its file extension, the content-type, method and status —
-// whatever the user might remember about a request.
+// Flat list of every known mimetype across every category — search aliases only, e.g. so
+// "m3u8" surfaces an HLS playlist even when its URL is a signed query string that never spells
+// the extension out. Never used for the sidebar's own classification (see networkCategories.ts).
+const ALL_MIME_ENTRIES = NETWORK_MIME_CATEGORIES.flatMap((rule) => rule.mimeTypes)
+
+// Extensions for the entry's own specific content-type — not its whole category. Two mimetypes
+// can share a category (e.g. video/mp2t and vnd.apple.mpegurl both classify as "Video") without
+// sharing an extension: a .ts segment must never surface when searching "m3u8".
+function extensionsForContentType(contentType: string): string[] {
+  const type = contentType.toLowerCase()
+  return ALL_MIME_ENTRIES.filter((entry) => type.includes(entry.mime.toLowerCase())).flatMap((entry) => entry.extensions)
+}
+
+// Omni-search: matches the url, its file extension, the content-type, method, status, and the
+// known extension aliases for its exact mimetype — whatever the user might remember about a request.
 function matchesQuery(entry: NetworkEntry, needle: string): boolean {
-  const haystack = `${entry.url} ${fileExtensionOf(entry.url)} ${entry.contentType} ${entry.method} ${entry.status}`.toLowerCase()
+  const mimeExtensions = extensionsForContentType(entry.contentType)
+  const haystack = `${entry.url} ${fileExtensionOf(entry.url)} ${entry.contentType} ${entry.method} ${entry.status} ${mimeExtensions.join(' ')}`.toLowerCase()
   return haystack.includes(needle)
 }
 

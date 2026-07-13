@@ -52,7 +52,7 @@ function normalizeConfig(value: NetworkConfig | undefined): NetworkConfig {
 function classify(contentType: string): string {
   const type = contentType.toLowerCase()
   for (const rule of NETWORK_MIME_CATEGORIES) {
-    if (rule.mimeTypes.some((mime) => type.includes(mime.toLowerCase()))) return rule.name
+    if (rule.mimeTypes.some((entry) => type.includes(entry.mime.toLowerCase()))) return rule.name
   }
   return NETWORK_OTHER_CATEGORY
 }
