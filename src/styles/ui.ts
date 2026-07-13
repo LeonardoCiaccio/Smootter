@@ -13,8 +13,10 @@ export const ui = {
   dangerButton:
     'inline-flex items-center justify-center gap-2 rounded-tool border border-rose-300 px-3.5 py-1.5 text-sm font-medium text-rose-600 transition-colors hover:bg-rose-50 disabled:cursor-not-allowed disabled:opacity-40 disabled:hover:bg-transparent dark:border-rose-800 dark:text-rose-400 dark:hover:bg-rose-950',
   card: 'rounded-tool border border-gray-200 bg-white p-4 shadow-sm',
+  // [&::-webkit-...] hides the native number-input spinner (light-chrome widget, clashes with
+  // dark mode and unstylable otherwise); [-moz-appearance:textfield] is Firefox's equivalent.
   input:
-    'w-full resize-none rounded-tool border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',
+    'w-full resize-none rounded-tool border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500 [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
   // App shell: toolbar (top) + boxed content row (middle, flex-1) + footer (bottom).
   // isolate: contains the glow's negative z-index to this stacking context, so it can't
   // escape past appShell's own background and get painted over by it.
