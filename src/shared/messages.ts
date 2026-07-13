@@ -191,25 +191,15 @@ export interface GenerateBookmarkletResult {
   detail?: string
 }
 
-/** A bookmarklet's searchable fields, sent alongside a search query — the background never touches the DB itself. */
-export interface BookmarkletSearchItem {
-  id: string
-  title: string
-  description: string
-  tags: string[]
-  category: string
-  url: string
-}
-
 /**
- * Sent by the Bookmarklets search panel's AI button: asks the model to find
- * which of `items` match a free-text `query`, understanding typos/wording
- * the way a plain substring filter can't.
+ * Sent by the Bookmarklets search panel's AI button: asks the model to find which saved
+ * bookmarklets match a free-text `query`, understanding typos/wording the way a plain substring
+ * filter can't. The model queries the DB itself (see queryBookmarklets) — nothing is shipped
+ * over this message besides the query text.
  */
 export interface SearchBookmarkletsRequest {
   type: 'searchBookmarklets'
   query: string
-  items: BookmarkletSearchItem[]
 }
 
 /** Reply to searchBookmarklets: matching ids, most relevant first. */

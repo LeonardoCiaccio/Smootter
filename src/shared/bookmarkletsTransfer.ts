@@ -112,6 +112,8 @@ export async function saveImportedBookmarklets(
       categoryId,
       createdAt: existing?.createdAt ?? candidate.createdAt ?? now,
       updatedAt: now,
+      // saveBookmarklet() always recomputes this from the other fields — never trust an import.
+      searchTerms: [],
     }
     await saveBookmarklet(bookmarklet)
     bookmarkletsByUrl.set(bookmarklet.url, bookmarklet)

@@ -34,10 +34,6 @@ const aiQueryUsed = ref('')
 const showConfigModal = ref(false)
 const isAiResultsActive = computed(() => aiResultIds.value !== null && aiQueryUsed.value === query.value)
 
-function categoryName(categoryId: string): string {
-  return props.categories.find((category) => category.id === categoryId)?.name ?? ''
-}
-
 const liveResults = computed(() => {
   const needle = query.value.trim().toLowerCase()
   if (needle === '') return []
@@ -72,18 +68,7 @@ async function onAiSearch(): Promise<void> {
   }
 
   aiSearching.value = true
-  const response = await channel.send({
-    type: 'searchBookmarklets',
-    query: text,
-    items: props.bookmarklets.map((bookmarklet) => ({
-      id: bookmarklet.id,
-      title: bookmarklet.title,
-      description: bookmarklet.description,
-      tags: bookmarklet.tags,
-      category: categoryName(bookmarklet.categoryId),
-      url: bookmarklet.url,
-    })),
-  })
+  const response = await channel.send({ type: 'searchBookmarklets', query: text })
   aiSearching.value = false
 
   if (response.type !== 'searchBookmarkletsResult' || !response.ok) {

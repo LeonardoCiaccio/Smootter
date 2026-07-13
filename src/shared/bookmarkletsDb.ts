@@ -13,6 +13,10 @@ export interface StoredBookmarklet {
   categoryId: string
   createdAt: number
   updatedAt: number
+  // Lowercased, deduplicated words from title + description + tags + url — recomputed on every
+  // save, indexed (multiEntry) so the AI search tool can query the DB directly by term instead
+  // of loading every bookmarklet into memory. See queryBookmarklets.
+  searchTerms: string[]
 }
 
 export interface StoredCategory {
@@ -34,15 +38,25 @@ export interface StoredFavicon {
 export const UNCATEGORIZED_CATEGORY_ID = 'uncategorized'
 
 const DB_NAME = chrome.runtime.getManifest().short_name + '_bookmarklets'
-const DB_VERSION = 2
+const DB_VERSION = 3
 const BOOKMARKLETS_STORE = 'bookmarklets'
 const CATEGORIES_STORE = 'categories'
 const FAVICONS_STORE = 'favicons'
+const SEARCH_TERMS_INDEX = 'searchTerms'
+
+/** Lowercased, deduplicated words — splits on anything that isn't a letter or digit. */
+function tokenize(text: string): string[] {
+  return Array.from(new Set(text.toLowerCase().split(/[^a-z0-9]+/i).filter((word) => word !== '')))
+}
+
+function computeSearchTerms(bookmarklet: Pick<StoredBookmarklet, 'title' | 'description' | 'tags' | 'url'>): string[] {
+  return tokenize([bookmarklet.title, bookmarklet.description, bookmarklet.tags.join(' '), bookmarklet.url].join(' '))
+}
 
 function openDb(): Promise<IDBDatabase> {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME, DB_VERSION)
-    request.onupgradeneeded = () => {
+    request.onupgradeneeded = (event) => {
       const db = request.result
       if (!db.objectStoreNames.contains(BOOKMARKLETS_STORE)) {
         db.createObjectStore(BOOKMARKLETS_STORE, { keyPath: 'id' })
@@ -53,18 +67,38 @@ function openDb(): Promise<IDBDatabase> {
       if (!db.objectStoreNames.contains(FAVICONS_STORE)) {
         db.createObjectStore(FAVICONS_STORE, { keyPath: 'domain' })
       }
+
+      // request.transaction is the versionchange transaction — spans every store above, even
+      // ones just created this same upgrade.
+      const bookmarkletsStore = request.transaction!.objectStore(BOOKMARKLETS_STORE)
+      if (!bookmarkletsStore.indexNames.contains(SEARCH_TERMS_INDEX)) {
+        bookmarkletsStore.createIndex(SEARCH_TERMS_INDEX, SEARCH_TERMS_INDEX, { multiEntry: true })
+      }
+
+      // Records saved before this field existed have none — backfill them here, in the same
+      // transaction, so nothing goes unsearchable until it happens to be edited again.
+      if (event.oldVersion < 3) {
+        bookmarkletsStore.openCursor().onsuccess = (cursorEvent) => {
+          const cursor = (cursorEvent.target as IDBRequest<IDBCursorWithValue | null>).result
+          if (!cursor) return
+          const bookmarklet = cursor.value as StoredBookmarklet
+          cursor.update({ ...bookmarklet, searchTerms: computeSearchTerms(bookmarklet) })
+          cursor.continue()
+        }
+      }
     }
     request.onsuccess = () => resolve(request.result)
     request.onerror = () => reject(request.error)
   })
 }
 
-/** Insert or update a bookmarklet. */
+/** Insert or update a bookmarklet. `searchTerms` is always recomputed here — never trust the caller's copy. */
 export async function saveBookmarklet(bookmarklet: StoredBookmarklet): Promise<void> {
   const db = await openDb()
+  const record: StoredBookmarklet = { ...bookmarklet, searchTerms: computeSearchTerms(bookmarklet) }
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(BOOKMARKLETS_STORE, 'readwrite')
-    transaction.objectStore(BOOKMARKLETS_STORE).put(JSON.parse(JSON.stringify(bookmarklet)))
+    transaction.objectStore(BOOKMARKLETS_STORE).put(JSON.parse(JSON.stringify(record)))
     transaction.oncomplete = () => resolve()
     transaction.onerror = () => reject(transaction.error)
   })
@@ -252,4 +286,70 @@ export async function deleteCategory(id: string): Promise<StoredBookmarklet[]> {
       .map((bookmarklet) => saveBookmarklet(bookmarklet)),
   )
   return updated
+}
+
+/** All bookmarklet ids whose `searchTerms` index contains `term` — one direct indexed read. */
+function getIdsForTerm(db: IDBDatabase, term: string): Promise<Set<string>> {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(BOOKMARKLETS_STORE, 'readonly')
+    const index = transaction.objectStore(BOOKMARKLETS_STORE).index(SEARCH_TERMS_INDEX)
+    const request = index.getAllKeys(IDBKeyRange.only(term))
+    request.onsuccess = () => resolve(new Set(request.result as string[]))
+    request.onerror = () => reject(request.error)
+  })
+}
+
+function intersect(a: Set<string>, b: Set<string>): Set<string> {
+  const result = new Set<string>()
+  for (const id of a) if (b.has(id)) result.add(id)
+  return result
+}
+
+function getById(db: IDBDatabase, id: string): Promise<StoredBookmarklet | undefined> {
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(BOOKMARKLETS_STORE, 'readonly')
+    const request = transaction.objectStore(BOOKMARKLETS_STORE).get(id)
+    request.onsuccess = () => resolve(request.result as StoredBookmarklet | undefined)
+    request.onerror = () => reject(request.error)
+  })
+}
+
+export interface BookmarkletQuery {
+  /** Terms that must ALL be present (AND) — ignored if empty. */
+  all: string[]
+  /** Terms where at least one must be present (OR) — ignored if empty. */
+  any: string[]
+}
+
+/**
+ * Queries the `searchTerms` index directly — never loads the store into memory. Each term is
+ * one indexed key lookup (getAllKeys on an exact match); `all` intersects those id sets, `any`
+ * unions its own set before being intersected in too. Only the ids that survive are fetched in
+ * full. Cost scales with how many bookmarklets match each term, not with the store's total size.
+ */
+export async function queryBookmarklets(query: BookmarkletQuery): Promise<StoredBookmarklet[]> {
+  const allTerms = Array.from(new Set(query.all.map((term) => term.toLowerCase().trim()).filter((term) => term !== '')))
+  const anyTerms = Array.from(new Set(query.any.map((term) => term.toLowerCase().trim()).filter((term) => term !== '')))
+  if (allTerms.length === 0 && anyTerms.length === 0) return []
+
+  const db = await openDb()
+
+  let ids: Set<string> | null = null
+  for (const term of allTerms) {
+    const termIds = await getIdsForTerm(db, term)
+    ids = ids === null ? termIds : intersect(ids, termIds)
+    if (ids.size === 0) return []
+  }
+
+  if (anyTerms.length > 0) {
+    const groups = await Promise.all(anyTerms.map((term) => getIdsForTerm(db, term)))
+    const union = new Set<string>()
+    for (const group of groups) for (const id of group) union.add(id)
+    ids = ids === null ? union : intersect(ids, union)
+  }
+
+  if (ids === null || ids.size === 0) return []
+
+  const results = await Promise.all(Array.from(ids).map((id) => getById(db, id)))
+  return results.filter((bookmarklet): bookmarklet is StoredBookmarklet => bookmarklet !== undefined)
 }

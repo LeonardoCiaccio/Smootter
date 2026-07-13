@@ -240,7 +240,7 @@ grip.register({
     if (!config) {
       return { type: 'searchBookmarkletsResult', ok: false, errorCode: 'unknown', detail: 'No LLM configured.' }
     }
-    const result = await searchBookmarklets(config, args.query, args.items)
+    const result = await searchBookmarklets(config, args.query)
     return {
       type: 'searchBookmarkletsResult',
       ok: result.ok,

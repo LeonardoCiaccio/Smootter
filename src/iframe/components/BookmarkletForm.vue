@@ -191,6 +191,8 @@ async function onSubmit(): Promise<void> {
     categoryId: categoryId.value,
     createdAt: props.existingBookmarklet?.createdAt ?? now,
     updatedAt: now,
+    // saveBookmarklet() always recomputes this from the other fields.
+    searchTerms: [],
   }
   await saveBookmarklet(bookmarklet)
   emit('saved', bookmarklet)
