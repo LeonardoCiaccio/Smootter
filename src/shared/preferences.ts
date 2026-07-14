@@ -40,10 +40,25 @@ export const DEFAULT_NETWORK_CONFIG: NetworkConfig = {
   minSizeBytes: 100,
 }
 
+/**
+ * "Smootters": optional always-on page services, each independently toggleable from Options.
+ * Off by default every one of these injects a content script into every page the user
+ * visits, so none should run without explicit opt-in.
+ */
+export interface SmootterServicesConfig {
+  // Hover an article to summarize it in Chat see resumer.ts.
+  resumer: boolean
+}
+
+export const DEFAULT_SMOOTTER_SERVICES: SmootterServicesConfig = {
+  resumer: false,
+}
+
 export interface Preferences {
   theme: 'light' | 'dark'
   llmConfig: LlmConfig
   networkConfig: NetworkConfig
+  smootterServices: SmootterServicesConfig
 }
 
 /** Read a stored preference, or undefined if not set. */

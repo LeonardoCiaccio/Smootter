@@ -5,6 +5,7 @@ import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { llmErrorText } from '@/shared/llmErrorText'
 import { capChatMessages, type ChatMessage } from '@/shared/messages'
+import type { LlmConfig } from '@/shared/preferences'
 import LlmConfigModal from './LlmConfigModal.vue'
 
 const props = defineProps<{
@@ -20,7 +21,15 @@ const props = defineProps<{
   // general-purpose conversation (chatMessage, its own separate system prompt no code applied).
   mode?: 'code' | 'chat'
 }>()
-const emit = defineEmits<{ 'update:messages': [messages: ChatMessage[]]; generated: [code: string] }>()
+// 'sent' fires whenever a send() call actually completes (reply or error reply), whether that
+// happened directly or via the config-modal retry path (see onConfigSaved) lets ChatView.vue
+// know it's safe to clear a one-shot route param (e.g. resumer.ts's ?article=) regardless of
+// which path delivered the completion.
+const emit = defineEmits<{
+  'update:messages': [messages: ChatMessage[]]
+  generated: [code: string]
+  sent: []
+}>()
 
 const channel = inject(channelKey)
 const prompt = ref('')
@@ -40,20 +49,37 @@ watch(() => props.messages.length, scrollToBottom)
  * The conversation carries the context every turn resends the full history so far.
  * `overrideText` lets a caller outside this component send a prompt directly (see
  * ChatView.vue's suggestion buttons, via defineExpose below) without going through the textarea.
+ * `displayText`, when given, is shown in the bubble instead of `overrideText` (e.g. resumer.ts's
+ * short "summarize this article" instruction standing in for the full article text) the LLM
+ * and stored history still get the full `overrideText` either way.
+ *
+ * Returns whether a full attempt actually happened (got a reply, success or error) as opposed to
+ * bailing out early (missing config, already generating, empty text). ChatView.vue uses this to
+ * know whether it's now safe to clear ?article= from the route a caller that clears it right
+ * after opening the config modal would force a remount (App.vue keys the route on the full path,
+ * query included) and wipe the just-set "show the config modal" state before it ever rendered.
  */
-async function send(overrideText?: string): Promise<void> {
-  if (!channel || generating.value) return
+async function send(overrideText?: string, displayText?: string): Promise<boolean> {
+  if (!channel || generating.value) return false
   const text = (overrideText ?? prompt.value).trim()
-  if (text === '') return
+  if (text === '') return false
 
   const configResponse = await channel.send({ type: 'getPreference', key: 'llmConfig' })
-  const configured = configResponse.type === 'preferenceValue' && Boolean(configResponse.value)
+  const llmConfig = configResponse.type === 'preferenceValue' ? (configResponse.value as LlmConfig | undefined) : undefined
+  // apiKey is legitimately optional (local runtimes like Ollama don't need one) endpoint and
+  // model are not. Boolean(value) alone is always true for an empty {}, which let an unset
+  // config sail through this check and fail silently later at the actual chat call.
+  const configured = Boolean(llmConfig?.endpoint) && Boolean(llmConfig?.model)
   if (!configured) {
+    pendingSend = { overrideText, displayText }
     showConfigModal.value = true
-    return
+    return false
   }
 
-  const nextMessages = capChatMessages([...props.messages, { role: 'user', content: text }])
+  const nextMessages = capChatMessages([
+    ...props.messages,
+    { role: 'user', content: text, displayContent: displayText },
+  ])
   emit('update:messages', nextMessages)
   if (overrideText === undefined) prompt.value = ''
 
@@ -72,7 +98,8 @@ async function send(overrideText?: string): Promise<void> {
       ...nextMessages,
       { role: 'assistant', content: llmErrorText(errorCode, detail) },
     ]))
-    return
+    emit('sent')
+    return true
   }
 
   // Only the chat-facing reply goes in the transcript the code is applied
@@ -80,14 +107,23 @@ async function send(overrideText?: string): Promise<void> {
   // (a greeting or question doesn't) only touch the editor when it does.
   emit('update:messages', capChatMessages([...nextMessages, { role: 'assistant', content: response.reply ?? '' }]))
   if (response.type === 'generateCodeResult' && response.code) emit('generated', response.code)
+  emit('sent')
+  return true
 }
+
+// Set right before showConfigModal opens: what to resend once the user finishes configuring,
+// since a bare retry would otherwise pick up the (empty) textarea instead of the original
+// request the config modal interrupted (e.g. resumer.ts's article hand-off).
+let pendingSend: { overrideText?: string; displayText?: string } | undefined
 
 function onConfigSaved(): void {
   showConfigModal.value = false
-  void send()
+  const resend = pendingSend
+  pendingSend = undefined
+  void send(resend?.overrideText, resend?.displayText)
 }
 
-defineExpose({ sendPrompt: (text: string) => send(text) })
+defineExpose({ sendPrompt: (text: string, displayText?: string) => send(text, displayText) })
 
 const title = props.title ?? chrome.i18n.getMessage('wizardStepChatTitle')
 const subtitle = props.subtitle ?? chrome.i18n.getMessage('wizardStepChatSubtitle')
@@ -118,7 +154,7 @@ const sendLabel = chrome.i18n.getMessage('llmPromptSend')
           :key="index"
           :class="message.role === 'user' ? ui.wizardChatBubbleUser : ui.wizardChatBubbleAssistant"
         >
-          {{ message.content }}
+          {{ message.displayContent ?? message.content }}
         </p>
       </template>
     </div>

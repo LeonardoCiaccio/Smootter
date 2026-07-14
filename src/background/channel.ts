@@ -16,9 +16,11 @@ import {
   type TestLlmConfigRequest,
   type GenerateCodeRequest,
   type ChatMessageRequest,
+  type OpenResumerChatRequest,
   type GenerateBookmarkletRequest,
   type SearchBookmarkletsRequest,
 } from '@/shared/messages'
+import { openEnvironment } from './openEnvironment'
 import {
   getPreference,
   setPreference,
@@ -253,6 +255,24 @@ grip.hook('chatMessage', {
 })
 
 grip.register({
+  name: 'openResumerChat',
+  validate(args: OpenResumerChatRequest) {
+    if (typeof args.route !== 'string' || args.route.trim() === '') throw new Error('route is required.')
+  },
+  async business(args: OpenResumerChatRequest, context?: object) {
+    const tabId = (context as Context | undefined)?.sender.tab?.id
+    if (tabId === undefined) return { type: 'openResumerChatResult', ok: false }
+    await openEnvironment(tabId, args.route)
+    return { type: 'openResumerChatResult', ok: true }
+  },
+})
+grip.hook('openResumerChat', {
+  after({ result }, context: Context) {
+    if (result.isSuccess) context.sendResponse(result.result)
+  },
+})
+
+grip.register({
   name: 'generateBookmarklet',
   validate(args: GenerateBookmarkletRequest) {
     if (typeof args.url !== 'string' || args.url.trim() === '') throw new Error('url is required.')
@@ -375,6 +395,7 @@ const CHANNEL_FUNCTIONS_NEEDING_FAILURE_REPLY = [
   'testLlmConfig',
   'generateCode',
   'chatMessage',
+  'openResumerChat',
   'generateBookmarklet',
   'searchBookmarklets',
   'getNetworkLog',

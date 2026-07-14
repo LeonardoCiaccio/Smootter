@@ -45,6 +45,16 @@
   },
   "chatClear": { "message": "Chat dieser Seite löschen" },
   "chatClearConfirm": { "message": "Nochmal klicken zum Löschen" },
+  "resumerSummaryInstruction": { "message": "Fasse diesen Artikel in 5 wichtigen Punkten zusammen" },
+  "resumerIconTitle": { "message": "Mit Smootter zusammenfassen" },
+  "smootterServicesGroupTitle": { "message": "Smootters" },
+  "smootterServicesDescription": {
+    "message": "Optionale Dienste, die auf jeder besuchten Seite aktiv bleiben. Standardmäßig aus: nichts wird injiziert, bis du sie aktivierst."
+  },
+  "resumerServiceLabel": { "message": "Resumer" },
+  "resumerServiceDescription": {
+    "message": "Fahre mit der Maus über einen Artikel, um ein Symbol anzuzeigen, das ihn im KI-Chat zusammenfasst."
+  },
   "chatEmptyText": { "message": "Stelle eine Frage oder wähle unten einen Vorschlag." },
   "chatSuggestionSummary": { "message": "Fasse diese Seite zusammen" },
   "chatSuggestionKeyPoints": { "message": "Liste die 5 wichtigsten Punkte auf" },

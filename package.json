@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vue-tsc --noEmit && vite build",
-    "build:firefox": "cross-env BROWSER=firefox vue-tsc --noEmit && cross-env BROWSER=firefox vite build",
+    "build": "vue-tsc --noEmit && vite build && cross-env VITE_BUILD_PASS=environment vite build && cross-env VITE_BUILD_PASS=resumer vite build",
+    "build:firefox": "cross-env BROWSER=firefox vue-tsc --noEmit && cross-env BROWSER=firefox vite build && cross-env BROWSER=firefox VITE_BUILD_PASS=environment vite build && cross-env BROWSER=firefox VITE_BUILD_PASS=resumer vite build",
     "preview": "vite preview",
     "format": "prettier --write .",
     "format:check": "prettier --check .",

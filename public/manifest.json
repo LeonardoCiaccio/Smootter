@@ -35,6 +35,11 @@
       "matches": ["<all_urls>"],
       "resources": ["src/iframe/index.html"],
       "use_dynamic_url": true
+    },
+    {
+      "matches": ["<all_urls>"],
+      "resources": ["icons/icon-32.png"],
+      "use_dynamic_url": true
     }
   ]
 }

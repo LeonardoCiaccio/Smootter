@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { BookOpenIcon, CpuChipIcon, SignalIcon } from '@heroicons/vue/24/outline'
+import { BookOpenIcon, CpuChipIcon, SignalIcon, SparklesIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import Breadcrumb from '../components/Breadcrumb.vue'
 import LlmSettingsSection from '../components/LlmSettingsSection.vue'
 import NetworkSettingsSection from '../components/NetworkSettingsSection.vue'
+import SmootterServicesSection from '../components/SmootterServicesSection.vue'
 import CreditsSection from '../components/CreditsSection.vue'
 
-type OptionsSection = 'llm' | 'network' | 'credits'
+type OptionsSection = 'llm' | 'network' | 'smootters' | 'credits'
 
 const sections = [
   { key: 'llm' as const, label: chrome.i18n.getMessage('llmGroupTitle'), icon: CpuChipIcon },
   { key: 'network' as const, label: chrome.i18n.getMessage('networkGroupTitle'), icon: SignalIcon },
+  { key: 'smootters' as const, label: chrome.i18n.getMessage('smootterServicesGroupTitle'), icon: SparklesIcon },
   { key: 'credits' as const, label: chrome.i18n.getMessage('creditsTitle'), icon: BookOpenIcon },
 ]
 
@@ -39,6 +41,7 @@ const selected = ref<OptionsSection>('llm')
       <div :class="ui.optionsMain">
         <LlmSettingsSection v-if="selected === 'llm'" />
         <NetworkSettingsSection v-else-if="selected === 'network'" />
+        <SmootterServicesSection v-else-if="selected === 'smootters'" />
         <CreditsSection v-else />
       </div>
     </div>

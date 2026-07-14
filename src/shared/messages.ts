@@ -124,6 +124,9 @@ export interface TestLlmConfigResult {
 export interface ChatMessage {
   role: 'user' | 'assistant'
   content: string
+  // Optional short text shown in the bubble instead of `content` (e.g. resumer.ts's article
+  // hand-off): the LLM and stored history always get the full `content`, never just this.
+  displayContent?: string
 }
 
 /**
@@ -184,6 +187,23 @@ export interface ChatMessageResult {
   reply?: string
   errorCode?: LlmErrorCode
   detail?: string
+}
+
+/**
+ * Sent by resumer.ts when the user clicks its hover icon on an article: opens the environment
+ * at `route` (built by the content script itself, e.g. "/chat?article=<base64>") the same way
+ * the toolbar button and context menu do (see openEnvironment.ts). Generic on purpose: any
+ * future content script that needs to hand initial content to a specific view can reuse this
+ * exact request shape, just with a different route.
+ */
+export interface OpenResumerChatRequest {
+  type: 'openResumerChat'
+  route: string
+}
+
+export interface OpenResumerChatResult {
+  type: 'openResumerChatResult'
+  ok: boolean
 }
 
 /**
@@ -287,6 +307,7 @@ export type ChannelRequest =
   | TestLlmConfigRequest
   | GenerateCodeRequest
   | ChatMessageRequest
+  | OpenResumerChatRequest
   | GenerateBookmarkletRequest
   | SearchBookmarkletsRequest
   | GetNetworkLogRequest
@@ -304,6 +325,7 @@ export type ChannelResponse =
   | GenerateBookmarkletResult
   | GenerateCodeResult
   | ChatMessageResult
+  | OpenResumerChatResult
   | SearchBookmarkletsResult
   | NetworkLogResult
   | NetworkEntryCapturedBroadcast
