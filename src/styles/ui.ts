@@ -402,9 +402,9 @@ export const ui = {
   chatSuggestionButton:
     'rounded-full border border-gray-200 bg-white px-3 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:border-cyan-300 hover:bg-cyan-50 hover:text-cyan-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-300 dark:hover:border-cyan-700 dark:hover:bg-cyan-950 dark:hover:text-cyan-300',
   wizardChatBubbleUser:
-    'max-w-[85%] flex-shrink-0 break-words self-end rounded-2xl rounded-br-sm bg-cyan-600 px-3.5 py-2 text-sm text-white',
+    'prose prose-sm prose-invert max-w-[85%] flex-shrink-0 break-words self-end rounded-2xl rounded-br-sm bg-cyan-600 px-3.5 py-2 text-white prose-p:my-0 prose-headings:my-1 prose-ul:my-1 prose-ol:my-1 prose-pre:my-1',
   wizardChatBubbleAssistant:
-    'max-w-[85%] flex-shrink-0 break-words self-start rounded-2xl rounded-bl-sm bg-gray-100 px-3.5 py-2 text-sm text-gray-800 dark:bg-gray-800 dark:text-gray-100',
+    'prose prose-sm dark:prose-invert max-w-[85%] flex-shrink-0 break-words self-start rounded-2xl rounded-bl-sm bg-gray-100 px-3.5 py-2 text-gray-800 dark:bg-gray-800 dark:text-gray-100 prose-p:my-0 prose-headings:my-1 prose-ul:my-1 prose-ol:my-1 prose-pre:my-1',
   wizardChatInputWrapper: 'relative w-full flex-shrink-0',
   wizardChatInput:
     'h-16 w-full resize-none rounded-tool border border-gray-300 bg-white py-2 pl-3 pr-12 text-sm text-gray-900 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',

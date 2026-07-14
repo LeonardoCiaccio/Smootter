@@ -6,6 +6,7 @@ import { channelKey } from '@/shared/vuePlugins/messaging'
 import { llmErrorText } from '@/shared/llmErrorText'
 import { capChatMessages, type ChatMessage } from '@/shared/messages'
 import type { LlmConfig } from '@/shared/preferences'
+import { renderMarkdown } from '@/shared/renderMarkdown'
 import LlmConfigModal from './LlmConfigModal.vue'
 
 const props = defineProps<{
@@ -149,13 +150,12 @@ const sendLabel = chrome.i18n.getMessage('llmPromptSend')
         </slot>
       </div>
       <template v-else>
-        <p
+        <div
           v-for="(message, index) in messages"
           :key="index"
           :class="message.role === 'user' ? ui.wizardChatBubbleUser : ui.wizardChatBubbleAssistant"
-        >
-          {{ message.displayContent ?? message.content }}
-        </p>
+          v-html="renderMarkdown(message.displayContent ?? message.content)"
+        />
       </template>
     </div>
 
