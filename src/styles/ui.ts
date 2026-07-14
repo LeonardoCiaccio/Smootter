@@ -72,7 +72,8 @@ export const ui = {
     'font-heading bg-gradient-to-r from-violet-600 to-cyan-400 bg-clip-text pb-1 text-4xl font-extrabold tracking-tight text-transparent sm:text-5xl',
   heroSubheader: 'font-subheading max-w-md text-base text-gray-600 dark:text-gray-400',
   // Landing page: 3 cards linking to Tools/Bookmarklets/Network, below the hero.
-  homeCardsWrapper: 'mx-auto mt-16 grid w-full max-w-4xl grid-cols-1 gap-4 px-6 sm:grid-cols-2 lg:grid-cols-4',
+  homeCardsWrapper:
+    'mx-auto mt-16 grid w-full max-w-4xl grid-cols-1 gap-4 px-6 sm:grid-cols-2 lg:grid-cols-4',
   homeCard:
     'flex flex-col items-center gap-3 rounded-tool border border-gray-200 bg-white p-6 text-center shadow-sm transition-colors hover:border-cyan-300 hover:bg-cyan-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-cyan-700 dark:hover:bg-cyan-950',
   homeCardIconWrapper:
@@ -394,7 +395,7 @@ export const ui = {
   wizardChatTitle: 'font-heading font-extrabold text-lg text-gray-900 dark:text-gray-100',
   wizardChatSubtitle: 'font-sans text-xs text-gray-500 dark:text-gray-400',
   wizardChatMessages:
-    'flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto pr-1 [scrollbar-gutter:stable]',
+    'flex min-h-0 flex-1 flex-col gap-3 overflow-y-auto px-2 [scrollbar-gutter:stable]',
   wizardChatEmpty:
     'flex flex-1 flex-col items-center justify-center gap-4 px-4 text-center text-xs text-gray-400 dark:text-gray-500',
   // Chat view's empty-state quick-start prompts (e.g. "Summarize this page").
