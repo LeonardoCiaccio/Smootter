@@ -124,9 +124,32 @@ function onScroll(): void {
   if (activeArticle) positionIcon(activeArticle)
 }
 
+const SKIPPED_TAGS = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT'])
+
+/**
+ * innerText/textContent never cross a shadow boundary many sites (MSN among them) render the
+ * actual article body inside a web component's open shadow root, so reading the host element's
+ * innerText alone returns next to nothing. This walks light DOM children AND, whenever an
+ * element exposes an open shadow root, its shadow children too collecting real text either way.
+ */
+function extractText(node: Node): string {
+  if (node.nodeType === Node.TEXT_NODE) return node.textContent ?? ''
+  if (node.nodeType !== Node.ELEMENT_NODE) return ''
+
+  const element = node as Element
+  if (SKIPPED_TAGS.has(element.tagName)) return ''
+
+  let text = ''
+  if (element.shadowRoot) {
+    for (const child of Array.from(element.shadowRoot.childNodes)) text += extractText(child) + ' '
+  }
+  for (const child of Array.from(element.childNodes)) text += extractText(child) + ' '
+  return text
+}
+
 function onIconClick(): void {
   if (!activeArticle) return
-  const text = (activeArticle.innerText ?? '').trim()
+  const text = extractText(activeArticle).replace(/\s+/g, ' ').trim()
   const articleCount = document.querySelectorAll(ARTICLE_SELECTOR).length
   const preview = text.slice(0, 60)
   hideIcon()
