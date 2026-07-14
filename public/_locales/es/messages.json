@@ -4,11 +4,31 @@
     "message": "Fábrica de herramientas en el navegador: crea herramientas a medida, con coste cero por uso."
   },
   "homeHeader": {
-    "message": "Tu navegador, tus herramientas."
+    "message": "Bienvenido a Smootter"
   },
   "homeSubheader": {
+    "message": "Un navegador que se adapta a ti: crea herramientas a medida, organiza tus enlaces y vigila cada página que visitas. Elige por dónde empezar."
+  },
+  "toolsHeader": {
+    "message": "Tu navegador, tus herramientas."
+  },
+  "toolsSubheader": {
     "message": "Sin suscripciones. Solo escribe lo que necesitas."
   },
+  "homeToolsCardTitle": { "message": "Herramienta" },
+  "homeToolsCardDescription": {
+    "message": "Crea herramientas a medida describiéndolas con palabras."
+  },
+  "homeBookmarkletsCardTitle": { "message": "Bookmarklet" },
+  "homeBookmarkletsCardDescription": {
+    "message": "Guarda enlaces con descripciones, etiquetas, categorías y búsqueda con IA."
+  },
+  "homeNetworkCardTitle": { "message": "Red" },
+  "homeNetworkCardDescription": {
+    "message": "Inspecciona todos los recursos que carga la página, incluidos los ocultos a la vista."
+  },
+  "homeChatCardTitle": { "message": "Chat" },
+  "homeChatCardDescription": { "message": "Haz preguntas sobre la página que estás viendo, o busca información en línea." },
   "createFirstTool": {
     "message": "Crea tu primera herramienta"
   },
@@ -17,6 +37,18 @@
   },
   "bookmarklets": { "message": "Bookmarklet" },
   "network": { "message": "Red" },
+  "tools": { "message": "Herramienta" },
+  "chat": { "message": "Chat" },
+  "chatViewTitle": { "message": "Chatea con Smootter" },
+  "chatViewSubtitle": {
+    "message": "Pregunta lo que quieras sobre la página que estás viendo, o busca información en línea."
+  },
+  "chatClear": { "message": "Borrar el chat de esta página" },
+  "chatClearConfirm": { "message": "Haz clic de nuevo para borrar" },
+  "chatEmptyText": { "message": "Haz una pregunta, o elige una sugerencia de abajo." },
+  "chatSuggestionSummary": { "message": "Resume esta página" },
+  "chatSuggestionKeyPoints": { "message": "Enumera los 5 puntos más importantes" },
+  "chatSuggestionExplain": { "message": "Explícamelo en términos simples" },
   "home": {
     "message": "Inicio"
   },
@@ -40,13 +72,19 @@
   "wizardStepScopeTitle": { "message": "Ámbito" },
   "wizardStepScopeSubtitle": { "message": "Elige dónde debe funcionar." },
   "wizardStepChatTitle": { "message": "Construcción" },
-  "wizardStepChatSubtitle": { "message": "Escribe o pega el código. Lo probaremos en el siguiente paso." },
+  "wizardStepChatSubtitle": {
+    "message": "Escribe o pega el código. Lo probaremos en el siguiente paso."
+  },
   "wizardStepTesterTitle": { "message": "Ejecuta la prueba" },
-  "wizardStepTesterSubtitle": { "message": "Ejecutamos tu código de verdad y te decimos si funciona." },
+  "wizardStepTesterSubtitle": {
+    "message": "Ejecutamos tu código de verdad y te decimos si funciona."
+  },
   "wizardNameLabel": { "message": "Nombre" },
   "wizardNamePlaceholder": { "message": "ej. Capturar todos los enlaces" },
   "wizardDescriptionLabel": { "message": "Descripción breve" },
-  "wizardDescriptionPlaceholder": { "message": "ej. Extraer todos los enlaces de la página actual" },
+  "wizardDescriptionPlaceholder": {
+    "message": "ej. Extraer todos los enlaces de la página actual"
+  },
   "wizardBack": { "message": "Atrás" },
   "wizardNext": { "message": "Siguiente" },
   "comingSoon": { "message": "Próximamente" },
@@ -62,7 +100,9 @@
   "wizardScopeEverywhereDescription": { "message": "Funciona en cualquier sitio que visites." },
   "wizardScopeDomainTitle": { "message": "Dominio o página específica" },
   "wizardScopeDomainDescription": { "message": "Funciona solo donde lo autorices." },
-  "wizardScopeTargetsPlaceholder": { "message": "Uno por línea, ej.\nexample.com\nexample.com/ruta" },
+  "wizardScopeTargetsPlaceholder": {
+    "message": "Uno por línea, ej.\nexample.com\nexample.com/ruta"
+  },
   "wizardBasicsRequiredError": {
     "message": "Completa tanto el nombre como la descripción antes de continuar."
   },
@@ -81,6 +121,9 @@
   "wizardSave": { "message": "Guardar" },
   "wizardSaveChanges": { "message": "Guardar cambios" },
   "wizardTestPassed": { "message": "Prueba superada: el código se ejecuta sin errores." },
+  "wizardTesterReviewNotice": {
+    "message": "\"Superada\" solo significa que el código no generó errores, no que sea seguro ni que haga exactamente lo que pediste. Revisa el código antes de guardarlo."
+  },
   "wizardRuntimeError": { "message": "Error en tiempo de ejecución" },
   "wizardCodeEmpty": { "message": "Escribe algo de código primero" },
   "wizardCodeInvalid": { "message": "Error de sintaxis" },
@@ -97,7 +140,9 @@
   "llmButtonLabel": { "message": "Generar con IA" },
   "llmConfigTitle": { "message": "Conecta un modelo de IA" },
   "llmEndpointLabel": { "message": "Endpoint" },
-  "llmApiKeyLabel": { "message": "Clave API (opcional — no necesaria para runtimes locales como Ollama)" },
+  "llmApiKeyLabel": {
+    "message": "Clave API (opcional no necesaria para runtimes locales como Ollama)"
+  },
   "llmModelLabel": { "message": "Modelo" },
   "llmMaxOutputTokensLabel": { "message": "Tokens máximos de salida" },
   "llmFieldsRequired": { "message": "Completa todos los campos" },
@@ -112,7 +157,12 @@
   "llmChatEmpty": { "message": "Describe la herramienta que quieres construir." },
   "wizardClearCode": { "message": "Vaciar código" },
   "wizardClearCodeConfirm": { "message": "Haz clic de nuevo para vaciar" },
-  "llmSettingsDescription": { "message": "Conecta tu propio modelo de IA para generar el código de las herramientas a partir de una descripción." },
+  "llmSettingsDescription": {
+    "message": "Conecta tu propio modelo de IA para generar el código de las herramientas a partir de una descripción."
+  },
+  "llmPrivacyNotice": {
+    "message": "Smootter envía la URL de la página actual, su título y cuando el asistente lo necesita el contenido de la página al endpoint de LLM que configures aquí. No se envía nada más a ningún otro sitio, y no se envía nada hasta que uses una función de IA."
+  },
   "llmConfigSaved": { "message": "Configuración de IA guardada" },
   "llmConfigReset": { "message": "Configuración de IA eliminada" },
   "llmConfigResetButton": { "message": "Restablecer" },
@@ -126,18 +176,24 @@
   "toolsSearchClear": { "message": "Borrar búsqueda" },
   "toolsNoResults": { "message": "Ninguna herramienta coincide con la búsqueda." },
   "creditsTitle": { "message": "Créditos" },
-  "creditsDescription": { "message": "Bibliotecas de código abierto usadas para construir Smootter." },
+  "creditsDescription": {
+    "message": "Bibliotecas de código abierto usadas para construir Smootter."
+  },
   "toolbarExportAll": { "message": "Exportar todas las herramientas" },
   "toolbarImport": { "message": "Importar herramientas" },
   "toolsImportSuccess": {
     "message": "$COUNT$ elemento(s) importado(s)",
     "placeholders": { "count": { "content": "$1" } }
   },
-  "toolsImportError": { "message": "No se pudo importar el archivo — comprueba que sea una exportación válida." },
+  "toolsImportError": {
+    "message": "No se pudo importar el archivo comprueba que sea una exportación válida."
+  },
   "toolsDropHint": { "message": "Suelta para importar" },
   "bookmarkletsHeader": { "message": "Guarda esta página" },
   "bookmarkletsEditHeader": { "message": "Edita esta página" },
-  "bookmarkletsSubheader": { "message": "Organiza enlaces útiles por dominio, con etiquetas y categorías." },
+  "bookmarkletsSubheader": {
+    "message": "Organiza enlaces útiles por dominio, con etiquetas y categorías."
+  },
   "bookmarkletsFormTitleLabel": { "message": "Título" },
   "bookmarkletsFormTitlePlaceholder": { "message": "Título de la página" },
   "bookmarkletsFormLinkLabel": { "message": "Enlace" },
@@ -147,14 +203,18 @@
   "bookmarkletsFormTagsPlaceholder": { "message": "Añade una etiqueta y pulsa intro" },
   "bookmarkletsFormCategoryLabel": { "message": "Categoría" },
   "bookmarkletsCategoryNewOption": { "message": "+ Nueva categoría" },
-  "bookmarkletsCategoryNewPlaceholder": { "message": "Nombre de la categoría, ej. AA/BB/CC para subcategorías" },
+  "bookmarkletsCategoryNewPlaceholder": {
+    "message": "Nombre de la categoría, ej. AA/BB/CC para subcategorías"
+  },
   "bookmarkletsSave": { "message": "Guardar" },
   "bookmarkletsGenerate": { "message": "Generar con IA" },
   "bookmarkletsSaved": { "message": "Bookmarklet guardado" },
   "bookmarkletsCategoriesTitle": { "message": "Categorías" },
   "bookmarkletsAddNew": { "message": "Añadir página" },
   "bookmarkletsSearch": { "message": "Buscar" },
-  "bookmarkletsSearchPlaceholder": { "message": "Busca por título, descripción, enlace o etiqueta..." },
+  "bookmarkletsSearchPlaceholder": {
+    "message": "Busca por título, descripción, enlace o etiqueta..."
+  },
   "bookmarkletsSearchClear": { "message": "Borrar búsqueda" },
   "bookmarkletsAiSearch": { "message": "Buscar con IA" },
   "importConfirmTitle": { "message": "¿Qué quieres importar?" },
@@ -166,7 +226,7 @@
     "message": "Bookmarklets ($COUNT$)",
     "placeholders": { "count": { "content": "$1" } }
   },
-  "importConfirmLlmConfig": { "message": "Configuración de IA (endpoint, modelo — sin la key)" },
+  "importConfirmLlmConfig": { "message": "Configuración de IA (endpoint, modelo sin la key)" },
   "importConfirmNetworkConfig": { "message": "Configuración de red (tamaño mínimo)" },
   "importConfirmButton": { "message": "Importar" },
   "importConfirmCancel": { "message": "Cancelar" },
@@ -183,9 +243,10 @@
   "networkCopyUrlError": { "message": "No se pudo copiar la URL." },
   "networkDownload": { "message": "Descargar archivo" },
   "networkDownloadError": { "message": "No se pudo descargar el archivo." },
+  "networkDownloadBlocked": { "message": "Esta URL no se puede descargar." },
   "llmApiKeyReminderTitle": { "message": "Se necesita una API key" },
   "llmApiKeyReminderMessage": {
-    "message": "Has importado una configuración de IA que no es un runtime local (como Ollama) — este proveedor necesita una API key. Ve a Opciones para introducirla."
+    "message": "Has importado una configuración de IA que no es un runtime local (como Ollama) este proveedor necesita una API key. Ve a Opciones para introducirla."
   },
   "llmApiKeyReminderOk": { "message": "Entendido" },
   "bookmarkletsAiSearchResultsHeader": {
@@ -199,14 +260,16 @@
   "bookmarkletsDeleteConfirm": { "message": "Haz clic de nuevo para eliminar" },
   "bookmarkletDeleted": { "message": "Bookmarklet eliminado" },
   "bookmarkletsUncategorized": { "message": "Sin categoría" },
-  "bookmarkletsCategoryDeleteConfirm": { "message": "Haz clic de nuevo para eliminar la categoría" },
+  "bookmarkletsCategoryDeleteConfirm": {
+    "message": "Haz clic de nuevo para eliminar la categoría"
+  },
   "bookmarkletCategoryDeleted": { "message": "Categoría eliminada" },
   "bookmarkletsTagResultsHeader": {
     "message": "Bookmarklets con la etiqueta \"$TAG$\"",
     "placeholders": { "tag": { "content": "$1" } }
   },
   "bookmarkletsAlreadySaved": {
-    "message": "Ya habías guardado esta página el $DATE$ — edita y guarda para actualizarla.",
+    "message": "Ya habías guardado esta página el $DATE$ edita y guarda para actualizarla.",
     "placeholders": { "date": { "content": "$1" } }
   }
 }

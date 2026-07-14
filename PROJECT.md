@@ -1,6 +1,6 @@
-# Progetto — Idea di Base
+# Progetto Idea di Base
 
-> **Nome:** Smootter _(`smootter.com` — `manifest.json`: name/description/icons)_
+> **Nome:** Smootter _(`smootter.com` `manifest.json`: name/description/icons)_
 
 ## Concetto
 
@@ -16,7 +16,7 @@ Estensione browser che **crea tool al bisogno**, sfruttando una **LLM scelta dal
 ## Come Funziona
 
 - **Tool comuni pre-inclusi:** riassunto articolo e simili (nulla di innovativo, è la base).
-- **Innovazione — tool su richiesta:** l'utente ha un bisogno (es. "salvare segnalibri con descrizione, ordinati") e l'estensione **crea il tool al volo**.
+- **Innovazione tool su richiesta:** l'utente ha un bisogno (es. "salvare segnalibri con descrizione, ordinati") e l'estensione **crea il tool al volo**.
 - **Come Tampermonkey, ma meglio:** invece di scrivere uno script, l'utente descrive il bisogno a parole. La LLM genera il tool.
 - **Zero conoscenze di programmazione richieste:** l'utente non scrive codice, lo descrive e basta.
 
@@ -41,15 +41,15 @@ Estensione browser che **crea tool al bisogno**, sfruttando una **LLM scelta dal
 
 ## Posizionamento
 
-- Estensione **neutra**: nasce con 4 tool comuni. Cosa costruisce l'utente è responsabilità dell'utente (modello Tampermonkey — piattaforma, non contenuto).
+- Estensione **neutra**: nasce con un tool d'esempio (GMAIL). Cosa costruisce l'utente è responsabilità dell'utente (modello Tampermonkey piattaforma, non contenuto).
 
 ## Principio Architetturale
 
-- **Niente `eval`, niente `<script>` iniettato a mano, niente interprete fatto in casa.** Il codice generato dall'LLM (o scritto dall'utente) gira tramite **`chrome.userScripts`**, l'API che Chrome ha creato apposta per gli userscript manager (Tampermonkey, Violentmonkey) — verificato: è una delle due sole eccezioni esplicite alla policy anti-remote-code del Web Store (l'altra è la Debugger API).
-- Il codice del tool passa **verbatim** (`js: [{ code: '...' }]`), senza manipolazioni, esattamente come lo genera l'LLM o lo scrive l'utente — noi non lo vettiamo, come Tampermonkey non vetta gli script dei suoi utenti.
-- Gira nel mondo isolato `USER_SCRIPT` (CSP della pagina non si applica, privilegi dell'estensione non sono raggiungibili). Comunica indietro con l'estensione solo tramite `runtime.onUserScriptMessage`/`onUserScriptConnect` — canale separato e dedicato, tenuto distinto da quello interno perché è un livello di fiducia diverso.
-- **Costo reale**: l'utente deve attivare manualmente "Allow User Scripts" per la nostra estensione (`chrome://extensions`) — non è automatizzabile, è un gate anti-abuso di Chrome. Va comunicato chiaramente in UI finché non è attivo.
-- **Responsabilità**: coerente col modello Tampermonkey — cosa fa il tool è responsabilità di chi lo ha creato (utente + LLM che ha scelto), non nostra.
+- **Niente `eval`, niente `<script>` iniettato a mano, niente interprete fatto in casa.** Il codice generato dall'LLM (o scritto dall'utente) gira tramite **`chrome.userScripts`**, l'API che Chrome ha creato apposta per gli userscript manager (Tampermonkey, Violentmonkey) verificato: è una delle due sole eccezioni esplicite alla policy anti-remote-code del Web Store (l'altra è la Debugger API).
+- Il codice del tool, esattamente come lo genera l'LLM o lo scrive l'utente, non viene **vettato** nei contenuti noi non giudichiamo cosa fa, come Tampermonkey non vetta gli script dei suoi utenti. Viene però avvolto in un guard (`buildGuardedCode`, `background/guardedCode.ts`) che ne cattura l'esito (successo/eccezione) per il test/l'esecuzione: una necessità tecnica, non un controllo di contenuto.
+- Gira nel mondo isolato `USER_SCRIPT` (CSP della pagina non si applica, privilegi dell'estensione non sono raggiungibili, la pagina non può osservare né manomettere l'esecuzione del tool). Come contropartita, il tool vede solo il DOM non le variabili/funzioni JavaScript che il sito stesso definisce. Nessun canale di messaging dedicato verso il background: non serve, i tool fanno automazione DOM, non hanno bisogno di parlare con l'estensione.
+- **Costo reale**: l'utente deve attivare manualmente "Allow User Scripts" per la nostra estensione (`chrome://extensions`) non è automatizzabile, è un gate anti-abuso di Chrome. Va comunicato chiaramente in UI finché non è attivo.
+- **Responsabilità**: coerente col modello Tampermonkey cosa fa il tool è responsabilità di chi lo ha creato (utente + LLM che ha scelto), non nostra.
 
 ## Doppio Livello (massima copertura)
 
@@ -78,4 +78,4 @@ Estensione browser che **crea tool al bisogno**, sfruttando una **LLM scelta dal
 
 ## Dettagli
 
-_(da definire — l'utente spiegherà a breve)_
+_(da definire l'utente spiegherà a breve)_

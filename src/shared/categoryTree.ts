@@ -1,10 +1,10 @@
 /**
- * categoryTree — turns the flat StoredCategory list into a nested tree by
+ * categoryTree turns the flat StoredCategory list into a nested tree by
  * reading "/" in the name as a path separator (e.g. "Work/Projects/2026").
  * No schema change: categories stay flat records: a name containing "/" is
  * just organized visually. Intermediate segments that don't match an actual
  * category (e.g. "Work" when only "Work/Projects" was ever created) become
- * structural nodes — grouping only, not selectable or deletable.
+ * structural nodes grouping only, not selectable or deletable.
  */
 import { UNCATEGORIZED_CATEGORY_ID, type StoredCategory } from './bookmarkletsDb'
 
@@ -56,7 +56,7 @@ export function buildCategoryTree(categories: StoredCategory[]): CategoryTreeNod
     if (node) node.category = category
   }
 
-  // "Uncategorized" is the catch-all — always last, never mixed in among real categories
+  // "Uncategorized" is the catch-all always last, never mixed in among real categories
   // (IndexedDB.getAll returns rows in an arbitrary key order otherwise).
   return roots.sort((a, b) => {
     const aIsUncategorized = a.category?.id === UNCATEGORIZED_CATEGORY_ID

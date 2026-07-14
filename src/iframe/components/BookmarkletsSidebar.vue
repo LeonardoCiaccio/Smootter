@@ -25,7 +25,7 @@ const sidebarTitle = chrome.i18n.getMessage('bookmarkletsCategoriesTitle')
 const addLabel = chrome.i18n.getMessage('bookmarkletsAddNew')
 const searchLabel = chrome.i18n.getMessage('bookmarkletsSearch')
 
-// "AA/BB/CC" in a category's name reads as a path — see shared/categoryTree.
+// "AA/BB/CC" in a category's name reads as a path see shared/categoryTree.
 const tree = computed(() => buildCategoryTree(props.categories))
 
 const { faviconsByDomain } = useFaviconCache(computed(() => props.bookmarklets))

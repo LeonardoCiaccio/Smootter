@@ -1,5 +1,5 @@
 /**
- * environment — injected on demand, once per toolbar click (isolated world).
+ * environment injected on demand, once per toolbar click (isolated world).
  * Creates a full-screen modal hosting the SaaS iframe. All UI (toolbar,
  * theme, footer) now lives inside the iframe (single Vue app, single source
  * of truth for theme). This script only manages the modal shell and relays
@@ -30,7 +30,7 @@ function isVisible(): boolean {
 }
 
 // ---- Host page scroll lock: hidden while the modal is visible ----
-// Some pages scroll via <html>, others via <body> — lock both, or the
+// Some pages scroll via <html>, others via <body> lock both, or the
 // unlocked one keeps showing its scrollbar behind the fixed-position modal.
 let previousHtmlOverflow = ''
 let previousBodyOverflow = ''
@@ -76,21 +76,18 @@ function connectChannel(): void {
 }
 
 // ---- Build ----
-function getMaxZIndex(): number {
-  let max = 999999999
-  for (const el of document.querySelectorAll('*')) {
-    const value = Number.parseInt(getComputedStyle(el).zIndex, 10)
-    if (Number.isFinite(value) && value > max) max = value
-  }
-  return max
-}
+// The maximum valid CSS z-index (2^31 - 1): nothing on the page can legitimately stack above
+// it, so there's no need to scan the DOM for the current highest value querySelectorAll('*')
+// + getComputedStyle() on every element forces a full layout pass, which freezes the tab for a
+// noticeable moment on a heavy page (thousands of nodes) right when the user opens Smootter.
+const MODAL_Z_INDEX = 2147483647
 
 function buildIframe(route: string): HTMLIFrameElement {
   const iframe = document.createElement('iframe')
   iframe.src = `${iframeUrl}#${route}`
-  // Without this, navigator.clipboard.writeText() inside the iframe (a different origin from
-  // the host page) is silently blocked by the Permissions Policy — "Copy URL" in NetworkView
-  // would fail with no visible error, leaving whatever was already on the clipboard untouched.
+  // Declared for completeness, but a known Chromium constraint denies clipboard-write to
+  // cross-origin iframes regardless (https://crbug.com/414348233) the real fallback lives in
+  // the iframe's own copyToClipboard() composable (execCommand('copy')).
   iframe.allow = 'clipboard-write'
   iframe.style.display = 'block'
   iframe.style.width = '100%'
@@ -104,13 +101,13 @@ function createModal(route: string): void {
   modal.id = modalId
   modal.style.position = 'fixed'
   modal.style.inset = '0'
-  modal.style.zIndex = String(getMaxZIndex() + 10)
+  modal.style.zIndex = String(MODAL_Z_INDEX)
   modal.appendChild(buildIframe(route))
   document.body.appendChild(modal)
   lockHostScroll()
 }
 
-// Set by openEnvironment.ts's inline func injection, right before this file runs — a specific
+// Set by openEnvironment.ts's inline func injection, right before this file runs a specific
 // context-menu entry (e.g. "Rete") always jumps straight there, even reusing an already-open
 // modal, rather than toggling it closed like a plain toolbar click would.
 function consumeInitialRoute(): string | undefined {
@@ -132,7 +129,7 @@ function openAtRoute(route: string): void {
   }
   // Reusing an already-loaded iframe: changing only the hash is a same-document navigation
   // (no reload), and Vue Router resolves + re-renders it asynchronously. Showing immediately
-  // would flash the previous route for a frame or two — wait for it to actually settle first.
+  // would flash the previous route for a frame or two wait for it to actually settle first.
   iframe.src = `${iframeUrl}#${route}`
   requestAnimationFrame(() => requestAnimationFrame(show))
 }

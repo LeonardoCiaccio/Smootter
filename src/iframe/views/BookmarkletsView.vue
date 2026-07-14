@@ -6,7 +6,7 @@ import BookmarkletForm from '../components/BookmarkletForm.vue'
 import BookmarkletsSidebar from '../components/BookmarkletsSidebar.vue'
 import BookmarkletsTagsSidebar from '../components/BookmarkletsTagsSidebar.vue'
 import BookmarkletsResultsList from '../components/BookmarkletsResultsList.vue'
-import BookmarkletsSearchPanel from '../components/BookmarkletsSearchPanel.vue'
+import BookmarkletsSearchPanel, { type BookmarkletsSearchState } from '../components/BookmarkletsSearchPanel.vue'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { useToast } from '../plugins/toast'
 import {
@@ -33,6 +33,9 @@ const categories = ref<StoredCategory[]>([])
 const selectedId = ref<string | null>(null)
 const selectedTag = ref<string | null>(null)
 const searchActive = ref(false)
+// Owned here, not by BookmarkletsSearchPanel selecting a result unmounts that panel (the
+// form takes its place), so its own local state would reset on every return trip.
+const searchState = ref<BookmarkletsSearchState>({ query: '', aiResultIds: null, aiQueryUsed: '' })
 
 // Categories always include the fixed "uncategorized" one (seeded by getAllCategories), so
 // emptiness is purely about whether any bookmarklet has been saved yet.
@@ -49,14 +52,14 @@ const bookmarkletsForSelectedTag = computed(() =>
 const selectedTagHeader = computed(() =>
   selectedTag.value === null ? '' : chrome.i18n.getMessage('bookmarkletsTagResultsHeader', [selectedTag.value]),
 )
-// The current page may already be saved — the form edits that entry in place instead of duplicating it.
+// The current page may already be saved the form edits that entry in place instead of duplicating it.
 const existingForCurrentUrl = computed(
   () => bookmarklets.value.find((bookmarklet) => bookmarklet.url === currentUrl.value) ?? null,
 )
 // A bookmarklet picked from the sidebar/tag results always opens straight into edit mode;
 // with nothing picked, the form falls back to whatever's already saved for the live page.
 const formExistingBookmarklet = computed(() => selectedBookmarklet.value ?? existingForCurrentUrl.value)
-// The sidebar highlight must follow the same fallback — otherwise the form silently opens in
+// The sidebar highlight must follow the same fallback otherwise the form silently opens in
 // edit mode (current page already saved) while the sidebar shows nothing selected.
 const highlightedId = computed(() => selectedId.value ?? existingForCurrentUrl.value?.id ?? null)
 
@@ -109,7 +112,7 @@ async function onBookmarkletDeleted(id: string): Promise<void> {
   toast.success(chrome.i18n.getMessage('bookmarkletDeleted'))
 }
 
-// categoryPath is the dropped-on node's fullPath — it may be an existing category's name, or
+// categoryPath is the dropped-on node's fullPath it may be an existing category's name, or
 // just a structural path segment (e.g. "AA" when only "AA/BB" was ever created) that gets
 // promoted into a real category here, on first use.
 async function onBookmarkletMoved(id: string, categoryPath: string): Promise<void> {
@@ -138,7 +141,7 @@ async function onCategoryDeleted(id: string): Promise<void> {
 async function reloadData(): Promise<void> {
   const allCategories = await getAllCategories()
   categories.value = allCategories
-  // Needs categories first — it reassigns any bookmarklet with an unknown categoryId to "uncategorized".
+  // Needs categories first it reassigns any bookmarklet with an unknown categoryId to "uncategorized".
   bookmarklets.value = await reconcileOrphanBookmarklets(allCategories)
 }
 
@@ -160,7 +163,7 @@ watch(bookmarkletsRefreshSignal, reloadData)
   <div :class="ui.viewShell">
     <Breadcrumb view-key="bookmarklets" />
 
-    <div v-if="isEmpty" :class="ui.bookmarkletsWrapper">
+    <div v-if="isEmpty" :class="ui.bookmarkletsEmptyWrapper">
       <BookmarkletForm
         :current-url="currentUrl"
         :initial-title="pageTitle"
@@ -197,6 +200,7 @@ watch(bookmarkletsRefreshSignal, reloadData)
           />
           <BookmarkletsSearchPanel
             v-else-if="searchActive"
+            v-model:state="searchState"
             :bookmarklets="bookmarklets"
             :categories="categories"
             @select="onSelectBookmarklet"

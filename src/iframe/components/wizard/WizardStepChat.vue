@@ -10,7 +10,7 @@ import LlmChatPanel from './LlmChatPanel.vue'
 const data = defineModel<WizardData>('data', { required: true })
 const emit = defineEmits<{ advance: [] }>()
 
-/** Any edit invalidates a previous test — must be tested again before saving. */
+/** Any edit invalidates a previous test must be tested again before saving. */
 function onCodeChange(value: string): void {
   data.value.code = value
   if (data.value.codeTested) data.value.codeTested = false
@@ -21,7 +21,7 @@ function onMessagesUpdate(messages: ChatMessage[]): void {
 }
 
 // Clear needs two clicks: the first arms it (auto-disarms after a few
-// seconds), the second actually clears — same pattern as deleting a tool.
+// seconds), the second actually clears same pattern as deleting a tool.
 const confirmingClear = ref(false)
 let disarmTimer: ReturnType<typeof setTimeout> | undefined
 

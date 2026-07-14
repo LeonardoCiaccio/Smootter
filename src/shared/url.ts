@@ -17,3 +17,18 @@ export function fileExtensionOf(url: string): string {
     return ''
   }
 }
+
+/**
+ * Whether `url` is a plain, navigable web URL. Anything else (javascript:, data:, file:, ...)
+ * must never reach an href binding or a downloads.download() call Vue does not sanitize
+ * href bindings, and a javascript: URI is only harmless today because of a CSP that isn't
+ * declared explicitly.
+ */
+export function isSafeWebUrl(url: string): boolean {
+  try {
+    const protocol = new URL(url).protocol
+    return protocol === 'http:' || protocol === 'https:'
+  } catch {
+    return false
+  }
+}

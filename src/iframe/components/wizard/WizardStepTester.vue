@@ -34,7 +34,7 @@ function sleep(ms: number): Promise<void> {
 }
 
 // Even when the real test finishes almost instantly, a bare flash of text
-// doesn't read as "we actually built and ran your tool" — a short minimum
+// doesn't read as "we actually built and ran your tool" a short minimum
 // keeps the processing animation on screen long enough to feel real.
 const MIN_ANIMATION_MS = 2000
 
@@ -68,12 +68,13 @@ async function save(): Promise<void> {
   if (verdict.value !== 'ok') return
   await saveTool(toStoredTool(data.value))
   toast.success(chrome.i18n.getMessage('wizardToolSaved'))
-  // ToolsPanel fetches its list on mount, so returning Home reloads it fresh.
-  router.push('/')
+  // ToolsPanel fetches its list on mount, so returning to Tools reloads it fresh.
+  router.push('/tools')
 }
 
 const saveLabel = chrome.i18n.getMessage('wizardSave')
 const cancelLabel = chrome.i18n.getMessage('wizardTesterCancel')
+const reviewNoticeText = chrome.i18n.getMessage('wizardTesterReviewNotice')
 </script>
 
 <template>
@@ -85,6 +86,9 @@ const cancelLabel = chrome.i18n.getMessage('wizardTesterCancel')
     </div>
 
     <p :class="statusClass">{{ statusText }}</p>
+    <!-- "Passed" only means it ran without throwing never a claim that the code is safe or
+         does what was asked. The user is the last check before it runs on real pages. -->
+    <p v-if="verdict === 'ok'" :class="ui.wizardTesterReviewNotice">{{ reviewNoticeText }}</p>
 
     <div v-if="verdict !== 'running'" :class="ui.wizardTesterActions">
       <button type="button" :class="ui.secondaryButton" @click="emit('cancel')">

@@ -1,5 +1,5 @@
 /**
- * useLlmConfigForm — shared form/test/save logic for the LLM endpoint config,
+ * useLlmConfigForm shared form/test/save logic for the LLM endpoint config,
  * used by both the wizard's setup popup and the Options page section.
  */
 import { inject, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
@@ -12,20 +12,28 @@ export function useLlmConfigForm() {
   const channel = inject(channelKey)
 
   const DEFAULT_MAX_OUTPUT_TOKENS = 8192
-  const form = reactive<LlmConfig>({ endpoint: '', apiKey: '', model: '', maxOutputTokens: DEFAULT_MAX_OUTPUT_TOKENS })
+  const form = reactive<LlmConfig>({
+    endpoint: '',
+    apiKey: '',
+    model: '',
+    maxOutputTokens: DEFAULT_MAX_OUTPUT_TOKENS,
+  })
   const testing = ref(false)
   const verdict = ref<'idle' | 'ok' | 'error'>('idle')
   const errorMessage = ref('')
 
-  // Any edit invalidates a previous test — must be tested again before saving.
+  // Any edit invalidates a previous test must be tested again before saving.
   watch(form, () => (verdict.value = 'idle'))
 
   // Keeps the form live if llmConfig changes from elsewhere (an import, or another open copy of
-  // this page) — chrome.storage.onChanged fires regardless of which context wrote it, unlike
+  // this page) chrome.storage.onChanged fires regardless of which context wrote it, unlike
   // the channel broadcast (only fired by channel.ts's own setPreference handler, which a direct
   // import write bypasses).
   const llmConfigKey = preferenceStorageKey('llmConfig')
-  function onStorageChanged(changes: Record<string, chrome.storage.StorageChange>, area: chrome.storage.AreaName): void {
+  function onStorageChanged(
+    changes: Record<string, chrome.storage.StorageChange>,
+    area: chrome.storage.AreaName,
+  ): void {
     if (area !== 'local' || !(llmConfigKey in changes)) return
     const newValue = changes[llmConfigKey].newValue as LlmConfig | undefined
     if (newValue) Object.assign(form, newValue)
@@ -44,7 +52,7 @@ export function useLlmConfigForm() {
 
   async function test(): Promise<void> {
     if (!channel) return
-    // apiKey is only required for non-local endpoints — local runtimes (Ollama, LM Studio, ...) don't need one.
+    // apiKey is only required for non-local endpoints local runtimes (Ollama, LM Studio, ...) don't need one.
     const keyRequired = !isLocalLlmEndpoint(form.endpoint)
     if (
       !form.endpoint.trim() ||

@@ -25,6 +25,7 @@ const maxOutputTokensLabel = chrome.i18n.getMessage('llmMaxOutputTokensLabel')
 const testLabel = chrome.i18n.getMessage('wizardTest')
 const saveLabel = chrome.i18n.getMessage('wizardSave')
 const okText = chrome.i18n.getMessage('llmTestOk')
+const privacyNoticeText = chrome.i18n.getMessage('llmPrivacyNotice')
 </script>
 
 <template>
@@ -37,6 +38,8 @@ const okText = chrome.i18n.getMessage('llmTestOk')
             <XMarkIcon :class="ui.toolbarIcon" />
           </button>
         </div>
+
+        <p :class="ui.llmPrivacyNotice">{{ privacyNoticeText }}</p>
 
         <label :class="ui.wizardField">
           <span :class="ui.wizardFieldLabel">{{ endpointLabel }}</span>

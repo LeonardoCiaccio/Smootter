@@ -26,7 +26,7 @@ const titleLabel = chrome.i18n.getMessage('networkCategoriesTitle')
 const allLabel = chrome.i18n.getMessage('networkCategoryAll')
 const otherLabel = chrome.i18n.getMessage('networkCategoryOther')
 
-// Fixed set, fixed icons — direct lookup, no guessing needed.
+// Fixed set, fixed icons direct lookup, no guessing needed.
 const ICON_BY_CATEGORY: Record<string, typeof CodeBracketIcon> = {
   HTML: CodeBracketIcon,
   CSS: CodeBracketIcon,

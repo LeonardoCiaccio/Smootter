@@ -12,7 +12,7 @@ import { startImport } from './composables/importFlow'
 const dropHintText = chrome.i18n.getMessage('toolsDropHint')
 
 // dragenter/dragleave both bubble from children, so a plain boolean flickers as the
-// pointer crosses child elements — a counter nets that out to "are we still inside".
+// pointer crosses child elements a counter nets that out to "are we still inside".
 const dragDepth = ref(0)
 const isDraggingFiles = computed(() => dragDepth.value > 0)
 

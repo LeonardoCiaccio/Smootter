@@ -14,7 +14,7 @@ export default defineConfig({
   build: {
     outDir: 'dist',
     emptyOutDir: true,
-    // BuilderView's chunk carries CodeMirror — legitimately heavy, and already lazy-loaded
+    // BuilderView's chunk carries CodeMirror legitimately heavy, and already lazy-loaded
     // (route-level code splitting in router.ts) so it only loads when the builder opens.
     chunkSizeWarningLimit: 600,
     rollupOptions: {

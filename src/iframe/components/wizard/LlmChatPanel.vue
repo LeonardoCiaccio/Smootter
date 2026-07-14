@@ -7,7 +7,19 @@ import { llmErrorText } from '@/shared/llmErrorText'
 import { capChatMessages, type ChatMessage } from '@/shared/messages'
 import LlmConfigModal from './LlmConfigModal.vue'
 
-const props = defineProps<{ messages: ChatMessage[]; existingCode: string }>()
+const props = defineProps<{
+  messages: ChatMessage[]
+  existingCode: string
+  // Overridable so the same panel can be reused outside the wizard (see ChatView.vue) with
+  // copy that doesn't imply the conversation is about building a tool.
+  title?: string
+  subtitle?: string
+  emptyText?: string
+  // 'code' (default) drives the wizard's tool-building conversation (generateCode, applies
+  // `code` to the editor via the `generated` event). 'chat' drives the Chat view's plain,
+  // general-purpose conversation (chatMessage, its own separate system prompt no code applied).
+  mode?: 'code' | 'chat'
+}>()
 const emit = defineEmits<{ 'update:messages': [messages: ChatMessage[]]; generated: [code: string] }>()
 
 const channel = inject(channelKey)
@@ -24,10 +36,14 @@ async function scrollToBottom(): Promise<void> {
 
 watch(() => props.messages.length, scrollToBottom)
 
-/** The conversation carries the context — every turn resends the full history so far. */
-async function send(): Promise<void> {
+/**
+ * The conversation carries the context every turn resends the full history so far.
+ * `overrideText` lets a caller outside this component send a prompt directly (see
+ * ChatView.vue's suggestion buttons, via defineExpose below) without going through the textarea.
+ */
+async function send(overrideText?: string): Promise<void> {
   if (!channel || generating.value) return
-  const text = prompt.value.trim()
+  const text = (overrideText ?? prompt.value).trim()
   if (text === '') return
 
   const configResponse = await channel.send({ type: 'getPreference', key: 'llmConfig' })
@@ -39,19 +55,19 @@ async function send(): Promise<void> {
 
   const nextMessages = capChatMessages([...props.messages, { role: 'user', content: text }])
   emit('update:messages', nextMessages)
-  prompt.value = ''
+  if (overrideText === undefined) prompt.value = ''
 
   generating.value = true
-  const response = await channel.send({
-    type: 'generateCode',
-    messages: nextMessages,
-    existingCode: props.existingCode,
-  })
+  const response =
+    props.mode === 'chat'
+      ? await channel.send({ type: 'chatMessage', messages: nextMessages })
+      : await channel.send({ type: 'generateCode', messages: nextMessages, existingCode: props.existingCode })
   generating.value = false
 
-  if (response.type !== 'generateCodeResult' || !response.ok) {
-    const errorCode = response.type === 'generateCodeResult' ? response.errorCode : 'unknown'
-    const detail = response.type === 'generateCodeResult' ? response.detail : undefined
+  const expectedType = props.mode === 'chat' ? 'chatMessageResult' : 'generateCodeResult'
+  if (response.type !== expectedType || !response.ok) {
+    const errorCode = response.type === expectedType ? response.errorCode : 'unknown'
+    const detail = response.type === expectedType ? response.detail : undefined
     emit('update:messages', capChatMessages([
       ...nextMessages,
       { role: 'assistant', content: llmErrorText(errorCode, detail) },
@@ -59,11 +75,11 @@ async function send(): Promise<void> {
     return
   }
 
-  // Only the chat-facing reply goes in the transcript — the code is applied
+  // Only the chat-facing reply goes in the transcript the code is applied
   // to the editor directly, never printed here. Not every turn writes code
-  // (a greeting or question doesn't) — only touch the editor when it does.
+  // (a greeting or question doesn't) only touch the editor when it does.
   emit('update:messages', capChatMessages([...nextMessages, { role: 'assistant', content: response.reply ?? '' }]))
-  if (response.code) emit('generated', response.code)
+  if (response.type === 'generateCodeResult' && response.code) emit('generated', response.code)
 }
 
 function onConfigSaved(): void {
@@ -71,22 +87,31 @@ function onConfigSaved(): void {
   void send()
 }
 
-const title = chrome.i18n.getMessage('wizardStepChatTitle')
-const subtitle = chrome.i18n.getMessage('wizardStepChatSubtitle')
-const emptyText = chrome.i18n.getMessage('llmChatEmpty')
+defineExpose({ sendPrompt: (text: string) => send(text) })
+
+const title = props.title ?? chrome.i18n.getMessage('wizardStepChatTitle')
+const subtitle = props.subtitle ?? chrome.i18n.getMessage('wizardStepChatSubtitle')
+const emptyText = props.emptyText ?? chrome.i18n.getMessage('llmChatEmpty')
 const promptPlaceholder = chrome.i18n.getMessage('llmPromptPlaceholder')
 const sendLabel = chrome.i18n.getMessage('llmPromptSend')
 </script>
 
 <template>
   <div :class="ui.wizardChatColumn">
-    <div :class="ui.wizardChatHeader">
-      <h1 :class="ui.wizardChatTitle">{{ title }}</h1>
-      <p :class="ui.wizardChatSubtitle">{{ subtitle }}</p>
+    <div :class="ui.wizardChatHeaderRow">
+      <div :class="ui.wizardChatHeader">
+        <h1 :class="ui.wizardChatTitle">{{ title }}</h1>
+        <p :class="ui.wizardChatSubtitle">{{ subtitle }}</p>
+      </div>
+      <slot name="header-action" />
     </div>
 
     <div ref="messagesEl" :class="ui.wizardChatMessages">
-      <p v-if="messages.length === 0" :class="ui.wizardChatEmpty">{{ emptyText }}</p>
+      <div v-if="messages.length === 0" :class="ui.wizardChatEmpty">
+        <slot name="empty">
+          <p>{{ emptyText }}</p>
+        </slot>
+      </div>
       <template v-else>
         <p
           v-for="(message, index) in messages"
@@ -104,14 +129,14 @@ const sendLabel = chrome.i18n.getMessage('llmPromptSend')
         rows="2"
         :class="ui.wizardChatInput"
         :placeholder="promptPlaceholder"
-        @keydown.enter.exact.prevent="send"
+        @keydown.enter.exact.prevent="send()"
       />
       <button
         type="button"
         :class="ui.wizardChatSendButton"
         :disabled="generating || prompt.trim() === ''"
         :title="sendLabel"
-        @click="send"
+        @click="send()"
       >
         <ArrowPathIcon v-if="generating" :class="[ui.toolbarIcon, 'animate-spin']" />
         <PaperAirplaneIcon v-else :class="ui.toolbarIcon" />

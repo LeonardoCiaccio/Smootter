@@ -9,11 +9,22 @@ import { useToast } from '../plugins/toast'
 import BookmarkletsResultsList from './BookmarkletsResultsList.vue'
 import LlmConfigModal from './wizard/LlmConfigModal.vue'
 
+// Lifted out of the component (not local refs): the parent view swaps this panel out for the
+// bookmarklet form whenever a search result is selected, unmounting it. A plain local ref would
+// lose the query and AI results the moment that happens forcing a whole new search just to come
+// back to where you were. Living in the parent's v-model survives that unmount.
+export interface BookmarkletsSearchState {
+  query: string
+  aiResultIds: string[] | null
+  aiQueryUsed: string
+}
+
 const props = defineProps<{
   bookmarklets: StoredBookmarklet[]
   categories: StoredCategory[]
 }>()
 const emit = defineEmits<{ select: [id: string] }>()
+const state = defineModel<BookmarkletsSearchState>('state', { required: true })
 
 const channel = inject(channelKey)
 const toast = useToast()
@@ -22,24 +33,18 @@ const searchPlaceholder = chrome.i18n.getMessage('bookmarkletsSearchPlaceholder'
 const searchClearLabel = chrome.i18n.getMessage('bookmarkletsSearchClear')
 const noResultsText = chrome.i18n.getMessage('bookmarkletsSearchNoResults')
 const aiSearchLabel = chrome.i18n.getMessage('bookmarkletsAiSearch')
-const aiResultsHeaderText = computed(() => chrome.i18n.getMessage('bookmarkletsAiSearchResultsHeader', [aiQueryUsed.value]))
+const aiResultsHeaderText = computed(() => chrome.i18n.getMessage('bookmarkletsAiSearchResultsHeader', [state.value.aiQueryUsed]))
 
-const query = ref('')
-
-// AI results stay shown only as long as the query hasn't changed since that search ran —
+// AI results stay shown only as long as the query hasn't changed since that search ran
 // editing the text falls straight back to the plain live filter below.
 const aiSearching = ref(false)
-const aiResultIds = ref<string[] | null>(null)
-const aiQueryUsed = ref('')
 const showConfigModal = ref(false)
-const isAiResultsActive = computed(() => aiResultIds.value !== null && aiQueryUsed.value === query.value)
-
-function categoryName(categoryId: string): string {
-  return props.categories.find((category) => category.id === categoryId)?.name ?? ''
-}
+const isAiResultsActive = computed(
+  () => state.value.aiResultIds !== null && state.value.aiQueryUsed === state.value.query,
+)
 
 const liveResults = computed(() => {
-  const needle = query.value.trim().toLowerCase()
+  const needle = state.value.query.trim().toLowerCase()
   if (needle === '') return []
   return props.bookmarklets.filter(
     (bookmarklet) =>
@@ -51,7 +56,7 @@ const liveResults = computed(() => {
 })
 
 const aiResults = computed(() => {
-  const ids = aiResultIds.value ?? []
+  const ids = state.value.aiResultIds ?? []
   const byId = new Map(props.bookmarklets.map((bookmarklet) => [bookmarklet.id, bookmarklet]))
   return ids.map((id) => byId.get(id)).filter((bookmarklet): bookmarklet is StoredBookmarklet => bookmarklet !== undefined)
 })
@@ -61,7 +66,7 @@ const results = computed(() => (isAiResultsActive.value ? aiResults.value : live
 /** Same workflow as the wizard's "Generate with AI": opens the setup popup if unconfigured, retries automatically once saved. */
 async function onAiSearch(): Promise<void> {
   if (!channel || aiSearching.value) return
-  const text = query.value.trim()
+  const text = state.value.query.trim()
   if (text === '') return
 
   const configResponse = await channel.send({ type: 'getPreference', key: 'llmConfig' })
@@ -72,18 +77,7 @@ async function onAiSearch(): Promise<void> {
   }
 
   aiSearching.value = true
-  const response = await channel.send({
-    type: 'searchBookmarklets',
-    query: text,
-    items: props.bookmarklets.map((bookmarklet) => ({
-      id: bookmarklet.id,
-      title: bookmarklet.title,
-      description: bookmarklet.description,
-      tags: bookmarklet.tags,
-      category: categoryName(bookmarklet.categoryId),
-      url: bookmarklet.url,
-    })),
-  })
+  const response = await channel.send({ type: 'searchBookmarklets', query: text })
   aiSearching.value = false
 
   if (response.type !== 'searchBookmarkletsResult' || !response.ok) {
@@ -93,8 +87,8 @@ async function onAiSearch(): Promise<void> {
     return
   }
 
-  aiResultIds.value = response.ids ?? []
-  aiQueryUsed.value = text
+  state.value.aiResultIds = response.ids ?? []
+  state.value.aiQueryUsed = text
 }
 
 function onConfigSaved(): void {
@@ -108,13 +102,19 @@ function onConfigSaved(): void {
     <div :class="ui.bookmarkletsSearchRow">
       <div :class="ui.bookmarkletsSearchInputWrapper">
         <MagnifyingGlassIcon :class="ui.bookmarkletsSearchInputIcon" />
-        <input v-model="query" type="text" autofocus :class="ui.bookmarkletsSearchInput" :placeholder="searchPlaceholder" />
+        <input
+          v-model="state.query"
+          type="text"
+          autofocus
+          :class="ui.bookmarkletsSearchInput"
+          :placeholder="searchPlaceholder"
+        />
         <button
-          v-if="query !== ''"
+          v-if="state.query !== ''"
           type="button"
           :class="ui.toolsSearchClear"
           :aria-label="searchClearLabel"
-          @click="query = ''"
+          @click="state.query = ''"
         >
           <XMarkIcon :class="ui.toolsSearchClearIcon" />
         </button>
@@ -123,7 +123,7 @@ function onConfigSaved(): void {
       <button
         type="button"
         :class="ui.secondaryButton"
-        :disabled="aiSearching || query.trim() === ''"
+        :disabled="aiSearching || state.query.trim() === ''"
         :title="aiSearchLabel"
         @click="onAiSearch"
       >
@@ -134,7 +134,7 @@ function onConfigSaved(): void {
     </div>
 
     <BookmarkletsResultsList
-      v-if="query.trim() !== ''"
+      v-if="state.query.trim() !== ''"
       :header-text="isAiResultsActive ? aiResultsHeaderText : undefined"
       :bookmarklets="results"
       :categories="categories"

@@ -1,6 +1,6 @@
 /**
  * CodeMirror doesn't consume Tailwind classes (it renders its own DOM via
- * EditorView.theme(), a CSS-in-JS system) — colors here are kept in sync
+ * EditorView.theme(), a CSS-in-JS system) colors here are kept in sync
  * with the app palette in styles/ui.ts by hand.
  */
 import { EditorView } from '@codemirror/view'
@@ -37,7 +37,7 @@ export const darkEditorTheme = EditorView.theme(
 
 /**
  * @codemirror/language's defaultHighlightStyle is tuned for light
- * backgrounds — several token colors (plain identifiers, some punctuation)
+ * backgrounds several token colors (plain identifiers, some punctuation)
  * are dark, low-contrast blues/grays that are barely readable against our
  * dark editor background. This is a dedicated dark-mode palette instead.
  */

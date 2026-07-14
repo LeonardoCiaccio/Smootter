@@ -21,7 +21,7 @@ export type WizardTrigger = 'pageStart' | 'pageIdle'
 export type WizardScope = 'everywhere' | 'domain'
 
 export class WizardData {
-  // Set when editing a saved tool (loaded from the DB) — Save then updates
+  // Set when editing a saved tool (loaded from the DB) Save then updates
   // that same record (same id and original createdAt) instead of creating a new one.
   id: string | null = null
   createdAt: number | null = null

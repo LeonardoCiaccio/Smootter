@@ -1,5 +1,5 @@
 /**
- * toolsRefresh — lets AppToolbar (always mounted) tell ToolsPanel (Home only)
+ * toolsRefresh lets AppToolbar (always mounted) tell ToolsPanel (Home only)
  * that the tool list changed, without a full page reload.
  */
 import { ref } from 'vue'

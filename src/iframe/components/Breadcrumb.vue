@@ -4,13 +4,13 @@ import { ui } from '@/styles/ui'
 
 const props = defineProps<{ viewKey: string }>()
 
-const homeLabel = chrome.i18n.getMessage('home')
+const toolsLabel = chrome.i18n.getMessage('tools')
 const currentLabel = computed(() => chrome.i18n.getMessage(props.viewKey))
 </script>
 
 <template>
   <div :class="ui.breadcrumb">
-    <RouterLink to="/" :class="ui.breadcrumbHome">{{ homeLabel }}</RouterLink>
+    <RouterLink to="/tools" :class="ui.breadcrumbHome">{{ toolsLabel }}</RouterLink>
     <span :class="ui.breadcrumbSeparator">/</span>
     <span :class="ui.breadcrumbCurrent">{{ currentLabel }}</span>
     <slot />

@@ -1,11 +1,11 @@
 /**
- * bookmarkletsTransfer — export bookmarklets to JSON and import them back, mirroring
- * toolsTransfer.ts's shape (parsing/normalizing only, saving left to the caller — see
+ * bookmarkletsTransfer export bookmarklets to JSON and import them back, mirroring
+ * toolsTransfer.ts's shape (parsing/normalizing only, saving left to the caller see
  * exportImport.ts, which combines both into the app's two general export/import actions).
- * The category travels as its name, not its internal id — ids are local to each user's DB
+ * The category travels as its name, not its internal id ids are local to each user's DB
  * and meaningless on import, so a matching (or new) category is resolved by name instead,
  * same as everywhere else categories are created on the fly. `url` is the import key: an
- * entry whose url matches an already-saved bookmarklet updates it in place — a url must
+ * entry whose url matches an already-saved bookmarklet updates it in place a url must
  * never end up duplicated across two records.
  */
 import {
@@ -16,6 +16,7 @@ import {
   type StoredCategory,
 } from './bookmarkletsDb'
 import { normalizeCategoryName } from './categoryTree'
+import { isSafeWebUrl } from './url'
 
 export interface ExportedBookmarklet {
   title: string
@@ -27,7 +28,10 @@ export interface ExportedBookmarklet {
   updatedAt: number
 }
 
-export function bookmarkletToExportable(bookmarklet: StoredBookmarklet, categories: StoredCategory[]): ExportedBookmarklet {
+export function bookmarkletToExportable(
+  bookmarklet: StoredBookmarklet,
+  categories: StoredCategory[],
+): ExportedBookmarklet {
   return {
     title: bookmarklet.title,
     url: bookmarklet.url,
@@ -45,7 +49,7 @@ type ImportCandidate = BookmarkletImportCandidate
 function isImportCandidate(value: unknown): value is ImportCandidate {
   if (typeof value !== 'object' || value === null) return false
   const record = value as Record<string, unknown>
-  return typeof record.url === 'string' && record.url.trim() !== ''
+  return typeof record.url === 'string' && isSafeWebUrl(record.url)
 }
 
 /** Normalizes an already-JSON.parsed value as either a single bookmarklet or a collection. */
@@ -72,7 +76,10 @@ export function parseBookmarkletsText(text: string): ImportCandidate[] {
  * shared across an entire import batch so a newly created category is reused for the next
  * entry instead of being created again.
  */
-async function resolveCategoryId(name: string | undefined, cache: Map<string, StoredCategory>): Promise<string> {
+async function resolveCategoryId(
+  name: string | undefined,
+  cache: Map<string, StoredCategory>,
+): Promise<string> {
   const normalized = normalizeCategoryName(name ?? '')
   if (normalized === '') return UNCATEGORIZED_CATEGORY_ID
 
@@ -88,7 +95,7 @@ async function resolveCategoryId(name: string | undefined, cache: Map<string, St
 /**
  * Saves a batch of parsed candidates, upserting by url. `categoryCache` and `bookmarkletsByUrl`
  * are shared across an entire import batch (possibly several files) so state stays consistent
- * across all of them — e.g. two entries in different files naming the same new category share
+ * across all of them e.g. two entries in different files naming the same new category share
  * one record, and a later file can still update an entry an earlier file just created.
  */
 export async function saveImportedBookmarklets(
@@ -104,13 +111,20 @@ export async function saveImportedBookmarklets(
 
     const bookmarklet: StoredBookmarklet = {
       id: existing?.id ?? crypto.randomUUID(),
-      title: typeof candidate.title === 'string' && candidate.title.trim() !== '' ? candidate.title : candidate.url,
+      title:
+        typeof candidate.title === 'string' && candidate.title.trim() !== ''
+          ? candidate.title
+          : candidate.url,
       url: candidate.url,
       description: typeof candidate.description === 'string' ? candidate.description : '',
-      tags: Array.isArray(candidate.tags) ? candidate.tags.filter((tag): tag is string => typeof tag === 'string') : [],
+      tags: Array.isArray(candidate.tags)
+        ? candidate.tags.filter((tag): tag is string => typeof tag === 'string')
+        : [],
       categoryId,
       createdAt: existing?.createdAt ?? candidate.createdAt ?? now,
       updatedAt: now,
+      // saveBookmarklet() always recomputes this from the other fields never trust an import.
+      searchTerms: [],
     }
     await saveBookmarklet(bookmarklet)
     bookmarkletsByUrl.set(bookmarklet.url, bookmarklet)

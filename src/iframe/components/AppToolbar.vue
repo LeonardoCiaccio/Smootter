@@ -1,6 +1,19 @@
 <script setup lang="ts">
 import { computed, inject, ref } from 'vue'
-import { ArrowDownTrayIcon, ArrowUpTrayIcon, Cog6ToothIcon, FolderIcon, HomeIcon, MoonIcon, SignalIcon, SunIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import { useRoute } from 'vue-router'
+import {
+  ArrowDownTrayIcon,
+  ArrowUpTrayIcon,
+  ChatBubbleLeftRightIcon,
+  Cog6ToothIcon,
+  FolderIcon,
+  HomeIcon,
+  MoonIcon,
+  SignalIcon,
+  SunIcon,
+  WrenchScrewdriverIcon,
+  XMarkIcon,
+} from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { useTheme } from '@/shared/vuePlugins/theme'
@@ -14,8 +27,18 @@ const logoUrl = chrome.runtime.getURL('icons/icon-32.png')
 
 const channel = inject(channelKey)
 const homeLabel = chrome.i18n.getMessage('home')
+const toolsLabel = chrome.i18n.getMessage('tools')
 const bookmarkletsLabel = chrome.i18n.getMessage('bookmarklets')
 const networkLabel = chrome.i18n.getMessage('network')
+const chatLabel = chrome.i18n.getMessage('chat')
+
+const route = useRoute()
+const isHomeActive = computed(() => route.path === '/')
+// Builder is reached from the tools list, not a separate area same active state as Tools.
+const isToolsActive = computed(() => route.path === '/tools' || route.path === '/builder')
+const isBookmarkletsActive = computed(() => route.path === '/bookmarklets')
+const isNetworkActive = computed(() => route.path === '/network')
+const isChatActive = computed(() => route.path === '/chat')
 
 const { theme, toggle } = useTheme()
 const ThemeIcon = computed(() => (theme.value === 'dark' ? SunIcon : MoonIcon))
@@ -54,14 +77,24 @@ async function onImportFileChange(event: Event): Promise<void> {
     </div>
 
     <div :class="ui.toolbarAccessories">
-      <RouterLink to="/" :class="ui.toolbarAccessoryButton" :title="homeLabel">
+      <RouterLink to="/" :class="isHomeActive ? ui.toolbarAccessoryButtonActive : ui.toolbarAccessoryButton" :title="homeLabel">
         <HomeIcon :class="ui.toolbarAccessoryIcon" />
       </RouterLink>
-      <RouterLink to="/bookmarklets" :class="ui.toolbarAccessoryButton" :title="bookmarkletsLabel">
+      <RouterLink to="/tools" :class="isToolsActive ? ui.toolbarAccessoryButtonActive : ui.toolbarAccessoryButton" :title="toolsLabel">
+        <WrenchScrewdriverIcon :class="ui.toolbarAccessoryIcon" />
+      </RouterLink>
+      <RouterLink
+        to="/bookmarklets"
+        :class="isBookmarkletsActive ? ui.toolbarAccessoryButtonActive : ui.toolbarAccessoryButton"
+        :title="bookmarkletsLabel"
+      >
         <FolderIcon :class="ui.toolbarAccessoryIcon" />
       </RouterLink>
-      <RouterLink to="/network" :class="ui.toolbarAccessoryButton" :title="networkLabel">
+      <RouterLink to="/network" :class="isNetworkActive ? ui.toolbarAccessoryButtonActive : ui.toolbarAccessoryButton" :title="networkLabel">
         <SignalIcon :class="ui.toolbarAccessoryIcon" />
+      </RouterLink>
+      <RouterLink to="/chat" :class="isChatActive ? ui.toolbarAccessoryButtonActive : ui.toolbarAccessoryButton" :title="chatLabel">
+        <ChatBubbleLeftRightIcon :class="ui.toolbarAccessoryIcon" />
       </RouterLink>
     </div>
 

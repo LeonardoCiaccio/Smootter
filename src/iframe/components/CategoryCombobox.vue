@@ -58,7 +58,7 @@ async function onCreateCategory(): Promise<void> {
   const name = normalizeCategoryName(newCategoryName.value)
   if (name === '') return
 
-  // Same path, sloppy spacing (e.g. "AA / BB" vs "AA/BB") must never become two records —
+  // Same path, sloppy spacing (e.g. "AA / BB" vs "AA/BB") must never become two records 
   // reuse the existing one instead of creating a duplicate with the same visible name.
   const existing = props.categories.find((category) => category.name === name)
   if (existing) {
