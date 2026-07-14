@@ -41,8 +41,11 @@ watch(() => props.messages.length, scrollToBottom)
  * The conversation carries the context every turn resends the full history so far.
  * `overrideText` lets a caller outside this component send a prompt directly (see
  * ChatView.vue's suggestion buttons, via defineExpose below) without going through the textarea.
+ * `displayText`, when given, is shown in the bubble instead of `overrideText` (e.g. resumer.ts's
+ * short "summarize this article" instruction standing in for the full article text) the LLM
+ * and stored history still get the full `overrideText` either way.
  */
-async function send(overrideText?: string): Promise<void> {
+async function send(overrideText?: string, displayText?: string): Promise<void> {
   if (!channel || generating.value) return
   const text = (overrideText ?? prompt.value).trim()
   if (text === '') return
@@ -58,7 +61,10 @@ async function send(overrideText?: string): Promise<void> {
     return
   }
 
-  const nextMessages = capChatMessages([...props.messages, { role: 'user', content: text }])
+  const nextMessages = capChatMessages([
+    ...props.messages,
+    { role: 'user', content: text, displayContent: displayText },
+  ])
   emit('update:messages', nextMessages)
   if (overrideText === undefined) prompt.value = ''
 
@@ -92,7 +98,7 @@ function onConfigSaved(): void {
   void send()
 }
 
-defineExpose({ sendPrompt: (text: string) => send(text) })
+defineExpose({ sendPrompt: (text: string, displayText?: string) => send(text, displayText) })
 
 const title = props.title ?? chrome.i18n.getMessage('wizardStepChatTitle')
 const subtitle = props.subtitle ?? chrome.i18n.getMessage('wizardStepChatSubtitle')
@@ -123,7 +129,7 @@ const sendLabel = chrome.i18n.getMessage('llmPromptSend')
           :key="index"
           :class="message.role === 'user' ? ui.wizardChatBubbleUser : ui.wizardChatBubbleAssistant"
         >
-          {{ message.content }}
+          {{ message.displayContent ?? message.content }}
         </p>
       </template>
     </div>

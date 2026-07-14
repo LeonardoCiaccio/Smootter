@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { inject, onMounted, ref, watch } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { TrashIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
@@ -11,6 +11,7 @@ import { getChatMessages, saveChatMessages, clearChatMessages } from '@/shared/c
 
 const channel = inject(channelKey)
 const route = useRoute()
+const router = useRouter()
 
 const currentUrl = ref('')
 const messages = ref<ChatMessage[]>([])
@@ -37,21 +38,22 @@ function onSuggestionClick(text: string): void {
 // component, so a one-shot onMounted check alone would miss a second article arriving while the
 // chat is already open.
 //
-// Deliberately never stripped from the URL afterwards: App.vue keys the routed component on
-// route.fullPath (query included) for its view-transition animation, so clearing the query here
-// would force a full remount of this exact component mid-flight, orphaning whatever request was
-// still in progress the response would land on a discarded instance while the freshly
-// remounted one showed empty. Vue's watch only re-fires on an actual value change anyway, so
-// leaving the param in place doesn't risk re-sending it.
-function onArticleParam(articleParam: unknown): void {
+// Stripped from the URL only *after* the reply lands, not immediately: App.vue keys the routed
+// component on route.fullPath (query included) for its view-transition animation, so clearing
+// the query here forces a full remount of this exact component. Doing that immediately (before
+// awaiting the send) orphaned the in-flight request on a discarded instance while the freshly
+// remounted one showed empty. Awaiting first means the reply is already rendered and persisted
+// to storage before the remount happens, so the fresh instance just reloads it from storage.
+async function onArticleParam(articleParam: unknown): Promise<void> {
   if (typeof articleParam !== 'string' || articleParam === '') return
   try {
     const instruction = chrome.i18n.getMessage('resumerSummaryInstruction')
     const content = `${instruction}:\n\n${decodeBase64(articleParam)}`
-    void chatPanel.value?.sendPrompt(content)
+    await chatPanel.value?.sendPrompt(content, instruction)
   } catch {
     // Malformed param nothing to recover, just drop it below.
   }
+  void router.replace({ path: route.path })
 }
 
 onMounted(async () => {

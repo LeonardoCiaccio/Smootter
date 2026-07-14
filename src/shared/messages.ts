@@ -124,6 +124,9 @@ export interface TestLlmConfigResult {
 export interface ChatMessage {
   role: 'user' | 'assistant'
   content: string
+  // Optional short text shown in the bubble instead of `content` (e.g. resumer.ts's article
+  // hand-off): the LLM and stored history always get the full `content`, never just this.
+  displayContent?: string
 }
 
 /**
