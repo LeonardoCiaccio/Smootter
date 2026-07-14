@@ -5,6 +5,7 @@ import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { llmErrorText } from '@/shared/llmErrorText'
 import { capChatMessages, type ChatMessage } from '@/shared/messages'
+import type { LlmConfig } from '@/shared/preferences'
 import LlmConfigModal from './LlmConfigModal.vue'
 
 const props = defineProps<{
@@ -47,7 +48,11 @@ async function send(overrideText?: string): Promise<void> {
   if (text === '') return
 
   const configResponse = await channel.send({ type: 'getPreference', key: 'llmConfig' })
-  const configured = configResponse.type === 'preferenceValue' && Boolean(configResponse.value)
+  const llmConfig = configResponse.type === 'preferenceValue' ? (configResponse.value as LlmConfig | undefined) : undefined
+  // apiKey is legitimately optional (local runtimes like Ollama don't need one) endpoint and
+  // model are not. Boolean(value) alone is always true for an empty {}, which let an unset
+  // config sail through this check and fail silently later at the actual chat call.
+  const configured = Boolean(llmConfig?.endpoint) && Boolean(llmConfig?.model)
   if (!configured) {
     showConfigModal.value = true
     return

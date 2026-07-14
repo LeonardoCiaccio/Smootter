@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { inject, onMounted, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+import { inject, onMounted, ref, watch } from 'vue'
+import { useRoute } from 'vue-router'
 import { TrashIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
@@ -11,7 +11,6 @@ import { getChatMessages, saveChatMessages, clearChatMessages } from '@/shared/c
 
 const channel = inject(channelKey)
 const route = useRoute()
-const router = useRouter()
 
 const currentUrl = ref('')
 const messages = ref<ChatMessage[]>([])
@@ -31,25 +30,37 @@ function onSuggestionClick(text: string): void {
   void chatPanel.value?.sendPrompt(text)
 }
 
+// Generic "initial content" channel: any content script that opens this view via openEnvironment
+// can pass a base64 payload as ?article= (see resumer.ts). Handled by a watcher (started once
+// the panel is actually mounted below), not just at mount time: resumer.ts reuses an
+// already-open environment's iframe by changing only the URL hash, which doesn't remount this
+// component, so a one-shot onMounted check alone would miss a second article arriving while the
+// chat is already open.
+//
+// Deliberately never stripped from the URL afterwards: App.vue keys the routed component on
+// route.fullPath (query included) for its view-transition animation, so clearing the query here
+// would force a full remount of this exact component mid-flight, orphaning whatever request was
+// still in progress the response would land on a discarded instance while the freshly
+// remounted one showed empty. Vue's watch only re-fires on an actual value change anyway, so
+// leaving the param in place doesn't risk re-sending it.
+function onArticleParam(articleParam: unknown): void {
+  if (typeof articleParam !== 'string' || articleParam === '') return
+  try {
+    const instruction = chrome.i18n.getMessage('resumerSummaryInstruction')
+    const content = `${instruction}:\n\n${decodeBase64(articleParam)}`
+    void chatPanel.value?.sendPrompt(content)
+  } catch {
+    // Malformed param nothing to recover, just drop it below.
+  }
+}
+
 onMounted(async () => {
   const pageResponse = await channel?.send({ type: 'getCurrentPage' })
   currentUrl.value = pageResponse?.type === 'currentPage' ? (pageResponse.url ?? '') : ''
   messages.value = await getChatMessages(currentUrl.value)
 
-  // Generic "initial content" channel: any content script that opens this view via
-  // openEnvironment can pass a base64 payload as ?article= (see resumer.ts). Consumed once,
-  // then stripped from the URL so it's never resent on a re-render or visible in the address bar.
-  const articleParam = route.query.article
-  if (typeof articleParam === 'string' && articleParam !== '') {
-    try {
-      const instruction = chrome.i18n.getMessage('resumerSummaryInstruction')
-      const content = `${instruction}:\n\n${decodeBase64(articleParam)}`
-      void chatPanel.value?.sendPrompt(content)
-    } catch {
-      // Malformed param nothing to recover, just drop it below.
-    }
-    void router.replace({ path: route.path })
-  }
+  onArticleParam(route.query.article)
+  watch(() => route.query.article, onArticleParam)
 })
 
 function onMessagesUpdate(next: ChatMessage[]): void {

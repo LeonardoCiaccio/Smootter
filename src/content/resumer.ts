@@ -163,7 +163,7 @@ function onIconClick(target: HTMLElement, icon: HTMLButtonElement): void {
   hideIcon(icon)
   activeTarget = null
   activeIcon = null
-  const route = `/chat?article=${encodeBase64(text)}`
+  const route = `/chat?article=${encodeURIComponent(encodeBase64(text))}`
   void chrome.runtime.sendMessage({ type: 'openResumerChat', route })
 }
 
