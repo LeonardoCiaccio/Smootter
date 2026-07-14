@@ -269,6 +269,11 @@ export const ui = {
   llmPrivacyNotice:
     'rounded-tool border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs text-cyan-800 dark:border-cyan-900 dark:bg-cyan-950 dark:text-cyan-300',
   optionsSectionActions: 'flex items-center justify-between gap-3',
+  // Smootters: one row per optional always-on service, each with its own switch (see switchTrack).
+  smootterServiceRow: 'flex items-center justify-between gap-3',
+  smootterServiceInfo: 'flex flex-col gap-0.5',
+  smootterServiceLabel: 'text-sm font-medium text-gray-900 dark:text-gray-100',
+  smootterServiceDescription: 'text-xs text-gray-500 dark:text-gray-400',
   creditsList: 'flex flex-col divide-y divide-gray-100 dark:divide-gray-800',
   creditsItem: 'flex items-center justify-between py-2 text-sm',
   creditsLink:

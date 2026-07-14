@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { inject, onMounted, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { TrashIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
@@ -9,10 +10,19 @@ import type { ChatMessage } from '@/shared/messages'
 import { getChatMessages, saveChatMessages, clearChatMessages } from '@/shared/chatStorage'
 
 const channel = inject(channelKey)
+const route = useRoute()
+const router = useRouter()
 
 const currentUrl = ref('')
 const messages = ref<ChatMessage[]>([])
 const chatPanel = ref<InstanceType<typeof LlmChatPanel>>()
+
+/** UTF-8-safe base64 decode inverse of resumer.ts's own encodeBase64. */
+function decodeBase64(base64: string): string {
+  const binary = atob(base64)
+  const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0))
+  return new TextDecoder('utf-8', { fatal: true }).decode(bytes)
+}
 
 const SUGGESTION_KEYS = ['chatSuggestionSummary', 'chatSuggestionKeyPoints', 'chatSuggestionExplain'] as const
 const suggestions = SUGGESTION_KEYS.map((key) => chrome.i18n.getMessage(key))
@@ -25,6 +35,21 @@ onMounted(async () => {
   const pageResponse = await channel?.send({ type: 'getCurrentPage' })
   currentUrl.value = pageResponse?.type === 'currentPage' ? (pageResponse.url ?? '') : ''
   messages.value = await getChatMessages(currentUrl.value)
+
+  // Generic "initial content" channel: any content script that opens this view via
+  // openEnvironment can pass a base64 payload as ?article= (see resumer.ts). Consumed once,
+  // then stripped from the URL so it's never resent on a re-render or visible in the address bar.
+  const articleParam = route.query.article
+  if (typeof articleParam === 'string' && articleParam !== '') {
+    try {
+      const instruction = chrome.i18n.getMessage('resumerSummaryInstruction')
+      const content = `${instruction}:\n\n${decodeBase64(articleParam)}`
+      void chatPanel.value?.sendPrompt(content)
+    } catch {
+      // Malformed param nothing to recover, just drop it below.
+    }
+    void router.replace({ path: route.path })
+  }
 })
 
 function onMessagesUpdate(next: ChatMessage[]): void {

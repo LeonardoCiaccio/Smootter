@@ -45,6 +45,16 @@
   },
   "chatClear": { "message": "Effacer le chat de cette page" },
   "chatClearConfirm": { "message": "Cliquez à nouveau pour effacer" },
+  "resumerSummaryInstruction": { "message": "Résumez cet article en 5 points importants" },
+  "resumerIconTitle": { "message": "Résumer avec Smootter" },
+  "smootterServicesGroupTitle": { "message": "Smootters" },
+  "smootterServicesDescription": {
+    "message": "Services optionnels toujours actifs sur les pages que vous visitez. Désactivés par défaut : rien n'est injecté tant que vous ne les activez pas."
+  },
+  "resumerServiceLabel": { "message": "Resumer" },
+  "resumerServiceDescription": {
+    "message": "Survolez un article pour faire apparaître une icône qui le résume dans un chat avec l'IA."
+  },
   "chatEmptyText": { "message": "Posez une question, ou choisissez une suggestion ci-dessous." },
   "chatSuggestionSummary": { "message": "Résumez cette page" },
   "chatSuggestionKeyPoints": { "message": "Listez les 5 points les plus importants" },

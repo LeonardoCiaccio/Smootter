@@ -187,6 +187,23 @@ export interface ChatMessageResult {
 }
 
 /**
+ * Sent by resumer.ts when the user clicks its hover icon on an article: opens the environment
+ * at `route` (built by the content script itself, e.g. "/chat?article=<base64>") the same way
+ * the toolbar button and context menu do (see openEnvironment.ts). Generic on purpose: any
+ * future content script that needs to hand initial content to a specific view can reuse this
+ * exact request shape, just with a different route.
+ */
+export interface OpenResumerChatRequest {
+  type: 'openResumerChat'
+  route: string
+}
+
+export interface OpenResumerChatResult {
+  type: 'openResumerChatResult'
+  ok: boolean
+}
+
+/**
  * Sent by the Bookmarklets form's "Generate with AI" button: asks the model
  * to write a description, category, and tags for `url`. `existingTags`/
  * `existingCategories` are passed as context so the model prefers reusing
@@ -287,6 +304,7 @@ export type ChannelRequest =
   | TestLlmConfigRequest
   | GenerateCodeRequest
   | ChatMessageRequest
+  | OpenResumerChatRequest
   | GenerateBookmarkletRequest
   | SearchBookmarkletsRequest
   | GetNetworkLogRequest
@@ -304,6 +322,7 @@ export type ChannelResponse =
   | GenerateBookmarkletResult
   | GenerateCodeResult
   | ChatMessageResult
+  | OpenResumerChatResult
   | SearchBookmarkletsResult
   | NetworkLogResult
   | NetworkEntryCapturedBroadcast

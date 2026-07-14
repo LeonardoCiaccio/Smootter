@@ -5,11 +5,13 @@
  * The "Allow User Scripts" status check lives in ./userScripts.
  * Running saved tools for real, as the user browses, lives in ./toolsEngine.
  * The right-click "jump to a specific view" entries live in ./contextMenu.
+ * The optional "Smootters" always-on page services (e.g. Resumer) live in ./resumerService.
  */
 import { registerChannel } from './channel'
 import { registerToolsEngine } from './toolsEngine'
 import { registerNetworkInspector } from './networkInspector'
 import { registerContextMenu } from './contextMenu'
+import { registerResumerService } from './resumerService'
 import { openEnvironment } from './openEnvironment'
 import { seedDefaultTools } from './defaultTools'
 
@@ -17,6 +19,7 @@ registerChannel()
 registerToolsEngine()
 registerNetworkInspector()
 registerContextMenu()
+registerResumerService()
 
 chrome.action.onClicked.addListener((tab) => {
   if (tab.id === undefined) return
