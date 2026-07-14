@@ -38,21 +38,25 @@ function onSuggestionClick(text: string): void {
 // component, so a one-shot onMounted check alone would miss a second article arriving while the
 // chat is already open.
 //
-// Stripped from the URL only *after* the reply lands, not immediately: App.vue keys the routed
+// Stripped from the URL only on LlmChatPanel's 'sent' event (fired once a send fully completes,
+// whether directly or via its config-modal retry path), never eagerly: App.vue keys the routed
 // component on route.fullPath (query included) for its view-transition animation, so clearing
-// the query here forces a full remount of this exact component. Doing that immediately (before
-// awaiting the send) orphaned the in-flight request on a discarded instance while the freshly
-// remounted one showed empty. Awaiting first means the reply is already rendered and persisted
-// to storage before the remount happens, so the fresh instance just reloads it from storage.
-async function onArticleParam(articleParam: unknown): Promise<void> {
+// the query forces a full remount of this exact component. Doing that right away (before the
+// send settles) orphaned the in-flight request on a discarded instance while the freshly
+// remounted one showed empty, and it also wiped the "show the LLM config modal" state the
+// moment sendPrompt bailed out for missing config, before the modal ever got to render.
+function onArticleParam(articleParam: unknown): void {
   if (typeof articleParam !== 'string' || articleParam === '') return
   try {
     const instruction = chrome.i18n.getMessage('resumerSummaryInstruction')
     const content = `${instruction}:\n\n${decodeBase64(articleParam)}`
-    await chatPanel.value?.sendPrompt(content, instruction)
+    void chatPanel.value?.sendPrompt(content, instruction)
   } catch {
     // Malformed param nothing to recover, just drop it below.
   }
+}
+
+function onSent(): void {
   void router.replace({ path: route.path })
 }
 
@@ -106,6 +110,7 @@ const emptyText = chrome.i18n.getMessage('chatEmptyText')
         :title="title"
         :subtitle="subtitle"
         @update:messages="onMessagesUpdate"
+        @sent="onSent"
       >
         <template #header-action>
           <button
