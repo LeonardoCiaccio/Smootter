@@ -29,13 +29,7 @@ async function unregisterResumer(): Promise<void> {
 async function registerResumer(): Promise<void> {
   await unregisterResumer()
   await chrome.scripting.registerContentScripts([
-    {
-      id: RESUMER_SCRIPT_ID,
-      js: ['resumer.js'],
-      matches: ['<all_urls>'],
-      runAt: 'document_idle',
-      allFrames: true,
-    },
+    { id: RESUMER_SCRIPT_ID, js: ['resumer.js'], matches: ['<all_urls>'], runAt: 'document_idle' },
   ])
 }
 
