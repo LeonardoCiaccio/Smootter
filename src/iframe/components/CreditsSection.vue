@@ -17,6 +17,9 @@ const CREDITS: CreditEntry[] = [
   { name: 'Acorn', version: '8.17.0', url: 'https://github.com/acornjs/acorn' },
   { name: 'canvas-confetti', version: '1.9.4', url: 'https://github.com/catdad/canvas-confetti' },
   { name: 'GRIP', version: '1.173.0', url: 'https://www.npmjs.com/package/@leonardo.ciaccio/grip' },
+  { name: 'marked', version: '18.0.6', url: 'https://marked.js.org' },
+  { name: 'DOMPurify', version: '3.4.12', url: 'https://github.com/cure53/DOMPurify' },
+  { name: 'Tailwind Typography', version: '0.5.20', url: 'https://github.com/tailwindlabs/tailwindcss-typography' },
   { name: 'unDraw', version: '', url: 'https://undraw.co' },
 ]
 
