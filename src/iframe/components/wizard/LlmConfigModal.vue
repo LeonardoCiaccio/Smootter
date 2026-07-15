@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { ArrowPathIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { useLlmConfigForm } from '../../composables/useLlmConfigForm'
+import { PRIVACY_POLICY_URL } from '@/shared/privacyPolicy'
 
 const emit = defineEmits<{ close: []; saved: [] }>()
 const { form, testing, verdict, errorMessage, test, persist } = useLlmConfigForm()
@@ -26,6 +27,7 @@ const testLabel = chrome.i18n.getMessage('wizardTest')
 const saveLabel = chrome.i18n.getMessage('wizardSave')
 const okText = chrome.i18n.getMessage('llmTestOk')
 const privacyNoticeText = chrome.i18n.getMessage('llmPrivacyNotice')
+const privacyPolicyLinkText = chrome.i18n.getMessage('privacyPolicyLink')
 </script>
 
 <template>
@@ -39,7 +41,12 @@ const privacyNoticeText = chrome.i18n.getMessage('llmPrivacyNotice')
           </button>
         </div>
 
-        <p :class="ui.llmPrivacyNotice">{{ privacyNoticeText }}</p>
+        <p :class="ui.llmPrivacyNotice">
+          {{ privacyNoticeText }}
+          <a :href="PRIVACY_POLICY_URL" target="_blank" rel="noopener noreferrer" :class="ui.llmPrivacyNoticeLink">
+            {{ privacyPolicyLinkText }}
+          </a>
+        </p>
 
         <label :class="ui.wizardField">
           <span :class="ui.wizardFieldLabel">{{ endpointLabel }}</span>

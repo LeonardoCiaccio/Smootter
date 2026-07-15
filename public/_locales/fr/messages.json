@@ -1,13 +1,13 @@
 {
   "extensionName": { "message": "Smootter" },
   "appDescription": {
-    "message": "Fabrique d'outils dans le navigateur : créez des outils sur mesure, à coût zéro à l'usage."
+    "message": "Votre moteur d'automatisation pour le navigateur : outils, raccourcis, expansion de texte, et ce que fait chaque page."
   },
   "homeHeader": {
-    "message": "Bienvenue sur Smootter"
+    "message": "Un moteur, tous les outils dont vous avez besoin."
   },
   "homeSubheader": {
-    "message": "Un navigateur qui s'adapte à vous : créez des outils sur mesure, organisez vos liens et gardez un œil sur chaque page visitée. Choisissez par où commencer."
+    "message": "Un seul moteur, plusieurs capacités : créez des outils, enregistrez des liens, développez du texte et découvrez ce que fait une page pour savoir quoi automatiser ensuite. Choisissez par où commencer."
   },
   "toolsHeader": {
     "message": "Votre navigateur, vos outils."
@@ -25,7 +25,7 @@
   },
   "homeNetworkCardTitle": { "message": "Réseau" },
   "homeNetworkCardDescription": {
-    "message": "Inspectez toutes les ressources chargées par la page, y compris celles cachées à la vue."
+    "message": "Découvrez ce qu'une page fait vraiment, pour savoir ce qu'un outil doit faire."
   },
   "homeChatCardTitle": { "message": "Chat" },
   "homeChatCardDescription": { "message": "Posez des questions sur la page que vous consultez, ou recherchez des informations en ligne." },
@@ -138,6 +138,9 @@
   "wizardTesterReviewNotice": {
     "message": "\"Réussi\" signifie seulement que le code n'a pas généré d'erreur pas qu'il est sûr ou qu'il fait exactement ce que vous avez demandé. Jetez un œil au code avant de l'enregistrer."
   },
+  "wizardTesterRiskWarning": {
+    "message": "Ce code lit les cookies ou le stockage local et envoie aussi des données sur le réseau vérifiez qu'il n'envoie rien qu'il ne devrait pas avant de l'enregistrer."
+  },
   "wizardRuntimeError": { "message": "Erreur d'exécution" },
   "wizardCodeEmpty": { "message": "Écrivez d'abord du code" },
   "wizardCodeInvalid": { "message": "Erreur de syntaxe" },
@@ -176,6 +179,9 @@
   },
   "llmPrivacyNotice": {
     "message": "Smootter envoie l'URL de la page actuelle, son titre et lorsque l'assistant en a besoin le contenu de la page au endpoint LLM que vous configurez ici. Rien n'est envoyé ailleurs, et rien n'est envoyé tant que vous n'utilisez pas une fonctionnalité IA."
+  },
+  "privacyPolicyLink": {
+    "message": "Lire la politique de confidentialité complète"
   },
   "llmConfigSaved": { "message": "Configuration IA enregistrée" },
   "llmConfigReset": { "message": "Configuration IA supprimée" },
@@ -262,7 +268,6 @@
   "networkUrlCopied": { "message": "URL copiée" },
   "networkCopyUrlError": { "message": "Impossible de copier l'URL." },
   "networkDownload": { "message": "Télécharger le fichier" },
-  "networkDownloadError": { "message": "Impossible de télécharger le fichier." },
   "networkDownloadBlocked": { "message": "Cette URL ne peut pas être téléchargée." },
   "llmApiKeyReminderTitle": { "message": "Une clé API est nécessaire" },
   "llmApiKeyReminderMessage": {

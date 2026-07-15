@@ -1,13 +1,13 @@
 {
   "extensionName": { "message": "Smootter" },
   "appDescription": {
-    "message": "Werkzeugfabrik im Browser: Erstelle maßgeschneiderte Tools, zu null Kosten pro Nutzung."
+    "message": "Deine Automatisierungs-Engine für den Browser: Tools erstellen, Shortcuts speichern, Text erweitern und sehen, was Seiten tun."
   },
   "homeHeader": {
-    "message": "Willkommen bei Smootter"
+    "message": "Eine Engine, alle Tools, die du brauchst."
   },
   "homeSubheader": {
-    "message": "Ein Browser, der sich dir anpasst: erstelle maßgeschneiderte Tools, organisiere deine Links und behalte jede besuchte Seite im Blick. Wähle, wo du starten möchtest."
+    "message": "Eine Engine, viele Fähigkeiten: Erstelle Tools, speichere Links, erweitere Text und sieh, was eine Seite tut, um zu wissen, was als Nächstes automatisiert werden soll. Wähle, wo du anfangen willst."
   },
   "toolsHeader": {
     "message": "Dein Browser, deine Tools."
@@ -25,7 +25,7 @@
   },
   "homeNetworkCardTitle": { "message": "Netzwerk" },
   "homeNetworkCardDescription": {
-    "message": "Untersuche alle von der Seite geladenen Ressourcen, auch die vor dir versteckten."
+    "message": "Sieh, was eine Seite wirklich tut, damit du weißt, was ein Tool tun soll."
   },
   "homeChatCardTitle": { "message": "Chat" },
   "homeChatCardDescription": { "message": "Stelle Fragen zur aktuellen Seite oder suche online nach Informationen." },
@@ -140,6 +140,9 @@
   "wizardTesterReviewNotice": {
     "message": "\"Bestanden\" bedeutet nur, dass der Code keinen Fehler ausgelöst hat nicht, dass er sicher ist oder genau das tut, was du verlangt hast. Wirf einen Blick auf den Code, bevor du ihn speicherst."
   },
+  "wizardTesterRiskWarning": {
+    "message": "Dieser Code liest Cookies oder den lokalen Speicher und sendet auch Daten über das Netzwerk prüfe vor dem Speichern, ob er nichts Unerwünschtes sendet."
+  },
   "wizardRuntimeError": { "message": "Laufzeitfehler" },
   "wizardCodeEmpty": { "message": "Schreibe zuerst etwas Code" },
   "wizardCodeInvalid": { "message": "Syntaxfehler" },
@@ -178,6 +181,9 @@
   },
   "llmPrivacyNotice": {
     "message": "Smootter sendet die URL der aktuellen Seite, ihren Titel und wenn der Assistent es braucht den Seiteninhalt an den hier konfigurierten LLM-Endpoint. Es wird sonst nichts irgendwohin gesendet, und nichts wird gesendet, bevor du eine KI-Funktion nutzt."
+  },
+  "privacyPolicyLink": {
+    "message": "Vollständige Datenschutzerklärung lesen"
   },
   "llmConfigSaved": { "message": "KI-Konfiguration gespeichert" },
   "llmConfigReset": { "message": "KI-Konfiguration entfernt" },
@@ -262,7 +268,6 @@
   "networkUrlCopied": { "message": "URL kopiert" },
   "networkCopyUrlError": { "message": "URL konnte nicht kopiert werden." },
   "networkDownload": { "message": "Datei herunterladen" },
-  "networkDownloadError": { "message": "Datei konnte nicht heruntergeladen werden." },
   "networkDownloadBlocked": { "message": "Diese URL kann nicht heruntergeladen werden." },
   "llmApiKeyReminderTitle": { "message": "Ein API-Schlüssel wird benötigt" },
   "llmApiKeyReminderMessage": {

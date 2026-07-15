@@ -53,16 +53,17 @@ async function onCopyUrl(): Promise<void> {
   else toast.error(chrome.i18n.getMessage('networkCopyUrlError'))
 }
 
-async function onDownload(): Promise<void> {
+function onDownload(): void {
   if (!isSafeWebUrl(props.entry.url)) {
     toast.error(chrome.i18n.getMessage('networkDownloadBlocked'))
     return
   }
-  try {
-    await chrome.downloads.download({ url: props.entry.url, saveAs: false })
-  } catch {
-    toast.error(chrome.i18n.getMessage('networkDownloadError'))
-  }
+  // A plain anchor click triggers the browser's native download, without needing
+  // the "downloads" permission for a single button.
+  const link = document.createElement('a')
+  link.href = props.entry.url
+  link.download = ''
+  link.click()
 }
 </script>
 

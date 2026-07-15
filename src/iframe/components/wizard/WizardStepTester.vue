@@ -7,6 +7,7 @@ import { ui } from '@/styles/ui'
 import { useToast } from '../../plugins/toast'
 import { saveTool } from '@/shared/toolsDb'
 import { channelKey } from '@/shared/vuePlugins/messaging'
+import { scanForRiskyPatterns } from '@/shared/codeRiskScan'
 import { toStoredTool, type WizardData } from './WizardData'
 
 const data = defineModel<WizardData>('data', { required: true })
@@ -75,6 +76,11 @@ async function save(): Promise<void> {
 const saveLabel = chrome.i18n.getMessage('wizardSave')
 const cancelLabel = chrome.i18n.getMessage('wizardTesterCancel')
 const reviewNoticeText = chrome.i18n.getMessage('wizardTesterReviewNotice')
+const riskWarningText = chrome.i18n.getMessage('wizardTesterRiskWarning')
+// Non-blocking heuristic: flags code that both reads storage and sends network requests, the
+// combination a prompt-injected exfiltration snippet needs. A false positive never blocks save
+// this is a platform for arbitrary user code, not a code reviewer.
+const isRisky = computed(() => scanForRiskyPatterns(data.value.code))
 </script>
 
 <template>
@@ -89,6 +95,7 @@ const reviewNoticeText = chrome.i18n.getMessage('wizardTesterReviewNotice')
     <!-- "Passed" only means it ran without throwing never a claim that the code is safe or
          does what was asked. The user is the last check before it runs on real pages. -->
     <p v-if="verdict === 'ok'" :class="ui.wizardTesterReviewNotice">{{ reviewNoticeText }}</p>
+    <p v-if="verdict === 'ok' && isRisky" :class="ui.wizardTesterRiskWarning">{{ riskWarningText }}</p>
 
     <div v-if="verdict !== 'running'" :class="ui.wizardTesterActions">
       <button type="button" :class="ui.secondaryButton" @click="emit('cancel')">

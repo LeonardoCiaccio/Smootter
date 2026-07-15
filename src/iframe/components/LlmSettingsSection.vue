@@ -4,6 +4,7 @@ import { ArrowPathIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { useToast } from '../plugins/toast'
 import { useLlmConfigForm } from '../composables/useLlmConfigForm'
+import { PRIVACY_POLICY_URL } from '@/shared/privacyPolicy'
 
 const toast = useToast()
 const { form, testing, verdict, errorMessage, loadSaved, test, persist, clear } = useLlmConfigForm()
@@ -55,6 +56,7 @@ const resetLabel = chrome.i18n.getMessage('llmConfigResetButton')
 const resetConfirmLabel = chrome.i18n.getMessage('llmConfigResetConfirm')
 const okText = chrome.i18n.getMessage('llmTestOk')
 const privacyNoticeText = chrome.i18n.getMessage('llmPrivacyNotice')
+const privacyPolicyLinkText = chrome.i18n.getMessage('privacyPolicyLink')
 </script>
 
 <template>
@@ -64,7 +66,12 @@ const privacyNoticeText = chrome.i18n.getMessage('llmPrivacyNotice')
       <p :class="ui.optionsSectionDescription">{{ sectionDescription }}</p>
     </div>
 
-    <p :class="ui.llmPrivacyNotice">{{ privacyNoticeText }}</p>
+    <p :class="ui.llmPrivacyNotice">
+      {{ privacyNoticeText }}
+      <a :href="PRIVACY_POLICY_URL" target="_blank" rel="noopener noreferrer" :class="ui.llmPrivacyNoticeLink">
+        {{ privacyPolicyLinkText }}
+      </a>
+    </p>
 
     <label :class="ui.wizardField">
       <span :class="ui.wizardFieldLabel">{{ endpointLabel }}</span>

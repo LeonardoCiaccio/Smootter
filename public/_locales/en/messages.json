@@ -1,13 +1,13 @@
 {
   "extensionName": { "message": "Smootter" },
   "appDescription": {
-    "message": "Tool factory in the browser: build custom tools, at zero cost per use."
+    "message": "Your own automation engine for the browser: build tools, save shortcuts, expand text, and see what pages are doing."
   },
   "homeHeader": {
-    "message": "Welcome to Smootter"
+    "message": "One engine, every tool you need."
   },
   "homeSubheader": {
-    "message": "A browser that adapts to you: build custom tools, organize your links, and keep an eye on every page you visit. Pick where to start."
+    "message": "One engine, many capabilities: build tools, save links, expand text, and see what a page is doing so you know what to automate next. Pick where to start."
   },
   "toolsHeader": {
     "message": "Your browser, your tools."
@@ -23,7 +23,7 @@
   },
   "homeNetworkCardTitle": { "message": "Network" },
   "homeNetworkCardDescription": {
-    "message": "Inspect every resource the page loads, including ones hidden from view."
+    "message": "See what a page is really doing, so you know what to build a tool to do."
   },
   "homeChatCardTitle": { "message": "Chat" },
   "homeChatCardDescription": { "message": "Ask questions about the page you're looking at, or search for information online." },
@@ -134,6 +134,9 @@
   "wizardTesterReviewNotice": {
     "message": "\"Passed\" only means the code didn't throw an error not that it's safe or that it does exactly what you asked. Take a look at the code before saving it."
   },
+  "wizardTesterRiskWarning": {
+    "message": "This code reads cookies or local storage and also sends data over the network double-check it isn't sending something it shouldn't before saving."
+  },
   "wizardRuntimeError": { "message": "Runtime error" },
   "wizardCodeEmpty": { "message": "Write some code first" },
   "wizardCodeInvalid": { "message": "Syntax error" },
@@ -170,6 +173,9 @@
   },
   "llmPrivacyNotice": {
     "message": "Smootter sends the current page's URL, its title, and when the assistant needs it the page's content to the LLM endpoint you configure here. Nothing is sent anywhere else, and nothing is sent until you use an AI feature."
+  },
+  "privacyPolicyLink": {
+    "message": "Read the full privacy policy"
   },
   "llmConfigSaved": { "message": "AI configuration saved" },
   "llmConfigReset": { "message": "AI configuration removed" },
@@ -250,7 +256,6 @@
   "networkUrlCopied": { "message": "URL copied" },
   "networkCopyUrlError": { "message": "Couldn't copy the URL." },
   "networkDownload": { "message": "Download file" },
-  "networkDownloadError": { "message": "Couldn't download the file." },
   "networkDownloadBlocked": { "message": "This URL cannot be downloaded." },
   "llmApiKeyReminderTitle": { "message": "An API key is needed" },
   "llmApiKeyReminderMessage": {

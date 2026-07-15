@@ -28,7 +28,7 @@
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'"
   },
-  "permissions": ["scripting", "storage", "userScripts", "webNavigation", "webRequest", "downloads", "contextMenus"],
+  "permissions": ["scripting", "storage", "userScripts", "webNavigation", "webRequest", "contextMenus"],
   "host_permissions": ["<all_urls>"],
   "web_accessible_resources": [
     {

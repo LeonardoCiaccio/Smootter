@@ -273,6 +273,7 @@ export const ui = {
   // Data-usage disclosure: what gets sent to the configured LLM endpoint, and when.
   llmPrivacyNotice:
     'rounded-tool border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs text-cyan-800 dark:border-cyan-900 dark:bg-cyan-950 dark:text-cyan-300',
+  llmPrivacyNoticeLink: 'underline underline-offset-2 hover:no-underline',
   optionsSectionActions: 'flex items-center justify-between gap-3',
   // Smootters: one row per optional always-on service, each with its own switch (see switchTrack).
   smootterServiceRow: 'flex items-center justify-between gap-3',
@@ -428,6 +429,7 @@ export const ui = {
   testStatusWaiting: 'text-lg font-semibold text-gray-500 dark:text-gray-400',
   testStatusOk: 'text-lg font-semibold text-emerald-600 dark:text-emerald-400',
   wizardTesterReviewNotice: 'max-w-sm text-xs text-gray-500 dark:text-gray-400',
+  wizardTesterRiskWarning: 'max-w-sm text-xs font-medium text-amber-600 dark:text-amber-400',
   testStatusError: 'text-lg font-semibold text-rose-600 dark:text-rose-400',
   wizardTesterActions: 'flex items-center gap-3',
   // Generic modal: dim overlay + centered panel, reused by the LLM config popup.

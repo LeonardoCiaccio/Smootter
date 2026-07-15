@@ -1,13 +1,13 @@
 {
   "extensionName": { "message": "Smootter" },
   "appDescription": {
-    "message": "Basta abbonamenti: descrivi il tool che ti serve, l'AI lo scrive, tu lo usi. Il tuo browser, piegato alla tua volontà."
+    "message": "Il tuo motore di automazione per il browser: crea tool, salva scorciatoie, espandi testo e scopri cosa fanno le pagine."
   },
   "homeHeader": {
-    "message": "Benvenuto in Smootter"
+    "message": "Un motore, tutti gli strumenti che ti servono."
   },
   "homeSubheader": {
-    "message": "Un browser che si adatta a te: crea strumenti su misura, organizza i tuoi link e tieni d'occhio ogni pagina che visiti. Scegli da dove iniziare."
+    "message": "Un motore solo, tante capacità: crea tool, salva link, espandi testo e scopri cosa fa una pagina per sapere cosa automatizzare dopo. Scegli da dove iniziare."
   },
   "toolsHeader": {
     "message": "Il tuo browser, i tuoi strumenti."
@@ -23,7 +23,7 @@
   },
   "homeNetworkCardTitle": { "message": "Rete" },
   "homeNetworkCardDescription": {
-    "message": "Ispeziona tutte le risorse caricate dalla pagina, comprese quelle nascoste alla vista."
+    "message": "Scopri davvero cosa fa una pagina, così sai cosa far fare a un tool."
   },
   "homeChatCardTitle": { "message": "Chat" },
   "homeChatCardDescription": { "message": "Fai domande sulla pagina che stai guardando, o cerca informazioni online." },
@@ -134,6 +134,9 @@
   "wizardTesterReviewNotice": {
     "message": "\"Superato\" significa solo che il codice non ha generato errori non che sia sicuro o che faccia esattamente ciò che hai chiesto. Dai un'occhiata al codice prima di salvarlo."
   },
+  "wizardTesterRiskWarning": {
+    "message": "Questo codice legge cookie o local storage e invia anche dati in rete controlla che non stia mandando qualcosa che non dovrebbe prima di salvarlo."
+  },
   "wizardRuntimeError": { "message": "Errore di esecuzione" },
   "wizardCodeEmpty": { "message": "Scrivi prima del codice" },
   "wizardCodeInvalid": { "message": "Errore di sintassi" },
@@ -170,6 +173,9 @@
   },
   "llmPrivacyNotice": {
     "message": "Smootter invia all'endpoint configurato qui l'URL della pagina corrente, il suo titolo e quando l'assistente ne ha bisogno il contenuto della pagina. Nient'altro viene inviato altrove, e nulla parte finché non usi una funzione AI."
+  },
+  "privacyPolicyLink": {
+    "message": "Leggi l'informativa sulla privacy completa"
   },
   "llmConfigSaved": { "message": "Configurazione AI salvata" },
   "llmConfigReset": { "message": "Configurazione AI rimossa" },
@@ -252,7 +258,6 @@
   "networkUrlCopied": { "message": "URL copiato" },
   "networkCopyUrlError": { "message": "Impossibile copiare l'URL." },
   "networkDownload": { "message": "Scarica file" },
-  "networkDownloadError": { "message": "Impossibile scaricare il file." },
   "networkDownloadBlocked": { "message": "Questo URL non può essere scaricato." },
   "llmApiKeyReminderTitle": { "message": "Serve una API key" },
   "llmApiKeyReminderMessage": {

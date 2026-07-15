@@ -1,13 +1,13 @@
 {
   "extensionName": { "message": "Smootter" },
   "appDescription": {
-    "message": "Fábrica de herramientas en el navegador: crea herramientas a medida, con coste cero por uso."
+    "message": "Tu motor de automatización para el navegador: crea herramientas, guarda atajos, expande texto y descubre qué hace cada página."
   },
   "homeHeader": {
-    "message": "Bienvenido a Smootter"
+    "message": "Un motor, todas las herramientas que necesitas."
   },
   "homeSubheader": {
-    "message": "Un navegador que se adapta a ti: crea herramientas a medida, organiza tus enlaces y vigila cada página que visitas. Elige por dónde empezar."
+    "message": "Un solo motor, muchas capacidades: crea herramientas, guarda enlaces, expande texto y descubre qué hace una página para saber qué automatizar después. Elige por dónde empezar."
   },
   "toolsHeader": {
     "message": "Tu navegador, tus herramientas."
@@ -25,7 +25,7 @@
   },
   "homeNetworkCardTitle": { "message": "Red" },
   "homeNetworkCardDescription": {
-    "message": "Inspecciona todos los recursos que carga la página, incluidos los ocultos a la vista."
+    "message": "Descubre qué hace realmente una página, para saber qué debe hacer una herramienta."
   },
   "homeChatCardTitle": { "message": "Chat" },
   "homeChatCardDescription": { "message": "Haz preguntas sobre la página que estás viendo, o busca información en línea." },
@@ -138,6 +138,9 @@
   "wizardTesterReviewNotice": {
     "message": "\"Superada\" solo significa que el código no generó errores, no que sea seguro ni que haga exactamente lo que pediste. Revisa el código antes de guardarlo."
   },
+  "wizardTesterRiskWarning": {
+    "message": "Este código lee cookies o almacenamiento local y también envía datos por la red comprueba que no esté enviando algo que no debería antes de guardarlo."
+  },
   "wizardRuntimeError": { "message": "Error en tiempo de ejecución" },
   "wizardCodeEmpty": { "message": "Escribe algo de código primero" },
   "wizardCodeInvalid": { "message": "Error de sintaxis" },
@@ -176,6 +179,9 @@
   },
   "llmPrivacyNotice": {
     "message": "Smootter envía la URL de la página actual, su título y cuando el asistente lo necesita el contenido de la página al endpoint de LLM que configures aquí. No se envía nada más a ningún otro sitio, y no se envía nada hasta que uses una función de IA."
+  },
+  "privacyPolicyLink": {
+    "message": "Lee la política de privacidad completa"
   },
   "llmConfigSaved": { "message": "Configuración de IA guardada" },
   "llmConfigReset": { "message": "Configuración de IA eliminada" },
@@ -260,7 +266,6 @@
   "networkUrlCopied": { "message": "URL copiada" },
   "networkCopyUrlError": { "message": "No se pudo copiar la URL." },
   "networkDownload": { "message": "Descargar archivo" },
-  "networkDownloadError": { "message": "No se pudo descargar el archivo." },
   "networkDownloadBlocked": { "message": "Esta URL no se puede descargar." },
   "llmApiKeyReminderTitle": { "message": "Se necesita una API key" },
   "llmApiKeyReminderMessage": {
