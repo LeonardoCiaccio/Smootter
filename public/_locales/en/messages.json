@@ -247,6 +247,9 @@
   "networkCategoriesTitle": { "message": "Categories" },
   "networkCategoryAll": { "message": "All" },
   "networkCategoryOther": { "message": "Other" },
+  "networkHint": {
+    "message": "See what a page loads, so you can figure out how to block it or do something else with an ad-hoc tool."
+  },
   "networkSearchPlaceholder": { "message": "Search by url, file type, mimetype..." },
   "networkSearchClear": { "message": "Clear search" },
   "networkEmpty": { "message": "No requests captured for this page yet." },

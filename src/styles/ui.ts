@@ -463,6 +463,7 @@ export const ui = {
   networkCategoryLabel: 'flex-1 truncate',
   networkCategoryCount: 'text-xs text-gray-400 dark:text-gray-500',
   networkMain: 'flex flex-1 flex-col overflow-y-auto px-6 pb-10 pt-10',
+  networkHint: 'mb-4 text-sm text-gray-500 dark:text-gray-400',
   networkSearchRow: 'mb-4 flex-shrink-0',
   networkSearchInputWrapper: 'relative min-w-0',
   networkSearchInputIcon:

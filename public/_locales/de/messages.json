@@ -259,6 +259,9 @@
   "networkCategoriesTitle": { "message": "Kategorien" },
   "networkCategoryAll": { "message": "Alle" },
   "networkCategoryOther": { "message": "Andere" },
+  "networkHint": {
+    "message": "Untersuche hier, was eine Seite lädt, um herauszufinden, wie du es blockierst oder mit einem eigens gebauten Tool etwas anderes damit machst."
+  },
   "networkSearchPlaceholder": { "message": "Suche nach URL, Dateityp, Mimetype..." },
   "networkSearchClear": { "message": "Suche löschen" },
   "networkEmpty": { "message": "Für diese Seite wurden noch keine Anfragen erfasst." },

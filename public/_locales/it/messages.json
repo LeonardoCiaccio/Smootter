@@ -249,6 +249,9 @@
   "networkCategoriesTitle": { "message": "Categorie" },
   "networkCategoryAll": { "message": "Tutti" },
   "networkCategoryOther": { "message": "Altro" },
+  "networkHint": {
+    "message": "Qui puoi indagare cosa carica una pagina, per capire come bloccarlo o farci altro con un tool costruito ad hoc."
+  },
   "networkSearchPlaceholder": { "message": "Cerca per url, tipo di file, mimetype..." },
   "networkSearchClear": { "message": "Cancella ricerca" },
   "networkEmpty": { "message": "Nessuna richiesta registrata per questa pagina." },

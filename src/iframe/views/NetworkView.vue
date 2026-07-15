@@ -22,6 +22,7 @@ const ready = ref(false)
 
 const emptyText = chrome.i18n.getMessage('networkEmpty')
 const loadingText = chrome.i18n.getMessage('networkLoading')
+const hintText = chrome.i18n.getMessage('networkHint')
 const searchPlaceholder = chrome.i18n.getMessage('networkSearchPlaceholder')
 const searchClearLabel = chrome.i18n.getMessage('networkSearchClear')
 
@@ -93,6 +94,8 @@ onUnmounted(() => {
       <NetworkCategorySidebar :entries="entries" :selected="selectedCategory" @select="selectedCategory = $event" />
 
       <div :class="ui.networkMain">
+        <p :class="ui.networkHint">{{ hintText }}</p>
+
         <div :class="ui.networkSearchRow">
           <div :class="ui.networkSearchInputWrapper">
             <MagnifyingGlassIcon :class="ui.networkSearchInputIcon" />
