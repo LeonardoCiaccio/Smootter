@@ -21,6 +21,7 @@ import {
   type SearchBookmarkletsRequest,
   type SearchReplacersRequest,
   type LookupReplacerRequest,
+  type LookupReplacerAiRequest,
 } from '@/shared/messages'
 import { getReplacerByPlaceholder } from '@/shared/replacerDb'
 import { openEnvironment } from './openEnvironment'
@@ -41,6 +42,7 @@ import {
   generateBookmarkletMetadata,
   searchBookmarklets,
   searchReplacers,
+  runReplacerAi,
 } from './llmClient'
 import { getNetworkLog } from './networkInspector'
 
@@ -408,6 +410,41 @@ grip.hook('lookupReplacer', {
 })
 
 grip.register({
+  name: 'lookupReplacerAi',
+  validate(args: LookupReplacerAiRequest) {
+    if (typeof args.placeholder !== 'string' || args.placeholder.trim() === '')
+      throw new Error('placeholder is required.')
+    if (typeof args.context !== 'string') throw new Error('context is required.')
+  },
+  async business(args: LookupReplacerAiRequest) {
+    // Same protection as lookupReplacer: re-checked on every call, not just at injection time.
+    const config = await getSmootterServices()
+    if (!config.replacer) return { type: 'lookupReplacerAiResult', text: null }
+
+    const replacer = await getReplacerByPlaceholder(args.placeholder)
+    if (!replacer) return { type: 'lookupReplacerAiResult', text: null }
+
+    const llmConfig = await getPreference('llmConfig')
+    if (!llmConfig) {
+      // Injecting the environment into the host page to prompt for setup broke real pages
+      // (e.g. Gmail) instead, replacer.ts shows an inline, localized message in the field
+      // itself see needsLlmConfig.
+      return { type: 'lookupReplacerAiResult', text: null, needsLlmConfig: true }
+    }
+
+    // The replacer's saved `text` is the instruction here (e.g. "rewrite formally"), not
+    // literal replacement text see replacer.ts's "/ai-" placeholder handling.
+    const result = await runReplacerAi(llmConfig, replacer.text, args.context)
+    return { type: 'lookupReplacerAiResult', text: result.ok ? (result.text ?? null) : null }
+  },
+})
+grip.hook('lookupReplacerAi', {
+  after({ result }, context: Context) {
+    if (result.isSuccess) context.sendResponse(result.result)
+  },
+})
+
+grip.register({
   name: 'getNetworkLog',
   validate() {},
   business(_args: unknown, context?: object) {
@@ -463,6 +500,7 @@ const CHANNEL_FUNCTIONS_NEEDING_FAILURE_REPLY = [
   'searchBookmarklets',
   'searchReplacers',
   'lookupReplacer',
+  'lookupReplacerAi',
   'getNetworkLog',
 ] as const
 

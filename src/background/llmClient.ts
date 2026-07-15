@@ -939,3 +939,73 @@ export async function searchReplacers(config: LlmConfig, query: string): Promise
 
   return { ok: false, errorCode: 'unknown', detail: 'Too many tool calls without a final answer.' }
 }
+
+const DELIVER_REPLACER_AI_TEXT_TOOL = {
+  type: 'function',
+  function: {
+    name: 'deliver_text',
+    description:
+      'Deliver the transformed text. Call this once you are ready never answer in plain text.',
+    parameters: {
+      type: 'object',
+      properties: {
+        text: {
+          type: 'string',
+          description:
+            'The transformed text, ready to be inserted exactly where the instruction was typed nothing else, no preamble, no explanation.',
+        },
+      },
+      required: ['text'],
+    },
+  },
+} as const
+
+const REPLACER_AI_TOOLS = [DELIVER_REPLACER_AI_TEXT_TOOL] as const
+
+function buildReplacerAiSystemPrompt(): string {
+  return [
+    'You transform a piece of text the user is writing, following a short instruction (e.g. "rewrite formally in English"). You are invoked inline while they type, as part of Smootter Replacer, a text-expansion tool: they typed the instruction\'s trigger word right after the text they want transformed.',
+    'Always call `deliver_text` with your result, and nothing else: no explanation, no preamble, no markdown code fencing just the transformed text, ready to be inserted exactly where the trigger word was.',
+    'Deliver exactly ONE version of the result never multiple options, alternates, or bilingual pairs (e.g. two phrasings separated by "/" or on separate lines). If the instruction is ambiguous or could be read more than one way, silently pick the single most direct interpretation and commit to it whatever you return replaces the original text as-is, so anything beyond the one final result would end up inserted into what the user is writing.',
+    "If the given text is empty or the instruction doesn't quite fit it, still call deliver_text with your best-effort result never refuse or answer in plain text.",
+  ].join('\n\n')
+}
+
+export interface LlmReplacerAiResult {
+  ok: boolean
+  text?: string
+  errorCode?: LlmErrorCode
+  detail?: string
+}
+
+/**
+ * Runs a single, tool-calling completion: `instruction` is a saved replacer's text (e.g.
+ * "Riscrivi con tono formale e in inglese"), `context` is whatever the user had already typed
+ * before the "/ai-..." trigger word. See replacer.ts and channel.ts's lookupReplacerAi handler.
+ */
+export async function runReplacerAi(
+  config: LlmConfig,
+  instruction: string,
+  context: string,
+): Promise<LlmReplacerAiResult> {
+  const conversation: ConversationMessage[] = [
+    { role: 'system', content: buildReplacerAiSystemPrompt() },
+    { role: 'user', content: `Instruction: ${instruction}\n\nText:\n${context}` },
+  ]
+
+  const result = await callChatCompletions(config, conversation, REPLACER_AI_TOOLS)
+  if (!result.ok) return { ok: false, errorCode: result.errorCode, detail: result.detail }
+
+  const toolCall = result.message.tool_calls?.[0]
+  if (!toolCall || toolCall.function?.name !== 'deliver_text') return { ok: false, errorCode: 'noToolSupport' }
+
+  try {
+    const args = JSON.parse(toolCall.function?.arguments ?? '{}') as { text?: unknown }
+    if (typeof args.text !== 'string') {
+      return { ok: false, errorCode: 'unknown', detail: 'Missing text.' }
+    }
+    return { ok: true, text: args.text }
+  } catch (error) {
+    return { ok: false, errorCode: 'unknown', detail: describeError(error) }
+  }
+}

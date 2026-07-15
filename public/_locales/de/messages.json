@@ -288,6 +288,7 @@
   "replacerFormPlaceholderLabel": { "message": "Platzhalter" },
   "replacerFormPlaceholderPlaceholder": { "message": "z. B. /zuhause" },
   "replacerPlaceholderTaken": { "message": "Dieser Platzhalter wird bereits von einem anderen Replacer verwendet." },
+  "replacerAiNotConfigured": { "message": "[KI muss in den Optionen konfiguriert werden]" },
   "replacerFormTextLabel": { "message": "Ersatztext" },
   "replacerFormTextPlaceholder": { "message": "Der Text, der den Platzhalter ersetzt" },
   "replacerSaved": { "message": "Replacer gespeichert" },

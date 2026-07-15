@@ -102,10 +102,15 @@ function openDb(): Promise<IDBDatabase> {
   })
 }
 
-/** Insert or update a replacer. `searchTerms` is always recomputed here never trust the caller's copy. */
+/**
+ * Insert or update a replacer. `placeholder` is always lowercased here (trigger words are meant
+ * to be matched case-insensitively see replacer.ts, which lowercases what it types before
+ * looking it up) and `searchTerms` is always recomputed never trust the caller's copy of either.
+ */
 export async function saveReplacer(replacer: StoredReplacer): Promise<void> {
   const db = await openDb()
-  const record: StoredReplacer = { ...replacer, searchTerms: computeSearchTerms(replacer) }
+  const normalized = { ...replacer, placeholder: replacer.placeholder.toLowerCase() }
+  const record: StoredReplacer = { ...normalized, searchTerms: computeSearchTerms(normalized) }
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(REPLACERS_STORE, 'readwrite')
     transaction.objectStore(REPLACERS_STORE).put(JSON.parse(JSON.stringify(record)))
