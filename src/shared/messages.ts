@@ -295,10 +295,16 @@ export interface LookupReplacerAiRequest {
   context: string
 }
 
-/** null covers "disabled", "no match", "no LLM configured", and any LLM call failure alike. */
+/**
+ * null covers "disabled", "no match", "no LLM configured", and any LLM call failure alike.
+ * `needsLlmConfig` distinguishes the "no LLM configured" case specifically: replacer.ts shows
+ * the user a localized message for that one (something they can actually fix by opening
+ * Options) rather than silently reverting the way it does for "disabled" or "no match".
+ */
 export interface LookupReplacerAiResult {
   type: 'lookupReplacerAiResult'
   text: string | null
+  needsLlmConfig?: boolean
 }
 
 /**

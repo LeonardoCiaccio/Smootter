@@ -41,6 +41,10 @@ const AI_PLACEHOLDER_PREFIX = '/ai-'
 // Shown in place of the trigger while the LLM request is in flight, then swapped for the real
 // result (or reverted back to the original trigger word on failure) see handleAiPlaceholder.
 const AI_PROCESSING_MARKER = '[AI...]'
+// Shown instead of a silent revert specifically when the LLM isn't configured (see
+// lookupReplacerAi's needsLlmConfig): unlike "disabled" or "no match", this is something the
+// user can actually go fix, so it's worth telling them, in their own language.
+const AI_NOT_CONFIGURED_TEXT = chrome.i18n.getMessage('replacerAiNotConfigured')
 
 function isEditableTarget(target: EventTarget | null): target is HTMLElement {
   if (!(target instanceof HTMLElement)) return false
@@ -89,12 +93,24 @@ function replaceWordInField(
   setFieldValue(field, newValue, wordStart + replacement.length)
 }
 
-/** Replaces the first occurrence of `marker` anywhere in the field (e.g. the AI "in progress" marker). */
-function replaceMarkerInField(field: HTMLInputElement | HTMLTextAreaElement, marker: string, replacement: string): void {
-  const index = field.value.indexOf(marker)
-  if (index === -1) return
-  const newValue = field.value.slice(0, index) + replacement + field.value.slice(index + marker.length)
-  setFieldValue(field, newValue, index + replacement.length)
+/**
+ * Replaces `context` (the text that was already there before the trigger) *and* the marker
+ * that followed it with `replacement` a rewrite instruction is meant to replace what it
+ * rewrote, not sit next to it. Locates the marker fresh (not by a stale index captured before
+ * the LLM round-trip), then counts `context.length` characters back from there the marker's
+ * own trailing space, inserted at trigger time and never touched since, is left alone.
+ */
+function replaceContextAndMarkerInField(
+  field: HTMLInputElement | HTMLTextAreaElement,
+  context: string,
+  marker: string,
+  replacement: string,
+): void {
+  const markerIndex = field.value.indexOf(marker)
+  if (markerIndex === -1) return
+  const contextStart = Math.max(0, markerIndex - context.length)
+  const newValue = field.value.slice(0, contextStart) + replacement + field.value.slice(markerIndex + marker.length)
+  setFieldValue(field, newValue, contextStart + replacement.length)
 }
 
 /** Extends the live caret selection backward over `word` + the space just typed, then deletes it. */
@@ -138,14 +154,26 @@ function findMarkerRange(root: HTMLElement, marker: string): Range | null {
   return null
 }
 
-/** Finds the first occurrence of `marker` anywhere under `root` and swaps it for `replacement`. */
-function replaceMarkerInContentEditable(root: HTMLElement, marker: string, replacement: string): void {
+/**
+ * Same idea as replaceContextAndMarkerInField, for a contenteditable field: finds the marker,
+ * collapses the caret to right after it, then reuses the same backward-character-selection
+ * trick as the original trigger removal to also consume `context.length` characters before it.
+ */
+function replaceContextAndMarkerInContentEditable(
+  root: HTMLElement,
+  context: string,
+  marker: string,
+  replacement: string,
+): void {
   const range = findMarkerRange(root, marker)
   if (!range) return
   const selection = window.getSelection()
   if (!selection) return
+  range.collapse(false)
   selection.removeAllRanges()
   selection.addRange(range)
+  const charsToRemove = context.length + marker.length
+  for (let i = 0; i < charsToRemove; i++) selection.modify('extend', 'backward', 'character')
   document.execCommand('insertHTML', false, renderInlineMarkdown(replacement))
 }
 
@@ -166,10 +194,12 @@ function onLookupResult(
 }
 
 /**
- * "/ai-<name>" flow: swaps the trigger for a "[AI...]" marker right away (typing keeps working
- * while the request is in flight), then swaps that marker for the real answer once it arrives
- * or reverts it back to the original trigger word on any failure (disabled, no match, no LLM
- * configured, request error) rather than leaving "[AI...]" stuck in the user's text forever.
+ * "/ai-<name>" flow: swaps the trigger for a "[AI...]" marker right away, leaving `context`
+ * (everything typed before it) untouched and visible while the request is in flight. Once the
+ * answer arrives, it replaces *both* `context` and the marker a rewrite instruction is meant
+ * to replace what it rewrote, not sit next to it. On any failure (disabled, no match, no LLM
+ * configured, request error) it reverts context + marker back to context + the original
+ * trigger word instead, undoing the whole thing rather than leaving "[AI...]" stuck in place.
  */
 function handleAiPlaceholder(
   target: HTMLElement,
@@ -186,14 +216,21 @@ function handleAiPlaceholder(
 
   void chrome.runtime
     .sendMessage({ type: 'lookupReplacerAi', placeholder: word, context })
-    .then((response: { type?: string; text?: string | null } | undefined) => {
-      const result = response?.type === 'lookupReplacerAiResult' ? response.text : null
-      const replacement = result ?? word
+    .then((response: { type?: string; text?: string | null; needsLlmConfig?: boolean } | undefined) => {
+      const isResult = response?.type === 'lookupReplacerAiResult'
+      // needsLlmConfig keeps `context` in place (nothing was actually processed) and only
+      // swaps the marker for the message; every other outcome replaces context + marker
+      // together (a real result rewrites what it saw; any other failure just undoes the trigger).
+      const replacement = !isResult
+        ? `${context}${word}`
+        : response.needsLlmConfig
+          ? `${context}${AI_NOT_CONFIGURED_TEXT}`
+          : (response.text ?? `${context}${word}`)
 
       if (target instanceof HTMLInputElement || target instanceof HTMLTextAreaElement) {
-        replaceMarkerInField(target, AI_PROCESSING_MARKER, replacement)
+        replaceContextAndMarkerInField(target, context, AI_PROCESSING_MARKER, replacement)
       } else {
-        replaceMarkerInContentEditable(target, AI_PROCESSING_MARKER, replacement)
+        replaceContextAndMarkerInContentEditable(target, context, AI_PROCESSING_MARKER, replacement)
       }
     })
 }

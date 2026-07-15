@@ -416,7 +416,7 @@ grip.register({
       throw new Error('placeholder is required.')
     if (typeof args.context !== 'string') throw new Error('context is required.')
   },
-  async business(args: LookupReplacerAiRequest, context?: object) {
+  async business(args: LookupReplacerAiRequest) {
     // Same protection as lookupReplacer: re-checked on every call, not just at injection time.
     const config = await getSmootterServices()
     if (!config.replacer) return { type: 'lookupReplacerAiResult', text: null }
@@ -426,13 +426,10 @@ grip.register({
 
     const llmConfig = await getPreference('llmConfig')
     if (!llmConfig) {
-      // Unlike "disabled" or "no match" (silent no-ops the user didn't necessarily expect
-      // anything from), an "/ai-..." trigger the user deliberately typed themselves, expecting
-      // an AI call opens the environment straight to Options → LLM (its default section) so
-      // they can fix it on the spot instead of silently getting their trigger word back.
-      const tabId = (context as Context | undefined)?.sender.tab?.id
-      if (tabId !== undefined) void openEnvironment(tabId, '/options')
-      return { type: 'lookupReplacerAiResult', text: null }
+      // Injecting the environment into the host page to prompt for setup broke real pages
+      // (e.g. Gmail) instead, replacer.ts shows an inline, localized message in the field
+      // itself see needsLlmConfig.
+      return { type: 'lookupReplacerAiResult', text: null, needsLlmConfig: true }
     }
 
     // The replacer's saved `text` is the instruction here (e.g. "rewrite formally"), not

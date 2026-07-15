@@ -278,6 +278,7 @@
   "replacerFormPlaceholderLabel": { "message": "Segnaposto" },
   "replacerFormPlaceholderPlaceholder": { "message": "es. /casa" },
   "replacerPlaceholderTaken": { "message": "Questo segnaposto è già usato da un altro replacer." },
+  "replacerAiNotConfigured": { "message": "[AI deve essere configurato nelle opzioni]" },
   "replacerFormTextLabel": { "message": "Testo sostitutivo" },
   "replacerFormTextPlaceholder": { "message": "Il testo che sostituirà il segnaposto" },
   "replacerSaved": { "message": "Replacer salvato" },

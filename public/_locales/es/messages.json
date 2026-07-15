@@ -286,6 +286,7 @@
   "replacerFormPlaceholderLabel": { "message": "Marcador" },
   "replacerFormPlaceholderPlaceholder": { "message": "ej. /casa" },
   "replacerPlaceholderTaken": { "message": "Este marcador ya lo usa otro replacer." },
+  "replacerAiNotConfigured": { "message": "[La IA debe configurarse en Opciones]" },
   "replacerFormTextLabel": { "message": "Texto de sustitución" },
   "replacerFormTextPlaceholder": { "message": "El texto que sustituirá al marcador" },
   "replacerSaved": { "message": "Replacer guardado" },

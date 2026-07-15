@@ -288,6 +288,7 @@
   "replacerFormPlaceholderLabel": { "message": "Raccourci" },
   "replacerFormPlaceholderPlaceholder": { "message": "ex. /maison" },
   "replacerPlaceholderTaken": { "message": "Ce raccourci est déjà utilisé par un autre replacer." },
+  "replacerAiNotConfigured": { "message": "[L'IA doit être configurée dans les Options]" },
   "replacerFormTextLabel": { "message": "Texte de remplacement" },
   "replacerFormTextPlaceholder": { "message": "Le texte qui remplacera le raccourci" },
   "replacerSaved": { "message": "Replacer enregistré" },

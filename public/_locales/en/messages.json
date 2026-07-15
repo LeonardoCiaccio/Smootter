@@ -276,6 +276,7 @@
   "replacerFormPlaceholderLabel": { "message": "Placeholder" },
   "replacerFormPlaceholderPlaceholder": { "message": "e.g. /home" },
   "replacerPlaceholderTaken": { "message": "This placeholder is already used by another replacer." },
+  "replacerAiNotConfigured": { "message": "[AI must be configured in Options]" },
   "replacerFormTextLabel": { "message": "Replacement text" },
   "replacerFormTextPlaceholder": { "message": "The text that will replace the placeholder" },
   "replacerSaved": { "message": "Replacer saved" },
