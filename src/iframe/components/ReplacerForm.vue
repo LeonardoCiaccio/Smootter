@@ -64,7 +64,9 @@ resetFrom(props.existingReplacer)
 watch(() => props.existingReplacer, resetFrom)
 
 const placeholderTaken = computed(() => {
-  const trimmed = placeholder.value.trim()
+  // Case-insensitive: saveReplacer() always lowercases the stored placeholder, so the check
+  // must match that or "/Casa" would look free even with "/casa" already saved.
+  const trimmed = placeholder.value.trim().toLowerCase()
   if (trimmed === '') return false
   return props.replacers.some(
     (existing) => existing.placeholder === trimmed && existing.id !== props.existingReplacer?.id,

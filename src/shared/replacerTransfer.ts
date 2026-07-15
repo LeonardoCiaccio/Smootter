@@ -94,8 +94,12 @@ export async function saveImportedReplacers(
 ): Promise<number> {
   let count = 0
   for (const candidate of candidates) {
+    // saveReplacer() lowercases the placeholder before persisting matching that here keeps
+    // this function's own "already seen in this batch" map (and the existing-record lookup)
+    // consistent with what's actually in the database.
+    const placeholder = candidate.placeholder.toLowerCase()
     const categoryId = await resolveCategoryId(candidate.category, categoryCache)
-    const existing = replacersByPlaceholder.get(candidate.placeholder)
+    const existing = replacersByPlaceholder.get(placeholder)
     const now = Date.now()
 
     const replacer: StoredReplacer = {
@@ -104,7 +108,7 @@ export async function saveImportedReplacers(
         typeof candidate.title === 'string' && candidate.title.trim() !== ''
           ? candidate.title
           : candidate.placeholder,
-      placeholder: candidate.placeholder,
+      placeholder,
       text: typeof candidate.text === 'string' ? candidate.text : '',
       tags: Array.isArray(candidate.tags)
         ? candidate.tags.filter((tag): tag is string => typeof tag === 'string')

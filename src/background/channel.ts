@@ -21,6 +21,7 @@ import {
   type SearchBookmarkletsRequest,
   type SearchReplacersRequest,
   type LookupReplacerRequest,
+  type LookupReplacerAiRequest,
 } from '@/shared/messages'
 import { getReplacerByPlaceholder } from '@/shared/replacerDb'
 import { openEnvironment } from './openEnvironment'
@@ -41,6 +42,7 @@ import {
   generateBookmarkletMetadata,
   searchBookmarklets,
   searchReplacers,
+  runReplacerAi,
 } from './llmClient'
 import { getNetworkLog } from './networkInspector'
 
@@ -408,6 +410,44 @@ grip.hook('lookupReplacer', {
 })
 
 grip.register({
+  name: 'lookupReplacerAi',
+  validate(args: LookupReplacerAiRequest) {
+    if (typeof args.placeholder !== 'string' || args.placeholder.trim() === '')
+      throw new Error('placeholder is required.')
+    if (typeof args.context !== 'string') throw new Error('context is required.')
+  },
+  async business(args: LookupReplacerAiRequest, context?: object) {
+    // Same protection as lookupReplacer: re-checked on every call, not just at injection time.
+    const config = await getSmootterServices()
+    if (!config.replacer) return { type: 'lookupReplacerAiResult', text: null }
+
+    const replacer = await getReplacerByPlaceholder(args.placeholder)
+    if (!replacer) return { type: 'lookupReplacerAiResult', text: null }
+
+    const llmConfig = await getPreference('llmConfig')
+    if (!llmConfig) {
+      // Unlike "disabled" or "no match" (silent no-ops the user didn't necessarily expect
+      // anything from), an "/ai-..." trigger the user deliberately typed themselves, expecting
+      // an AI call opens the environment straight to Options → LLM (its default section) so
+      // they can fix it on the spot instead of silently getting their trigger word back.
+      const tabId = (context as Context | undefined)?.sender.tab?.id
+      if (tabId !== undefined) void openEnvironment(tabId, '/options')
+      return { type: 'lookupReplacerAiResult', text: null }
+    }
+
+    // The replacer's saved `text` is the instruction here (e.g. "rewrite formally"), not
+    // literal replacement text see replacer.ts's "/ai-" placeholder handling.
+    const result = await runReplacerAi(llmConfig, replacer.text, args.context)
+    return { type: 'lookupReplacerAiResult', text: result.ok ? (result.text ?? null) : null }
+  },
+})
+grip.hook('lookupReplacerAi', {
+  after({ result }, context: Context) {
+    if (result.isSuccess) context.sendResponse(result.result)
+  },
+})
+
+grip.register({
   name: 'getNetworkLog',
   validate() {},
   business(_args: unknown, context?: object) {
@@ -463,6 +503,7 @@ const CHANNEL_FUNCTIONS_NEEDING_FAILURE_REPLY = [
   'searchBookmarklets',
   'searchReplacers',
   'lookupReplacer',
+  'lookupReplacerAi',
   'getNetworkLog',
 ] as const
 

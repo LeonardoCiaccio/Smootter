@@ -285,6 +285,23 @@ export interface LookupReplacerResult {
 }
 
 /**
+ * A "/ai-<name>" placeholder instead of a plain text swap, the matched replacer's saved text is
+ * an instruction sent to the LLM, along with `context` (everything typed before the placeholder
+ * in that same field) as the text to act on. See replacer.ts's AI_PLACEHOLDER_PREFIX.
+ */
+export interface LookupReplacerAiRequest {
+  type: 'lookupReplacerAi'
+  placeholder: string
+  context: string
+}
+
+/** null covers "disabled", "no match", "no LLM configured", and any LLM call failure alike. */
+export interface LookupReplacerAiResult {
+  type: 'lookupReplacerAiResult'
+  text: string | null
+}
+
+/**
  * The fixed fallback bucket for a response that matches none of the user's mime category
  * rules (see MimeCategoryRule in shared/preferences.ts) always present in the sidebar,
  * never one of the user-defined names.
@@ -344,6 +361,7 @@ export type ChannelRequest =
   | SearchBookmarkletsRequest
   | SearchReplacersRequest
   | LookupReplacerRequest
+  | LookupReplacerAiRequest
   | GetNetworkLogRequest
 
 /** Messages sent from the background to the UI. */
@@ -363,6 +381,7 @@ export type ChannelResponse =
   | SearchBookmarkletsResult
   | SearchReplacersResult
   | LookupReplacerResult
+  | LookupReplacerAiResult
   | NetworkLogResult
   | NetworkEntryCapturedBroadcast
   | ChannelError
