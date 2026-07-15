@@ -2,6 +2,7 @@
 .claude/
 CLAUDE.md
 PROJECT.md
+AUDIT.md
 
 # Dipendenze
 node_modules/
