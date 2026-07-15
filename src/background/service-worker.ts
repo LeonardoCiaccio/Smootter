@@ -16,6 +16,7 @@ import { registerResumerService } from './resumerService'
 import { registerReplacerService } from './replacerService'
 import { openEnvironment } from './openEnvironment'
 import { seedDefaultTools } from './defaultTools'
+import { seedDefaultReplacers } from './defaultReplacers'
 
 registerChannel()
 registerToolsEngine()
@@ -30,5 +31,8 @@ chrome.action.onClicked.addListener((tab) => {
 })
 
 chrome.runtime.onInstalled.addListener((details) => {
-  if (details.reason === 'install') void seedDefaultTools()
+  if (details.reason === 'install') {
+    void seedDefaultTools()
+    void seedDefaultReplacers()
+  }
 })

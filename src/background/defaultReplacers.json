@@ -1,0 +1,20 @@
+[
+  {
+    "title": "Rewrite formally",
+    "placeholder": "/ai-formally",
+    "text": "Rewrite in a formal tone, in English, in no more than 50 words.",
+    "tags": ["AI", "Rewrite"],
+    "category": "Ai/Rewrite",
+    "createdAt": 1784137847216,
+    "updatedAt": 1784137955277
+  },
+  {
+    "title": "Smootter name",
+    "placeholder": "/name",
+    "text": "Smootter",
+    "tags": ["myname", "smootter"],
+    "category": "Example",
+    "createdAt": 1784137710440,
+    "updatedAt": 1784137869285
+  }
+]
