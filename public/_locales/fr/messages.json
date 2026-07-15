@@ -218,7 +218,6 @@
   "bookmarkletsFormTagsLabel": { "message": "Tags" },
   "bookmarkletsFormTagsPlaceholder": { "message": "Ajoutez un tag et appuyez sur entrée" },
   "bookmarkletsFormCategoryLabel": { "message": "Catégorie" },
-  "bookmarkletsCategoryNewOption": { "message": "+ Nouvelle catégorie" },
   "bookmarkletsCategoryNewPlaceholder": {
     "message": "Nom de la catégorie, ex. AA/BB/CC pour des sous-catégories"
   },
@@ -288,6 +287,7 @@
   "replacerFormTitlePlaceholder": { "message": "ex. Adresse du domicile" },
   "replacerFormPlaceholderLabel": { "message": "Raccourci" },
   "replacerFormPlaceholderPlaceholder": { "message": "ex. /maison" },
+  "replacerPlaceholderTaken": { "message": "Ce raccourci est déjà utilisé par un autre replacer." },
   "replacerFormTextLabel": { "message": "Texte de remplacement" },
   "replacerFormTextPlaceholder": { "message": "Le texte qui remplacera le raccourci" },
   "replacerSaved": { "message": "Replacer enregistré" },

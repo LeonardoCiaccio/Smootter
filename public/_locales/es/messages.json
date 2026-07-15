@@ -216,7 +216,6 @@
   "bookmarkletsFormTagsLabel": { "message": "Etiquetas" },
   "bookmarkletsFormTagsPlaceholder": { "message": "Añade una etiqueta y pulsa intro" },
   "bookmarkletsFormCategoryLabel": { "message": "Categoría" },
-  "bookmarkletsCategoryNewOption": { "message": "+ Nueva categoría" },
   "bookmarkletsCategoryNewPlaceholder": {
     "message": "Nombre de la categoría, ej. AA/BB/CC para subcategorías"
   },
@@ -286,6 +285,7 @@
   "replacerFormTitlePlaceholder": { "message": "ej. Dirección de casa" },
   "replacerFormPlaceholderLabel": { "message": "Marcador" },
   "replacerFormPlaceholderPlaceholder": { "message": "ej. /casa" },
+  "replacerPlaceholderTaken": { "message": "Este marcador ya lo usa otro replacer." },
   "replacerFormTextLabel": { "message": "Texto de sustitución" },
   "replacerFormTextPlaceholder": { "message": "El texto que sustituirá al marcador" },
   "replacerSaved": { "message": "Replacer guardado" },
