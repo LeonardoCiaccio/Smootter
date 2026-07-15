@@ -6,18 +6,22 @@ import { cancelImport, confirmImport, pendingImport } from '../composables/impor
 
 const includeTools = ref(true)
 const includeBookmarklets = ref(true)
+const includeReplacers = ref(true)
 // Opt-in, not opt-out: this endpoint is where every future prompt (page URLs, page content,
-// the API key the user re-enters afterward) gets sent. A shared bundle could point it anywhere 
+// the API key the user re-enters afterward) gets sent. A shared bundle could point it anywhere
 // importing it by default, pre-checked like everything else, is how that goes unnoticed.
 const includeLlmConfig = ref(false)
 const includeNetworkConfig = ref(true)
+const includeSmootterServices = ref(true)
 
 // Re-arm each time a new pending import shows up (llmConfig always starts unchecked).
 watch(pendingImport, () => {
   includeTools.value = true
   includeBookmarklets.value = true
+  includeReplacers.value = true
   includeLlmConfig.value = false
   includeNetworkConfig.value = true
+  includeSmootterServices.value = true
 })
 
 const title = chrome.i18n.getMessage('importConfirmTitle')
@@ -27,8 +31,12 @@ const toolsLabel = computed(() =>
 const bookmarkletsLabel = computed(() =>
   chrome.i18n.getMessage('importConfirmBookmarklets', [String(pendingImport.value?.bookmarkletCandidates.length ?? 0)]),
 )
+const replacersLabel = computed(() =>
+  chrome.i18n.getMessage('importConfirmReplacers', [String(pendingImport.value?.replacerCandidates.length ?? 0)]),
+)
 const llmConfigLabel = chrome.i18n.getMessage('importConfirmLlmConfig')
 const networkConfigLabel = chrome.i18n.getMessage('importConfirmNetworkConfig')
+const smootterServicesLabel = chrome.i18n.getMessage('importConfirmSmootterServices')
 const confirmLabel = chrome.i18n.getMessage('importConfirmButton')
 const cancelLabel = chrome.i18n.getMessage('importConfirmCancel')
 
@@ -36,8 +44,10 @@ function onConfirm(): void {
   confirmImport({
     tools: includeTools.value,
     bookmarklets: includeBookmarklets.value,
+    replacers: includeReplacers.value,
     llmConfig: includeLlmConfig.value,
     networkConfig: includeNetworkConfig.value,
+    smootterServices: includeSmootterServices.value,
   })
 }
 </script>
@@ -61,6 +71,10 @@ function onConfirm(): void {
           <input v-model="includeBookmarklets" type="checkbox" :class="ui.importConfirmCheckbox" />
           <span>{{ bookmarkletsLabel }}</span>
         </label>
+        <label v-if="pendingImport.replacerCandidates.length > 0" :class="ui.importConfirmOption">
+          <input v-model="includeReplacers" type="checkbox" :class="ui.importConfirmCheckbox" />
+          <span>{{ replacersLabel }}</span>
+        </label>
         <label v-if="pendingImport.llmConfig" :class="ui.importConfirmOption">
           <input v-model="includeLlmConfig" type="checkbox" :class="ui.importConfirmCheckbox" />
           <span>
@@ -73,6 +87,10 @@ function onConfirm(): void {
         <label v-if="pendingImport.networkConfig" :class="ui.importConfirmOption">
           <input v-model="includeNetworkConfig" type="checkbox" :class="ui.importConfirmCheckbox" />
           <span>{{ networkConfigLabel }}</span>
+        </label>
+        <label v-if="pendingImport.smootterServices" :class="ui.importConfirmOption">
+          <input v-model="includeSmootterServices" type="checkbox" :class="ui.importConfirmCheckbox" />
+          <span>{{ smootterServicesLabel }}</span>
         </label>
 
         <div :class="ui.modalActions">

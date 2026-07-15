@@ -53,7 +53,9 @@
   },
   "resumerServiceLabel": { "message": "Resumer" },
   "replacerServiceLabel": { "message": "Replacer" },
-  "replacerServiceDescription": { "message": "En configuración." },
+  "replacerServiceDescription": {
+    "message": "Escribe un marcador (ej. /casa) en cualquier campo de texto de la página: se sustituye al instante por el texto que guardaste."
+  },
   "resumerServiceDescription": {
     "message": "Pasa el cursor sobre un artículo para ver un icono que lo resume en un chat con la IA."
   },
@@ -238,8 +240,13 @@
     "message": "Bookmarklets ($COUNT$)",
     "placeholders": { "count": { "content": "$1" } }
   },
+  "importConfirmReplacers": {
+    "message": "Replacers ($COUNT$)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
   "importConfirmLlmConfig": { "message": "Configuración de IA (endpoint, modelo sin la key)" },
   "importConfirmNetworkConfig": { "message": "Configuración de red (tamaño mínimo)" },
+  "importConfirmSmootterServices": { "message": "Servicios Smootters habilitados (Resumer, Replacer, ...)" },
   "importConfirmButton": { "message": "Importar" },
   "importConfirmCancel": { "message": "Cancelar" },
   "networkCategoriesTitle": { "message": "Categorías" },

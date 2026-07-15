@@ -51,7 +51,9 @@
   },
   "resumerServiceLabel": { "message": "Resumer" },
   "replacerServiceLabel": { "message": "Replacer" },
-  "replacerServiceDescription": { "message": "Being configured." },
+  "replacerServiceDescription": {
+    "message": "Type a placeholder (e.g. /home) into any text field on the page: it gets replaced on the fly with the text you saved."
+  },
   "resumerServiceDescription": {
     "message": "Hover an article to reveal an icon that summarizes it in an AI chat."
   },
@@ -228,8 +230,13 @@
     "message": "Bookmarklets ($COUNT$)",
     "placeholders": { "count": { "content": "$1" } }
   },
+  "importConfirmReplacers": {
+    "message": "Replacers ($COUNT$)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
   "importConfirmLlmConfig": { "message": "AI configuration (endpoint, model no key)" },
   "importConfirmNetworkConfig": { "message": "Network settings (minimum size floor)" },
+  "importConfirmSmootterServices": { "message": "Enabled Smootters services (Resumer, Replacer, ...)" },
   "importConfirmButton": { "message": "Import" },
   "importConfirmCancel": { "message": "Cancel" },
   "networkCategoriesTitle": { "message": "Categories" },

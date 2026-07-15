@@ -26,6 +26,7 @@ import {
   getPreference,
   setPreference,
   removePreference,
+  getSmootterServices,
   type Preferences,
 } from '@/shared/preferences'
 import { isLocalLlmEndpoint } from '@/shared/llmEndpoint'
@@ -73,7 +74,10 @@ grip.register({
     if (typeof args.key !== 'string') throw new Error('key is required.')
   },
   async business(args: GetPreferenceRequest) {
-    const value = await getPreference(args.key)
+    // smootterServices grows its set of toggles over time an older install's stored value may
+    // predate a newly added one, so it's always merged with defaults rather than read raw.
+    const value =
+      args.key === 'smootterServices' ? await getSmootterServices() : await getPreference(args.key)
     return { type: 'preferenceValue', key: args.key, value }
   },
 })

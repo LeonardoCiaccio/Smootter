@@ -84,3 +84,15 @@ export async function setPreference<K extends keyof Preferences>(
 export async function removePreference<K extends keyof Preferences>(key: K): Promise<void> {
   await chrome.storage.local.remove(PREFIX + key)
 }
+
+/**
+ * smootterServices, always fully populated. This set of toggles grows over time (a new one
+ * was added after some users already had an old, narrower object in storage), and a plain
+ * getPreference() would leave a newly added key simply absent (not even `false`) on any
+ * install whose stored value predates it. Every reader merges with the defaults here instead
+ * of repeating that merge (or forgetting to).
+ */
+export async function getSmootterServices(): Promise<SmootterServicesConfig> {
+  const stored = await getPreference('smootterServices')
+  return { ...DEFAULT_SMOOTTER_SERVICES, ...stored }
+}

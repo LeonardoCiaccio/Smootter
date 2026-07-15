@@ -53,7 +53,9 @@
   },
   "resumerServiceLabel": { "message": "Resumer" },
   "replacerServiceLabel": { "message": "Replacer" },
-  "replacerServiceDescription": { "message": "Wird konfiguriert." },
+  "replacerServiceDescription": {
+    "message": "Gib einen Platzhalter (z. B. /zuhause) in ein beliebiges Textfeld der Seite ein: er wird sofort durch den gespeicherten Text ersetzt."
+  },
   "resumerServiceDescription": {
     "message": "Fahre mit der Maus über einen Artikel, um ein Symbol anzuzeigen, das ihn im KI-Chat zusammenfasst."
   },
@@ -240,8 +242,13 @@
     "message": "Bookmarklets ($COUNT$)",
     "placeholders": { "count": { "content": "$1" } }
   },
+  "importConfirmReplacers": {
+    "message": "Replacer ($COUNT$)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
   "importConfirmLlmConfig": { "message": "KI-Konfiguration (Endpoint, Modell ohne Key)" },
   "importConfirmNetworkConfig": { "message": "Netzwerkeinstellungen (Mindestgröße)" },
+  "importConfirmSmootterServices": { "message": "Aktivierte Smootters-Dienste (Resumer, Replacer, ...)" },
   "importConfirmButton": { "message": "Importieren" },
   "importConfirmCancel": { "message": "Abbrechen" },
   "networkCategoriesTitle": { "message": "Kategorien" },

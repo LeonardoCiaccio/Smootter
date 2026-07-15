@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { ui } from '@/styles/ui'
 import Breadcrumb from '../components/Breadcrumb.vue'
 import ReplacerForm from '../components/ReplacerForm.vue'
@@ -8,6 +8,7 @@ import ReplacerTagsSidebar from '../components/ReplacerTagsSidebar.vue'
 import ReplacerResultsList from '../components/ReplacerResultsList.vue'
 import ReplacerSearchPanel, { type ReplacerSearchState } from '../components/ReplacerSearchPanel.vue'
 import { useToast } from '../plugins/toast'
+import { replacerRefreshSignal } from '../composables/replacerRefresh'
 import {
   deleteReplacer,
   deleteReplacerCategory,
@@ -131,6 +132,9 @@ async function reloadData(): Promise<void> {
 }
 
 onMounted(reloadData)
+
+// Imports can happen from the toolbar or Home's drop zone (both always mounted elsewhere).
+watch(replacerRefreshSignal, reloadData)
 </script>
 
 <template>

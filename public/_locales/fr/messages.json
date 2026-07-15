@@ -53,7 +53,9 @@
   },
   "resumerServiceLabel": { "message": "Resumer" },
   "replacerServiceLabel": { "message": "Replacer" },
-  "replacerServiceDescription": { "message": "En cours de configuration." },
+  "replacerServiceDescription": {
+    "message": "Tapez un raccourci (ex. /maison) dans n'importe quel champ de texte de la page : il est remplacé à la volée par le texte que vous avez enregistré."
+  },
   "resumerServiceDescription": {
     "message": "Survolez un article pour faire apparaître une icône qui le résume dans un chat avec l'IA."
   },
@@ -240,8 +242,13 @@
     "message": "Bookmarklets ($COUNT$)",
     "placeholders": { "count": { "content": "$1" } }
   },
+  "importConfirmReplacers": {
+    "message": "Replacers ($COUNT$)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
   "importConfirmLlmConfig": { "message": "Configuration IA (endpoint, modèle sans la clé)" },
   "importConfirmNetworkConfig": { "message": "Paramètres réseau (taille minimale)" },
+  "importConfirmSmootterServices": { "message": "Services Smootters activés (Resumer, Replacer, ...)" },
   "importConfirmButton": { "message": "Importer" },
   "importConfirmCancel": { "message": "Annuler" },
   "networkCategoriesTitle": { "message": "Catégories" },

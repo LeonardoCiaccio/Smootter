@@ -54,7 +54,9 @@
     "message": "Passa il mouse su un articolo per far comparire un'icona che lo riassume in chat con l'AI."
   },
   "replacerServiceLabel": { "message": "Replacer" },
-  "replacerServiceDescription": { "message": "In configurazione." },
+  "replacerServiceDescription": {
+    "message": "Scrivi un segnaposto (es. /casa) in qualsiasi campo di testo della pagina: viene sostituito al volo con il testo che hai salvato."
+  },
   "chatEmptyText": { "message": "Fai una domanda o scegli un suggerimento qui sotto." },
   "chatSuggestionSummary": { "message": "Riassumi questa pagina" },
   "chatSuggestionKeyPoints": { "message": "Elenca i 5 punti più importanti" },
@@ -230,8 +232,13 @@
     "message": "Bookmarklet ($COUNT$)",
     "placeholders": { "count": { "content": "$1" } }
   },
+  "importConfirmReplacers": {
+    "message": "Replacer ($COUNT$)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
   "importConfirmLlmConfig": { "message": "Configurazione AI (endpoint, modello senza la key)" },
   "importConfirmNetworkConfig": { "message": "Impostazioni rete (soglia byte minima)" },
+  "importConfirmSmootterServices": { "message": "Servizi Smootters abilitati (Resumer, Replacer, ...)" },
   "importConfirmButton": { "message": "Importa" },
   "importConfirmCancel": { "message": "Annulla" },
   "networkCategoriesTitle": { "message": "Categorie" },
