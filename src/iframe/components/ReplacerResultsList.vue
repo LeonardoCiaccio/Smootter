@@ -22,6 +22,14 @@ function visibleTags(replacer: StoredReplacer): string[] {
   return props.excludeTag ? replacer.tags.filter((tag) => tag !== props.excludeTag) : replacer.tags
 }
 
+// The replacement text can be arbitrarily long a short preview is what's actually scannable
+// in a results list, not the whole thing.
+const TEXT_SNIPPET_LENGTH = 140
+function textSnippet(replacer: StoredReplacer): string {
+  const text = replacer.text.trim()
+  return text.length > TEXT_SNIPPET_LENGTH ? `${text.slice(0, TEXT_SNIPPET_LENGTH)}…` : text
+}
+
 // Grouped visually by category, alphabetical within it a scannable, ordered record list.
 const sorted = computed(() =>
   [...props.replacers].sort((a, b) => {
@@ -50,9 +58,12 @@ const sorted = computed(() =>
 
         <div :class="ui.bookmarkletsTagResultTitleRow">
           <span :class="ui.bookmarkletsTagResultTitle">{{ replacer.title }}</span>
+          <span :class="ui.tagChip">{{ replacer.placeholder }}</span>
         </div>
 
-        <p :class="ui.bookmarkletsTagResultDescription">{{ replacer.placeholder }}</p>
+        <p v-if="replacer.text.trim() !== ''" :class="ui.bookmarkletsTagResultDescription">
+          {{ textSnippet(replacer) }}
+        </p>
 
         <div v-if="visibleTags(replacer).length > 0" :class="ui.bookmarkletsTagResultTags">
           <span v-for="tag in visibleTags(replacer)" :key="tag" :class="ui.tagChip">{{ tag }}</span>
