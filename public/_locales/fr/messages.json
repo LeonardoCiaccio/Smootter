@@ -52,6 +52,10 @@
     "message": "Services optionnels toujours actifs sur les pages que vous visitez. Désactivés par défaut : rien n'est injecté tant que vous ne les activez pas."
   },
   "resumerServiceLabel": { "message": "Resumer" },
+  "replacerServiceLabel": { "message": "Replacer" },
+  "replacerServiceDescription": {
+    "message": "Tapez un raccourci (ex. /maison) dans n'importe quel champ de texte de la page : il est remplacé à la volée par le texte que vous avez enregistré."
+  },
   "resumerServiceDescription": {
     "message": "Survolez un article pour faire apparaître une icône qui le résume dans un chat avec l'IA."
   },
@@ -238,8 +242,13 @@
     "message": "Bookmarklets ($COUNT$)",
     "placeholders": { "count": { "content": "$1" } }
   },
+  "importConfirmReplacers": {
+    "message": "Replacers ($COUNT$)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
   "importConfirmLlmConfig": { "message": "Configuration IA (endpoint, modèle sans la clé)" },
   "importConfirmNetworkConfig": { "message": "Paramètres réseau (taille minimale)" },
+  "importConfirmSmootterServices": { "message": "Services Smootters activés (Resumer, Replacer, ...)" },
   "importConfirmButton": { "message": "Importer" },
   "importConfirmCancel": { "message": "Annuler" },
   "networkCategoriesTitle": { "message": "Catégories" },
@@ -271,6 +280,22 @@
   "bookmarkletsTagDeleteConfirm": { "message": "Cliquez à nouveau pour supprimer partout" },
   "bookmarkletsDeleteConfirm": { "message": "Cliquez à nouveau pour supprimer" },
   "bookmarkletDeleted": { "message": "Bookmarklet supprimé" },
+  "replacer": { "message": "Replacer" },
+  "replacerHeader": { "message": "Nouveau replacer" },
+  "replacerEditHeader": { "message": "Modifier le replacer" },
+  "replacerSubheader": { "message": "Créez des extraits de texte qui s'étendent automatiquement pendant que vous tapez." },
+  "replacerFormTitleLabel": { "message": "Titre" },
+  "replacerFormTitlePlaceholder": { "message": "ex. Adresse du domicile" },
+  "replacerFormPlaceholderLabel": { "message": "Raccourci" },
+  "replacerFormPlaceholderPlaceholder": { "message": "ex. /maison" },
+  "replacerFormTextLabel": { "message": "Texte de remplacement" },
+  "replacerFormTextPlaceholder": { "message": "Le texte qui remplacera le raccourci" },
+  "replacerSaved": { "message": "Replacer enregistré" },
+  "replacerDeleted": { "message": "Replacer supprimé" },
+  "replacerCategoriesTitle": { "message": "Catégories" },
+  "replacerAddNew": { "message": "Ajouter un replacer" },
+  "replacerSearchPlaceholder": { "message": "Rechercher par titre, raccourci, texte ou tag..." },
+  "replacerSearchNoResults": { "message": "Aucun replacer ne correspond à la recherche." },
   "bookmarkletsUncategorized": { "message": "Sans catégorie" },
   "bookmarkletsCategoryDeleteConfirm": {
     "message": "Cliquez à nouveau pour supprimer la catégorie"

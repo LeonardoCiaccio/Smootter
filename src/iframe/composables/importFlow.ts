@@ -15,6 +15,7 @@ import {
 import { useToast } from '../plugins/toast'
 import { notifyToolsChanged } from './toolsRefresh'
 import { notifyBookmarkletsChanged } from './bookmarkletsRefresh'
+import { notifyReplacerChanged } from './replacerRefresh'
 import { showLlmApiKeyReminder } from './llmApiKeyReminder'
 
 const toast = useToast()
@@ -22,14 +23,13 @@ const toast = useToast()
 export const pendingImport = ref<ParsedImport | null>(null)
 
 async function finishImport(parsed: ParsedImport, selection: ImportSelection): Promise<void> {
-  const { toolsImported, bookmarkletsImported, llmConfigNeedsApiKey } = await applyParsedImport(
-    parsed,
-    selection,
-  )
+  const { toolsImported, bookmarkletsImported, replacersImported, llmConfigNeedsApiKey } =
+    await applyParsedImport(parsed, selection)
   if (toolsImported > 0) notifyToolsChanged()
   if (bookmarkletsImported > 0) notifyBookmarkletsChanged()
+  if (replacersImported > 0) notifyReplacerChanged()
 
-  const imported = toolsImported + bookmarkletsImported
+  const imported = toolsImported + bookmarkletsImported + replacersImported
   if (imported > 0) toast.success(chrome.i18n.getMessage('toolsImportSuccess', [String(imported)]))
   if (parsed.failed > 0) toast.error(chrome.i18n.getMessage('toolsImportError'))
   if (llmConfigNeedsApiKey) showLlmApiKeyReminder()
@@ -54,8 +54,10 @@ export async function startImport(files: File[]): Promise<void> {
   if (
     parsed.tools.length === 0 &&
     parsed.bookmarkletCandidates.length === 0 &&
+    parsed.replacerCandidates.length === 0 &&
     parsed.llmConfig === null &&
-    parsed.networkConfig === null
+    parsed.networkConfig === null &&
+    parsed.smootterServices === null
   ) {
     if (parsed.failed > 0) toast.error(chrome.i18n.getMessage('toolsImportError'))
     return
@@ -69,7 +71,9 @@ export async function startImport(files: File[]): Promise<void> {
   await finishImport(parsed, {
     tools: true,
     bookmarklets: true,
+    replacers: true,
     llmConfig: true,
     networkConfig: true,
+    smootterServices: true,
   })
 }

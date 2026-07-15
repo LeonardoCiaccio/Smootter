@@ -252,6 +252,21 @@ export interface SearchBookmarkletsResult {
   detail?: string
 }
 
+/** Same idea as SearchBookmarkletsRequest, over the saved replacers store instead. */
+export interface SearchReplacersRequest {
+  type: 'searchReplacers'
+  query: string
+}
+
+/** Reply to searchReplacers: matching ids, most relevant first. */
+export interface SearchReplacersResult {
+  type: 'searchReplacersResult'
+  ok: boolean
+  ids?: string[]
+  errorCode?: LlmErrorCode
+  detail?: string
+}
+
 /**
  * The fixed fallback bucket for a response that matches none of the user's mime category
  * rules (see MimeCategoryRule in shared/preferences.ts) always present in the sidebar,
@@ -310,6 +325,7 @@ export type ChannelRequest =
   | OpenResumerChatRequest
   | GenerateBookmarkletRequest
   | SearchBookmarkletsRequest
+  | SearchReplacersRequest
   | GetNetworkLogRequest
 
 /** Messages sent from the background to the UI. */
@@ -327,6 +343,7 @@ export type ChannelResponse =
   | ChatMessageResult
   | OpenResumerChatResult
   | SearchBookmarkletsResult
+  | SearchReplacersResult
   | NetworkLogResult
   | NetworkEntryCapturedBroadcast
   | ChannelError

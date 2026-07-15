@@ -14,7 +14,7 @@
  * tabs won't get resumer.js until they reload. Acceptable here: this is a convenience feature,
  * not a security boundary.
  */
-import { getPreference, preferenceStorageKey, DEFAULT_SMOOTTER_SERVICES } from '@/shared/preferences'
+import { getSmootterServices, preferenceStorageKey } from '@/shared/preferences'
 
 const RESUMER_SCRIPT_ID = 'smootter-resumer'
 
@@ -34,7 +34,7 @@ async function registerResumer(): Promise<void> {
 }
 
 async function syncResumerRegistration(): Promise<void> {
-  const config = (await getPreference('smootterServices')) ?? DEFAULT_SMOOTTER_SERVICES
+  const config = await getSmootterServices()
   if (config.resumer) await registerResumer()
   else await unregisterResumer()
 }

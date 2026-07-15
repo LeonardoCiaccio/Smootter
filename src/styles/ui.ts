@@ -139,7 +139,7 @@ export const ui = {
   // of floating at a narrower centered column's edge with dead space beyond it.
   bookmarkletsEmptyWrapper:
     'mx-auto flex w-full max-w-xl flex-1 flex-col gap-8 overflow-y-auto px-6 pb-10 pt-10',
-  bookmarkletsWrapper: 'flex w-full flex-1 flex-col gap-8 overflow-y-auto px-6 pb-10 pt-10',
+  bookmarkletsWrapper: 'flex w-full flex-1 flex-col gap-8 overflow-y-auto px-10 pb-10 pt-10',
   bookmarkletsHeaderGroup: 'mb-2 flex flex-col gap-1.5',
   bookmarkletsHeader: 'font-heading text-2xl font-bold text-gray-900 dark:text-gray-100',
   bookmarkletsSubheader: 'font-subheading text-sm text-gray-500 dark:text-gray-400 pb-4',
@@ -153,6 +153,14 @@ export const ui = {
   bookmarkletsAlreadySavedNotice:
     'mb-4 rounded-tool border border-cyan-200 bg-cyan-50 px-3 py-2 text-xs font-medium text-cyan-700 dark:border-cyan-900 dark:bg-cyan-950 dark:text-cyan-300',
   bookmarkletsLayout: 'flex min-h-0 flex-1',
+  // Replacer's form fills the available height instead of scrolling as a page (bookmarkletsWrapper
+  // does) so its snippet-text textarea can grow into "whatever space is left" rather than a fixed
+  // row count.
+  replacerWrapper: 'flex h-full min-h-0 w-full flex-1 flex-col gap-4 px-10 pb-10 pt-10',
+  replacerForm: 'flex h-full min-h-0 flex-1 flex-col gap-4',
+  replacerTextareaField: 'flex h-full min-h-0 flex-1 flex-col gap-1.5 text-left',
+  replacerTextarea:
+    'h-full min-h-0 flex-1 resize-none rounded-tool border border-gray-300 bg-white px-3 py-2 text-sm text-gray-900 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',
   bookmarkletsSidebar:
     'flex w-56 flex-shrink-0 flex-col gap-4 overflow-y-auto border-r border-gray-200 px-4 pb-6 pt-10 dark:border-gray-800',
   bookmarkletsSidebarHeader: 'flex items-center justify-between',
@@ -216,7 +224,7 @@ export const ui = {
   bookmarkletsTagResultTitleRow: 'flex items-center gap-1.5',
   bookmarkletsTagResultTitle: 'truncate text-sm font-semibold text-gray-900 dark:text-gray-100',
   bookmarkletsTagResultDescription: 'text-xs text-gray-500 dark:text-gray-400',
-  bookmarkletsTagResultTags: 'flex flex-wrap gap-1.5',
+  bookmarkletsTagResultTags: 'flex flex-wrap gap-1.5 mt-4',
   bookmarkletsSearchRow: 'mb-6 flex items-center gap-2',
   bookmarkletsSearchInputWrapper: 'relative min-w-0 flex-1',
   bookmarkletsSearchInputIcon:

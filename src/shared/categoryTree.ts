@@ -1,18 +1,22 @@
 /**
- * categoryTree turns the flat StoredCategory list into a nested tree by
- * reading "/" in the name as a path separator (e.g. "Work/Projects/2026").
- * No schema change: categories stay flat records: a name containing "/" is
- * just organized visually. Intermediate segments that don't match an actual
- * category (e.g. "Work" when only "Work/Projects" was ever created) become
- * structural nodes grouping only, not selectable or deletable.
+ * categoryTree turns a flat category list into a nested tree by reading "/" in the name as a
+ * path separator (e.g. "Work/Projects/2026"). Shared across every domain with its own category
+ * store (bookmarklets, replacer, ...) each keeps its own StoredCategory-shaped records; this
+ * file only needs id/name. No schema change: categories stay flat records a name containing
+ * "/" is just organized visually. Intermediate segments that don't match an actual category
+ * (e.g. "Work" when only "Work/Projects" was ever created) become structural nodes grouping
+ * only, not selectable or deletable.
  */
-import { UNCATEGORIZED_CATEGORY_ID, type StoredCategory } from './bookmarkletsDb'
+export interface CategoryLike {
+  id: string
+  name: string
+}
 
-export interface CategoryTreeNode {
+export interface CategoryTreeNode<T extends CategoryLike = CategoryLike> {
   segment: string
   fullPath: string
-  category: StoredCategory | null
-  children: CategoryTreeNode[]
+  category: T | null
+  children: CategoryTreeNode<T>[]
 }
 
 /** The segments of a category name/path, trimmed and stripped of empties. */
@@ -32,9 +36,12 @@ export function normalizeCategoryName(name: string): string {
   return pathSegments(name).join('/')
 }
 
-export function buildCategoryTree(categories: StoredCategory[]): CategoryTreeNode[] {
-  const roots: CategoryTreeNode[] = []
-  const nodesByPath = new Map<string, CategoryTreeNode>()
+export function buildCategoryTree<T extends CategoryLike>(
+  categories: T[],
+  uncategorizedId: string,
+): CategoryTreeNode<T>[] {
+  const roots: CategoryTreeNode<T>[] = []
+  const nodesByPath = new Map<string, CategoryTreeNode<T>>()
 
   for (const category of categories) {
     const segments = pathSegments(category.name)
@@ -42,7 +49,7 @@ export function buildCategoryTree(categories: StoredCategory[]): CategoryTreeNod
 
     let path = ''
     let siblings = roots
-    let node: CategoryTreeNode | undefined
+    let node: CategoryTreeNode<T> | undefined
     for (const segment of segments) {
       path = path === '' ? segment : `${path}/${segment}`
       node = nodesByPath.get(path)
@@ -59,8 +66,8 @@ export function buildCategoryTree(categories: StoredCategory[]): CategoryTreeNod
   // "Uncategorized" is the catch-all always last, never mixed in among real categories
   // (IndexedDB.getAll returns rows in an arbitrary key order otherwise).
   return roots.sort((a, b) => {
-    const aIsUncategorized = a.category?.id === UNCATEGORIZED_CATEGORY_ID
-    const bIsUncategorized = b.category?.id === UNCATEGORIZED_CATEGORY_ID
+    const aIsUncategorized = a.category?.id === uncategorizedId
+    const bIsUncategorized = b.category?.id === uncategorizedId
     return aIsUncategorized === bIsUncategorized ? 0 : aIsUncategorized ? 1 : -1
   })
 }

@@ -13,6 +13,7 @@ import type { LlmConfig } from '@/shared/preferences'
 import type { LlmErrorCode, ChatMessage } from '@/shared/messages'
 import { isPrivateOrLoopbackHost } from '@/shared/network'
 import { queryBookmarklets } from '@/shared/bookmarkletsDb'
+import { queryReplacers } from '@/shared/replacerDb'
 
 export interface LlmTestResult {
   ok: boolean
@@ -173,6 +174,54 @@ const RETURN_SEARCH_RESULTS_TOOL = {
 } as const
 
 const SEARCH_TOOLS = [SEARCH_BOOKMARKLETS_TOOL, RETURN_SEARCH_RESULTS_TOOL] as const
+
+const SEARCH_REPLACERS_TOOL = {
+  type: 'function',
+  function: {
+    name: 'search_replacers',
+    description:
+      "Queries the user's saved text-expansion replacers directly in the database a real indexed lookup, not a scan, so it stays fast no matter how many are saved. Matches whole words (case-insensitive) across each replacer's title, placeholder, replacement text and tags. It does no typo correction and no synonym matching that's your job: call it again with corrected spellings, synonyms, or a translation if the first attempt returns nothing or too little, or narrow it down with more terms if it returns too much. Returns candidates, not a verdict you decide which ones actually match before delivering your final answer.",
+    parameters: {
+      type: 'object',
+      properties: {
+        all: {
+          type: 'array',
+          items: { type: 'string' },
+          description:
+            'AND: every one of these words must be present. Use for precision narrows the results.',
+        },
+        any: {
+          type: 'array',
+          items: { type: 'string' },
+          description:
+            'OR: at least one of these words must be present. Use for recall synonyms, alternate spellings, related terms.',
+        },
+      },
+    },
+  },
+} as const
+
+const RETURN_REPLACER_SEARCH_RESULTS_TOOL = {
+  type: 'function',
+  function: {
+    name: 'return_search_results',
+    description:
+      'Deliver your final answer: the ids of the replacers that genuinely match what the user is looking for, most relevant first. Call this once, after searching as needed. An empty list is a correct answer when nothing truly matches never force irrelevant results in just to return something.',
+    parameters: {
+      type: 'object',
+      properties: {
+        ids: {
+          type: 'array',
+          items: { type: 'string' },
+          description: 'Matching replacer ids, most relevant first.',
+        },
+      },
+      required: ['ids'],
+    },
+  },
+} as const
+
+const SEARCH_REPLACER_TOOLS = [SEARCH_REPLACERS_TOOL, RETURN_REPLACER_SEARCH_RESULTS_TOOL] as const
 
 interface ToolCall {
   id?: string
@@ -770,6 +819,104 @@ export async function searchBookmarklets(
         // fall through with empty terms reported to the model below
       }
       const { text, matched } = await executeSearchTool(args, emptyStreak)
+      emptyStreak = matched ? 0 : emptyStreak + 1
+      pushToolResult(conversation, toolCall, result.message.content ?? null, text)
+      continue
+    }
+
+    if (name === 'return_search_results') {
+      try {
+        const args = JSON.parse(toolCall.function?.arguments ?? '{}') as { ids?: unknown }
+        const ids = Array.isArray(args.ids)
+          ? args.ids.filter((id): id is string => typeof id === 'string')
+          : []
+        return { ok: true, ids }
+      } catch (error) {
+        return { ok: false, errorCode: 'unknown', detail: describeError(error) }
+      }
+    }
+
+    return { ok: false, errorCode: 'unknown', detail: `Unexpected tool call: ${name}` }
+  }
+
+  return { ok: false, errorCode: 'unknown', detail: 'Too many tool calls without a final answer.' }
+}
+
+/** Runs a real indexed DB query (see queryReplacers) never loads the whole store into memory. */
+async function executeReplacerSearchTool(
+  args: { all?: unknown; any?: unknown },
+  emptyStreak: number,
+): Promise<SearchToolExecution> {
+  const all = toWordArray(args.all)
+  const any = toWordArray(args.any)
+  if (all.length === 0 && any.length === 0) {
+    return { text: JSON.stringify({ error: 'Provide at least one term in "all" or "any".' }), matched: false }
+  }
+
+  const matches = await queryReplacers({ all, any })
+  if (matches.length === 0) {
+    // A reminder placed right here, at the moment it's actionable, holds up far better than a
+    // single instruction back in the system prompt models are prone to giving up on the first
+    // empty result otherwise.
+    const hint =
+      emptyStreak >= HYPERNYM_HINT_THRESHOLD
+        ? 'Still nothing after several synonym attempts stop trying more synonyms for the same concept, they clearly aren\'t in the data. Instead try a hypernym: a broader, more general category the concept belongs to.'
+        : 'No matches for these exact words this is plain word matching, it will never infer synonyms on its own. Try again with different words: synonyms or closely related terms for the same concept.'
+    return { text: JSON.stringify({ count: 0, hint }), matched: false }
+  }
+  return {
+    text: JSON.stringify(
+      matches.slice(0, SEARCH_RESULT_CAP).map((item) => ({
+        id: item.id,
+        title: item.title,
+        placeholder: item.placeholder,
+        text: item.text,
+        tags: item.tags,
+      })),
+    ),
+    matched: true,
+  }
+}
+
+function buildReplacerSearchSystemPrompt(): string {
+  return [
+    "You are the search assistant for Smootter's saved text-expansion replacers. The user typed a free-text query possibly with typos, vague wording, or a different language than the saved titles. Understand their intent, not just literal keyword overlap.",
+    'Tool calling is available: you have `search_replacers` (a real database query, with `all`/`any` for AND/OR call it repeatedly, adjusting terms, until you have enough signal) and `return_search_results` (deliver your final answer). Always use these never answer in plain text.',
+    "The search tool won't correct typos or match synonyms for you that's your job. Start with the words from the query split across `all`/`any` as makes sense. If a query comes back empty (or with results that clearly don't fit), do NOT give up or repeat the same words your next attempts MUST use different words. First try synonyms or very close variants of the same concept (corrected spellings, a translation if the query might be in a different language than the saved content). If several synonym attempts in a row still find nothing, stop looking for synonyms and switch to a hypernym instead a broader, more general category the concept belongs to. Keep varying your wording like this for up to about ten attempts before concluding nothing matches. Then judge which of the returned candidates actually match what the user means, and call return_search_results with only those, most relevant first.",
+  ].join('\n\n')
+}
+
+/**
+ * Asks the model to find which saved replacers match a free-text `query`. The model calls
+ * search_replacers a real indexed DB query, executed here as many times as it wants, adjusting
+ * AND/OR terms, before deciding the final set via return_search_results.
+ */
+export async function searchReplacers(config: LlmConfig, query: string): Promise<LlmSearchResult> {
+  const conversation: ConversationMessage[] = [
+    { role: 'system', content: buildReplacerSearchSystemPrompt() },
+    { role: 'user', content: `Search query: ${query}` },
+  ]
+
+  // Consecutive empty search_replacers calls the hint escalates from "try a synonym" to "try a
+  // hypernym" once this climbs past HYPERNYM_HINT_THRESHOLD. Resets on any real match.
+  let emptyStreak = 0
+
+  for (let iteration = 0; iteration < SEARCH_MAX_ITERATIONS; iteration++) {
+    const result = await callChatCompletions(config, conversation, SEARCH_REPLACER_TOOLS)
+    if (!result.ok) return { ok: false, errorCode: result.errorCode, detail: result.detail }
+
+    const toolCall = result.message.tool_calls?.[0]
+    const name = toolCall?.function?.name
+    if (!toolCall || !name) return { ok: false, errorCode: 'noToolSupport' }
+
+    if (name === 'search_replacers') {
+      let args: { all?: unknown; any?: unknown } = {}
+      try {
+        args = JSON.parse(toolCall.function?.arguments ?? '{}')
+      } catch {
+        // fall through with empty terms reported to the model below
+      }
+      const { text, matched } = await executeReplacerSearchTool(args, emptyStreak)
       emptyStreak = matched ? 0 : emptyStreak + 1
       pushToolResult(conversation, toolCall, result.message.content ?? null, text)
       continue

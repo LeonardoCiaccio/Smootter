@@ -19,12 +19,14 @@ import {
   type OpenResumerChatRequest,
   type GenerateBookmarkletRequest,
   type SearchBookmarkletsRequest,
+  type SearchReplacersRequest,
 } from '@/shared/messages'
 import { openEnvironment } from './openEnvironment'
 import {
   getPreference,
   setPreference,
   removePreference,
+  getSmootterServices,
   type Preferences,
 } from '@/shared/preferences'
 import { isLocalLlmEndpoint } from '@/shared/llmEndpoint'
@@ -36,6 +38,7 @@ import {
   generalChat,
   generateBookmarkletMetadata,
   searchBookmarklets,
+  searchReplacers,
 } from './llmClient'
 import { getNetworkLog } from './networkInspector'
 
@@ -71,7 +74,10 @@ grip.register({
     if (typeof args.key !== 'string') throw new Error('key is required.')
   },
   async business(args: GetPreferenceRequest) {
-    const value = await getPreference(args.key)
+    // smootterServices grows its set of toggles over time an older install's stored value may
+    // predate a newly added one, so it's always merged with defaults rather than read raw.
+    const value =
+      args.key === 'smootterServices' ? await getSmootterServices() : await getPreference(args.key)
     return { type: 'preferenceValue', key: args.key, value }
   },
 })
@@ -345,6 +351,38 @@ grip.hook('searchBookmarklets', {
 })
 
 grip.register({
+  name: 'searchReplacers',
+  validate(args: SearchReplacersRequest) {
+    if (typeof args.query !== 'string' || args.query.trim() === '')
+      throw new Error('query is required.')
+  },
+  async business(args: SearchReplacersRequest) {
+    const config = await getPreference('llmConfig')
+    if (!config) {
+      return {
+        type: 'searchReplacersResult',
+        ok: false,
+        errorCode: 'unknown',
+        detail: 'No LLM configured.',
+      }
+    }
+    const result = await searchReplacers(config, args.query)
+    return {
+      type: 'searchReplacersResult',
+      ok: result.ok,
+      ids: result.ids,
+      errorCode: result.errorCode,
+      detail: result.detail,
+    }
+  },
+})
+grip.hook('searchReplacers', {
+  after({ result }, context: Context) {
+    if (result.isSuccess) context.sendResponse(result.result)
+  },
+})
+
+grip.register({
   name: 'getNetworkLog',
   validate() {},
   business(_args: unknown, context?: object) {
@@ -398,6 +436,7 @@ const CHANNEL_FUNCTIONS_NEEDING_FAILURE_REPLY = [
   'openResumerChat',
   'generateBookmarklet',
   'searchBookmarklets',
+  'searchReplacers',
   'getNetworkLog',
 ] as const
 

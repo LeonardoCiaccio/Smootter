@@ -3,6 +3,7 @@ import { inject, onMounted, onUnmounted, reactive } from 'vue'
 import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
 import { DEFAULT_SMOOTTER_SERVICES, preferenceStorageKey, type SmootterServicesConfig } from '@/shared/preferences'
+import SmootterServiceToggle from './SmootterServiceToggle.vue'
 
 const channel = inject(channelKey)
 
@@ -27,9 +28,9 @@ onUnmounted(() => chrome.storage.onChanged.removeListener(onStorageChanged))
 
 // Saved immediately on toggle no separate Save button: each of these is a single on/off switch,
 // not a form with several fields to review together (see NetworkSettingsSection for that pattern).
-async function onToggleResumer(): Promise<void> {
+async function onToggle(key: keyof SmootterServicesConfig): Promise<void> {
   if (!channel) return
-  config.resumer = !config.resumer
+  config[key] = !config[key]
   await channel.send({ type: 'setPreference', key: 'smootterServices', value: { ...config } })
 }
 
@@ -37,6 +38,8 @@ const sectionTitle = chrome.i18n.getMessage('smootterServicesGroupTitle')
 const sectionDescription = chrome.i18n.getMessage('smootterServicesDescription')
 const resumerLabel = chrome.i18n.getMessage('resumerServiceLabel')
 const resumerDescription = chrome.i18n.getMessage('resumerServiceDescription')
+const replacerLabel = chrome.i18n.getMessage('replacerServiceLabel')
+const replacerDescription = chrome.i18n.getMessage('replacerServiceDescription')
 </script>
 
 <template>
@@ -46,20 +49,17 @@ const resumerDescription = chrome.i18n.getMessage('resumerServiceDescription')
       <p :class="ui.optionsSectionDescription">{{ sectionDescription }}</p>
     </div>
 
-    <div :class="ui.smootterServiceRow">
-      <div :class="ui.smootterServiceInfo">
-        <span :class="ui.smootterServiceLabel">{{ resumerLabel }}</span>
-        <span :class="ui.smootterServiceDescription">{{ resumerDescription }}</span>
-      </div>
-      <button
-        type="button"
-        role="switch"
-        :aria-checked="config.resumer"
-        :class="[ui.switchTrack, config.resumer ? ui.switchTrackOn : ui.switchTrackOff]"
-        @click="onToggleResumer"
-      >
-        <span :class="[ui.switchThumb, config.resumer && ui.switchThumbOn]" />
-      </button>
-    </div>
+    <SmootterServiceToggle
+      :label="resumerLabel"
+      :description="resumerDescription"
+      :checked="config.resumer"
+      @toggle="onToggle('resumer')"
+    />
+    <SmootterServiceToggle
+      :label="replacerLabel"
+      :description="replacerDescription"
+      :checked="config.replacer"
+      @toggle="onToggle('replacer')"
+    />
   </div>
 </template>

@@ -1,12 +1,13 @@
 /**
  * exportImport the app's two general export/import actions (toolbar buttons, and drag &
- * drop anywhere in the app): one file, tools and bookmarklets together. Import is split into
- * parse (parseImportFiles reads every file, saves nothing) and apply (applyParsedImport
- * actually writes the selected sections) so the caller can show a confirmation step in
- * between for anything beyond a plain tools-only file (see needsImportConfirmation).
+ * drop anywhere in the app): one file, every section together. Import is split into parse
+ * (parseImportFiles reads every file, saves nothing) and apply (applyParsedImport actually
+ * writes the selected sections) so the caller can show a confirmation step in between for
+ * anything beyond a plain tools-only file (see needsImportConfirmation).
  */
 import { getAllTools, saveTool, type StoredTool } from './toolsDb'
 import { getAllBookmarklets, getAllCategories } from './bookmarkletsDb'
+import { getAllReplacers, getAllReplacerCategories } from './replacerDb'
 import { downloadJson, parseToolsValue, toolToExportable } from './toolsTransfer'
 import {
   bookmarkletToExportable,
@@ -14,14 +15,29 @@ import {
   saveImportedBookmarklets,
   type BookmarkletImportCandidate,
 } from './bookmarkletsTransfer'
-import { getPreference, setPreference, type NetworkConfig } from './preferences'
+import {
+  replacerToExportable,
+  parseReplacersValue,
+  saveImportedReplacers,
+  type ReplacerImportCandidate,
+} from './replacerTransfer'
+import {
+  getPreference,
+  setPreference,
+  getSmootterServices,
+  DEFAULT_SMOOTTER_SERVICES,
+  type NetworkConfig,
+  type SmootterServicesConfig,
+} from './preferences'
 import { isLocalLlmEndpoint } from './llmEndpoint'
 
 interface Bundle {
   tools?: unknown
   bookmarklets?: unknown
+  replacers?: unknown
   llmConfig?: unknown
   networkConfig?: unknown
+  smootterServices?: unknown
 }
 
 function isBundle(value: unknown): value is Bundle {
@@ -29,7 +45,7 @@ function isBundle(value: unknown): value is Bundle {
     typeof value === 'object' &&
     value !== null &&
     !Array.isArray(value) &&
-    ('tools' in value || 'bookmarklets' in value)
+    ('tools' in value || 'bookmarklets' in value || 'replacers' in value)
   )
 }
 
@@ -63,18 +79,31 @@ function isNetworkConfig(value: unknown): value is NetworkConfig {
   )
 }
 
+/** Every key must be a boolean matches DEFAULT_SMOOTTER_SERVICES's shape exactly. */
+function isSmootterServicesConfig(value: unknown): value is SmootterServicesConfig {
+  if (typeof value !== 'object' || value === null) return false
+  const record = value as Record<string, unknown>
+  return Object.keys(DEFAULT_SMOOTTER_SERVICES).every((key) => typeof record[key] === 'boolean')
+}
+
 /**
  * Includes the LLM connection settings endpoint, model, max tokens but never the API key:
- * that stays local to this device/browser and is never written to the exported file.
+ * that stays local to this device/browser and is never written to the exported file. Includes
+ * the actual on/off state of every Smootters toggle (resumer, replacer, ...) so an import
+ * re-enables exactly what was enabled on export, not silently defaulting them back off.
  */
 export async function exportEverything(): Promise<void> {
-  const [tools, bookmarklets, categories, llmConfig, networkConfig] = await Promise.all([
-    getAllTools(),
-    getAllBookmarklets(),
-    getAllCategories(),
-    getPreference('llmConfig'),
-    getPreference('networkConfig'),
-  ])
+  const [tools, bookmarklets, bookmarkletCategories, replacers, replacerCategories, llmConfig, networkConfig, smootterServices] =
+    await Promise.all([
+      getAllTools(),
+      getAllBookmarklets(),
+      getAllCategories(),
+      getAllReplacers(),
+      getAllReplacerCategories(),
+      getPreference('llmConfig'),
+      getPreference('networkConfig'),
+      getSmootterServices(),
+    ])
 
   const exportedLlmConfig: ExportedLlmConfig | undefined = llmConfig
     ? {
@@ -87,18 +116,22 @@ export async function exportEverything(): Promise<void> {
   downloadJson(`smootter-export-${new Date().toISOString().slice(0, 10)}.json`, {
     tools: tools.map(toolToExportable),
     bookmarklets: bookmarklets.map((bookmarklet) =>
-      bookmarkletToExportable(bookmarklet, categories),
+      bookmarkletToExportable(bookmarklet, bookmarkletCategories),
     ),
+    replacers: replacers.map((replacer) => replacerToExportable(replacer, replacerCategories)),
     llmConfig: exportedLlmConfig,
     networkConfig,
+    smootterServices,
   })
 }
 
 export interface ParsedImport {
   tools: StoredTool[]
   bookmarkletCandidates: BookmarkletImportCandidate[]
+  replacerCandidates: ReplacerImportCandidate[]
   llmConfig: ExportedLlmConfig | null
   networkConfig: NetworkConfig | null
+  smootterServices: SmootterServicesConfig | null
   /** Files (or bundle sections) that failed to parse reported once, upfront. */
   failed: number
 }
@@ -107,8 +140,10 @@ export interface ParsedImport {
 export async function parseImportFiles(files: File[]): Promise<ParsedImport> {
   const tools: StoredTool[] = []
   const bookmarkletCandidates: BookmarkletImportCandidate[] = []
+  const replacerCandidates: ReplacerImportCandidate[] = []
   let llmConfig: ExportedLlmConfig | null = null
   let networkConfig: NetworkConfig | null = null
+  let smootterServices: SmootterServicesConfig | null = null
   let failed = 0
 
   for (const file of files) {
@@ -138,8 +173,19 @@ export async function parseImportFiles(files: File[]): Promise<ParsedImport> {
             failed++
           }
         }
+        if (
+          parsed.replacers !== undefined &&
+          !(Array.isArray(parsed.replacers) && parsed.replacers.length === 0)
+        ) {
+          try {
+            replacerCandidates.push(...parseReplacersValue(parsed.replacers))
+          } catch {
+            failed++
+          }
+        }
         if (isExportedLlmConfig(parsed.llmConfig)) llmConfig = parsed.llmConfig
         if (isNetworkConfig(parsed.networkConfig)) networkConfig = parsed.networkConfig
+        if (isSmootterServicesConfig(parsed.smootterServices)) smootterServices = parsed.smootterServices
         continue
       }
 
@@ -150,33 +196,39 @@ export async function parseImportFiles(files: File[]): Promise<ParsedImport> {
     }
   }
 
-  return { tools, bookmarkletCandidates, llmConfig, networkConfig, failed }
+  return { tools, bookmarkletCandidates, replacerCandidates, llmConfig, networkConfig, smootterServices, failed }
 }
 
 /** A file that's just tools the common case skips the confirmation step entirely. */
 export function needsImportConfirmation(parsed: ParsedImport): boolean {
   return (
     parsed.bookmarkletCandidates.length > 0 ||
+    parsed.replacerCandidates.length > 0 ||
     parsed.llmConfig !== null ||
-    parsed.networkConfig !== null
+    parsed.networkConfig !== null ||
+    parsed.smootterServices !== null
   )
 }
 
 export interface ImportSelection {
   tools: boolean
   bookmarklets: boolean
+  replacers: boolean
   llmConfig: boolean
   networkConfig: boolean
+  smootterServices: boolean
 }
 
 export interface ImportSummary {
   toolsImported: number
   bookmarkletsImported: number
+  replacersImported: number
   llmConfigImported: boolean
   // True when the imported endpoint isn't a local runtime (Ollama, LM Studio, ...) those
   // need an API key, which imports never carry, so the caller should prompt for one.
   llmConfigNeedsApiKey: boolean
   networkConfigImported: boolean
+  smootterServicesImported: boolean
 }
 
 /** Saves whichever sections `selection` keeps, from an already-parsed import. */
@@ -186,9 +238,11 @@ export async function applyParsedImport(
 ): Promise<ImportSummary> {
   let toolsImported = 0
   let bookmarkletsImported = 0
+  let replacersImported = 0
   let llmConfigImported = false
   let llmConfigNeedsApiKey = false
   let networkConfigImported = false
+  let smootterServicesImported = false
 
   if (selection.tools && parsed.tools.length > 0) {
     for (const tool of parsed.tools) await saveTool(tool)
@@ -209,6 +263,20 @@ export async function applyParsedImport(
     )
   }
 
+  if (selection.replacers && parsed.replacerCandidates.length > 0) {
+    const categoryCache = new Map(
+      (await getAllReplacerCategories()).map((category) => [category.name, category]),
+    )
+    const replacersByPlaceholder = new Map(
+      (await getAllReplacers()).map((replacer) => [replacer.placeholder, replacer]),
+    )
+    replacersImported = await saveImportedReplacers(
+      parsed.replacerCandidates,
+      categoryCache,
+      replacersByPlaceholder,
+    )
+  }
+
   if (selection.llmConfig && parsed.llmConfig) {
     // New endpoint/model likely need a different key always cleared, the user re-enters it.
     await setPreference('llmConfig', { ...parsed.llmConfig, apiKey: '' })
@@ -221,11 +289,18 @@ export async function applyParsedImport(
     networkConfigImported = true
   }
 
+  if (selection.smootterServices && parsed.smootterServices) {
+    await setPreference('smootterServices', parsed.smootterServices)
+    smootterServicesImported = true
+  }
+
   return {
     toolsImported,
     bookmarkletsImported,
+    replacersImported,
     llmConfigImported,
     llmConfigNeedsApiKey,
     networkConfigImported,
+    smootterServicesImported,
   }
 }

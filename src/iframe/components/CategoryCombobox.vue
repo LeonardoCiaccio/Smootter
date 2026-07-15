@@ -2,22 +2,25 @@
 import { computed, nextTick, onUnmounted, ref } from 'vue'
 import { CheckIcon, ChevronDownIcon, PlusIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
-import { saveCategory, type StoredCategory } from '@/shared/bookmarkletsDb'
-import { normalizeCategoryName } from '@/shared/categoryTree'
+import { normalizeCategoryName, type CategoryLike } from '@/shared/categoryTree'
 
-const props = defineProps<{ categories: StoredCategory[] }>()
+// Domain-agnostic (bookmarklets, replacer, ...): the caller owns persistence and copy, this
+// component only owns the picker/create-new UI.
+const props = defineProps<{
+  categories: CategoryLike[]
+  saveCategory: (category: CategoryLike) => Promise<void>
+  categoryLabel: string
+  newCategoryTitle: string
+  newCategoryPlaceholder: string
+}>()
 const categoryId = defineModel<string>('categoryId', { required: true })
-const emit = defineEmits<{ created: [category: StoredCategory] }>()
+const emit = defineEmits<{ created: [category: CategoryLike] }>()
 
 const addingNew = ref(false)
 const newCategoryName = ref('')
 const newCategoryInput = ref<HTMLInputElement>()
 const open = ref(false)
 const anchorRef = ref<HTMLElement>()
-
-const categoryLabel = chrome.i18n.getMessage('bookmarkletsFormCategoryLabel')
-const newCategoryTitle = chrome.i18n.getMessage('bookmarkletsCategoryNewOption')
-const newCategoryPlaceholder = chrome.i18n.getMessage('bookmarkletsCategoryNewPlaceholder')
 
 const selectedCategory = computed(() => props.categories.find((category) => category.id === categoryId.value))
 
@@ -68,8 +71,8 @@ async function onCreateCategory(): Promise<void> {
     return
   }
 
-  const category: StoredCategory = { id: crypto.randomUUID(), name }
-  await saveCategory(category)
+  const category: CategoryLike = { id: crypto.randomUUID(), name }
+  await props.saveCategory(category)
   emit('created', category)
   categoryId.value = category.id
   newCategoryName.value = ''
