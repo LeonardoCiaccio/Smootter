@@ -286,6 +286,7 @@
   "replacerHeader": { "message": "Nuevo replacer" },
   "replacerEditHeader": { "message": "Editar replacer" },
   "replacerSubheader": { "message": "Crea fragmentos de texto que se expanden solos mientras escribes." },
+  "replacerTutorialLink": { "message": "¿Nuevo aquí? Descubre qué puedes crear, incluidas las reescrituras con IA." },
   "replacerFormTitleLabel": { "message": "Título" },
   "replacerFormTitlePlaceholder": { "message": "ej. Dirección de casa" },
   "replacerFormPlaceholderLabel": { "message": "Marcador" },

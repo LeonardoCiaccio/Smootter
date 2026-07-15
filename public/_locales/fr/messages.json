@@ -288,6 +288,7 @@
   "replacerHeader": { "message": "Nouveau replacer" },
   "replacerEditHeader": { "message": "Modifier le replacer" },
   "replacerSubheader": { "message": "Créez des extraits de texte qui s'étendent automatiquement pendant que vous tapez." },
+  "replacerTutorialLink": { "message": "Nouveau ici ? Découvrez ce que vous pouvez créer, y compris les réécritures par IA." },
   "replacerFormTitleLabel": { "message": "Titre" },
   "replacerFormTitlePlaceholder": { "message": "ex. Adresse du domicile" },
   "replacerFormPlaceholderLabel": { "message": "Raccourci" },

@@ -278,6 +278,7 @@
   "replacerHeader": { "message": "Nuovo replacer" },
   "replacerEditHeader": { "message": "Modifica replacer" },
   "replacerSubheader": { "message": "Crea snippet di testo che si espandono da soli mentre scrivi." },
+  "replacerTutorialLink": { "message": "Nuovo qui? Scopri cosa puoi creare, incluse le riscritture AI." },
   "replacerFormTitleLabel": { "message": "Titolo" },
   "replacerFormTitlePlaceholder": { "message": "es. Indirizzo di casa" },
   "replacerFormPlaceholderLabel": { "message": "Segnaposto" },

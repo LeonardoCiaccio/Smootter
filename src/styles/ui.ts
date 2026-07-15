@@ -149,6 +149,7 @@ export const ui = {
   bookmarkletsHeaderGroup: 'mb-2 flex flex-col gap-1.5',
   bookmarkletsHeader: 'font-heading text-2xl font-bold text-gray-900 dark:text-gray-100',
   bookmarkletsSubheader: 'font-subheading text-sm text-gray-500 dark:text-gray-400 pb-4',
+  tutorialLink: 'inline-block text-sm text-cyan-700 underline underline-offset-2 hover:no-underline dark:text-cyan-400 -mt-2 pb-4',
   bookmarkletsForm: 'flex flex-col gap-4',
   bookmarkletsFormActions: 'flex items-center justify-end gap-2',
   bookmarkletsTitleRow: 'flex items-center gap-2',

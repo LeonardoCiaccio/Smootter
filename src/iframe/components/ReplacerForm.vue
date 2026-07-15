@@ -11,6 +11,7 @@ import {
   type StoredReplacerCategory,
 } from '@/shared/replacerDb'
 import { normalizeCategoryName } from '@/shared/categoryTree'
+import { REPLACER_TUTORIAL_URL } from '@/shared/externalLinks'
 
 const props = defineProps<{
   categories: StoredReplacerCategory[]
@@ -32,6 +33,7 @@ const headerText = computed(() =>
   chrome.i18n.getMessage(props.existingReplacer ? 'replacerEditHeader' : 'replacerHeader'),
 )
 const subheaderText = chrome.i18n.getMessage('replacerSubheader')
+const tutorialLinkText = chrome.i18n.getMessage('replacerTutorialLink')
 const titleLabel = chrome.i18n.getMessage('replacerFormTitleLabel')
 const titlePlaceholder = chrome.i18n.getMessage('replacerFormTitlePlaceholder')
 const placeholderLabel = chrome.i18n.getMessage('replacerFormPlaceholderLabel')
@@ -127,6 +129,15 @@ async function onSubmit(): Promise<void> {
     <div :class="ui.bookmarkletsHeaderGroup">
       <h1 :class="ui.bookmarkletsHeader">{{ headerText }}</h1>
       <p :class="ui.bookmarkletsSubheader">{{ subheaderText }}</p>
+      <a
+        v-if="!props.existingReplacer"
+        :href="REPLACER_TUTORIAL_URL"
+        target="_blank"
+        rel="noopener noreferrer"
+        :class="ui.tutorialLink"
+      >
+        {{ tutorialLinkText }}
+      </a>
     </div>
 
     <form :class="ui.replacerForm" @submit.prevent="onSubmit">
