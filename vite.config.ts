@@ -18,6 +18,7 @@ const entry = (path: string) => fileURLToPath(new URL(path, import.meta.url))
 const CONTENT_SCRIPT_ENTRIES: Record<string, () => Record<string, string>> = {
   environment: () => ({ environment: entry('./src/content/environment.ts') }),
   resumer: () => ({ resumer: entry('./src/content/resumer.ts') }),
+  replacer: () => ({ replacer: entry('./src/content/replacer.ts') }),
 }
 const MODULE_ENTRIES = {
   'service-worker': entry('./src/background/service-worker.ts'),

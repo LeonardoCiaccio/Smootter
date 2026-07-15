@@ -30,10 +30,11 @@ export interface StoredReplacerCategory {
 export const UNCATEGORIZED_REPLACER_CATEGORY_ID = 'uncategorized'
 
 const DB_NAME = chrome.runtime.getManifest().short_name + '_replacer'
-const DB_VERSION = 2
+const DB_VERSION = 3
 const REPLACERS_STORE = 'replacers'
 const CATEGORIES_STORE = 'categories'
 const SEARCH_TERMS_INDEX = 'searchTerms'
+const PLACEHOLDER_INDEX = 'placeholder'
 
 /** Lowercased, deduplicated words splits on anything that isn't a letter or digit. */
 function tokenize(text: string): string[] {
@@ -70,6 +71,11 @@ function openDb(): Promise<IDBDatabase> {
       const replacersStore = request.transaction!.objectStore(REPLACERS_STORE)
       if (!replacersStore.indexNames.contains(SEARCH_TERMS_INDEX)) {
         replacersStore.createIndex(SEARCH_TERMS_INDEX, SEARCH_TERMS_INDEX, { multiEntry: true })
+      }
+      // Exact-match lookup for the injected replacer.ts content script (see
+      // getReplacerByPlaceholder) not multiEntry: one placeholder maps to one record.
+      if (!replacersStore.indexNames.contains(PLACEHOLDER_INDEX)) {
+        replacersStore.createIndex(PLACEHOLDER_INDEX, PLACEHOLDER_INDEX)
       }
 
       // Records saved before this field existed have none backfill them here, in the same
@@ -302,4 +308,16 @@ export async function queryReplacers(query: ReplacerQuery): Promise<StoredReplac
 
   const results = await Promise.all(Array.from(ids).map((id) => getById(db, id)))
   return results.filter((replacer): replacer is StoredReplacer => replacer !== undefined)
+}
+
+/** Exact-match lookup by trigger word (e.g. "/casa") for the injected replacer.ts content script. */
+export async function getReplacerByPlaceholder(placeholder: string): Promise<StoredReplacer | undefined> {
+  const db = await openDb()
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(REPLACERS_STORE, 'readonly')
+    const index = transaction.objectStore(REPLACERS_STORE).index(PLACEHOLDER_INDEX)
+    const request = index.get(placeholder)
+    request.onsuccess = () => resolve(request.result as StoredReplacer | undefined)
+    request.onerror = () => reject(request.error)
+  })
 }
