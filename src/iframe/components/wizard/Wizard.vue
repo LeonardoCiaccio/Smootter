@@ -14,6 +14,7 @@ import WizardStepper from './WizardStepper.vue'
 import { useToast } from '../../plugins/toast'
 import { getTool, saveTool } from '@/shared/toolsDb'
 import { quickSaveKey } from './quickSave'
+import { TOOLS_TUTORIAL_URL } from '@/shared/externalLinks'
 
 interface StepMeta {
   label: string
@@ -36,6 +37,7 @@ const stepMeta: StepMeta[] = stepMessageKeys.map((keys) => ({
   subtitle: chrome.i18n.getMessage(keys.subtitle),
 }))
 
+const tutorialLinkText = chrome.i18n.getMessage('toolsTutorialLink')
 const backLabel = chrome.i18n.getMessage('wizardBack')
 const nextLabel = chrome.i18n.getMessage('wizardNext')
 const quickSaveLabel = chrome.i18n.getMessage('wizardSaveChanges')
@@ -207,6 +209,15 @@ function goNext(): void {
     <div v-if="currentIndex < 3" :class="ui.wizardHeader">
       <h1 :class="ui.wizardTitle">{{ currentStep.title }}</h1>
       <p :class="ui.wizardSubtitle">{{ currentStep.subtitle }}</p>
+      <a
+        v-if="currentIndex === 0 && !isEditing"
+        :href="TOOLS_TUTORIAL_URL"
+        target="_blank"
+        rel="noopener noreferrer"
+        :class="ui.tutorialLink"
+      >
+        {{ tutorialLinkText }}
+      </a>
     </div>
 
     <div :class="ui.wizardBody">

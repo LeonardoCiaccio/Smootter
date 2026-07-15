@@ -289,6 +289,7 @@
   "replacerEditHeader": { "message": "Modifier le replacer" },
   "replacerSubheader": { "message": "Créez des extraits de texte qui s'étendent automatiquement pendant que vous tapez." },
   "replacerTutorialLink": { "message": "Nouveau ici ? Découvrez ce que vous pouvez créer, y compris les réécritures par IA." },
+  "toolsTutorialLink": { "message": "Nouveau ici ? Découvrez ce que vous pouvez créer et comment écrire un bon prompt." },
   "replacerFormTitleLabel": { "message": "Titre" },
   "replacerFormTitlePlaceholder": { "message": "ex. Adresse du domicile" },
   "replacerFormPlaceholderLabel": { "message": "Raccourci" },

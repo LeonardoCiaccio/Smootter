@@ -289,6 +289,7 @@
   "replacerEditHeader": { "message": "Replacer bearbeiten" },
   "replacerSubheader": { "message": "Erstelle Textbausteine, die sich beim Tippen von selbst erweitern." },
   "replacerTutorialLink": { "message": "Neu hier? Sieh, was du erstellen kannst, einschließlich KI-Umformulierungen." },
+  "toolsTutorialLink": { "message": "Neu hier? Sieh, was du erstellen kannst und wie man einen guten Prompt schreibt." },
   "replacerFormTitleLabel": { "message": "Titel" },
   "replacerFormTitlePlaceholder": { "message": "z. B. Heimadresse" },
   "replacerFormPlaceholderLabel": { "message": "Platzhalter" },

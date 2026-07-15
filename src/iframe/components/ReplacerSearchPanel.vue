@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject, ref } from 'vue'
+import { computed, inject, onMounted, ref } from 'vue'
 import { ArrowPathIcon, MagnifyingGlassIcon, SparklesIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import type { StoredReplacer, StoredReplacerCategory } from '@/shared/replacerDb'
@@ -95,6 +95,12 @@ function onConfigSaved(): void {
   showConfigModal.value = false
   void onAiSearch()
 }
+
+// The HTML `autofocus` attribute is blocked by browsers in a cross-origin subframe (which is
+// what this iframe always is, injected into an arbitrary host page) focusing manually after
+// mount isn't subject to that restriction.
+const searchInput = ref<HTMLInputElement>()
+onMounted(() => searchInput.value?.focus())
 </script>
 
 <template>
@@ -103,9 +109,9 @@ function onConfigSaved(): void {
       <div :class="ui.bookmarkletsSearchInputWrapper">
         <MagnifyingGlassIcon :class="ui.bookmarkletsSearchInputIcon" />
         <input
+          ref="searchInput"
           v-model="state.query"
           type="text"
-          autofocus
           :class="ui.bookmarkletsSearchInput"
           :placeholder="searchPlaceholder"
         />

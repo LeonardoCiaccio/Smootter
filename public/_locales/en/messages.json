@@ -277,6 +277,7 @@
   "replacerEditHeader": { "message": "Edit replacer" },
   "replacerSubheader": { "message": "Create text snippets that expand on their own as you type." },
   "replacerTutorialLink": { "message": "New here? See what you can build, including AI rewrites." },
+  "toolsTutorialLink": { "message": "New here? See what you can build, and how to write a good prompt." },
   "replacerFormTitleLabel": { "message": "Title" },
   "replacerFormTitlePlaceholder": { "message": "e.g. Home address" },
   "replacerFormPlaceholderLabel": { "message": "Placeholder" },
