@@ -48,10 +48,12 @@ export const DEFAULT_NETWORK_CONFIG: NetworkConfig = {
 export interface SmootterServicesConfig {
   // Hover an article to summarize it in Chat see resumer.ts.
   resumer: boolean
+  replacer: boolean
 }
 
 export const DEFAULT_SMOOTTER_SERVICES: SmootterServicesConfig = {
   resumer: false,
+  replacer: false,
 }
 
 export interface Preferences {

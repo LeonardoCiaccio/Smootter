@@ -15,6 +15,7 @@ import HomeView from '../views/HomeView.vue'
 import ToolsView from '../views/ToolsView.vue'
 import OptionsView from '../views/OptionsView.vue'
 import BookmarkletsView from '../views/BookmarkletsView.vue'
+import ReplacerView from '../views/ReplacerView.vue'
 import NetworkView from '../views/NetworkView.vue'
 import ChatView from '../views/ChatView.vue'
 
@@ -26,6 +27,7 @@ export const router = createRouter({
     { path: '/builder', component: () => import('../views/BuilderView.vue') },
     { path: '/options', component: OptionsView },
     { path: '/bookmarklets', component: BookmarkletsView },
+    { path: '/replacer', component: ReplacerView },
     { path: '/network', component: NetworkView },
     { path: '/chat', component: ChatView },
   ],

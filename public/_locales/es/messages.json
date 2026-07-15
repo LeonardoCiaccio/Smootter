@@ -52,6 +52,8 @@
     "message": "Servicios opcionales siempre activos en las páginas que visitas. Desactivados por defecto: no se inyecta nada hasta que los actives."
   },
   "resumerServiceLabel": { "message": "Resumer" },
+  "replacerServiceLabel": { "message": "Replacer" },
+  "replacerServiceDescription": { "message": "En configuración." },
   "resumerServiceDescription": {
     "message": "Pasa el cursor sobre un artículo para ver un icono que lo resume en un chat con la IA."
   },
@@ -269,6 +271,22 @@
   "bookmarkletsTagDeleteConfirm": { "message": "Haz clic de nuevo para eliminar en todas partes" },
   "bookmarkletsDeleteConfirm": { "message": "Haz clic de nuevo para eliminar" },
   "bookmarkletDeleted": { "message": "Bookmarklet eliminado" },
+  "replacer": { "message": "Replacer" },
+  "replacerHeader": { "message": "Nuevo replacer" },
+  "replacerEditHeader": { "message": "Editar replacer" },
+  "replacerSubheader": { "message": "Crea fragmentos de texto que se expanden solos mientras escribes." },
+  "replacerFormTitleLabel": { "message": "Título" },
+  "replacerFormTitlePlaceholder": { "message": "ej. Dirección de casa" },
+  "replacerFormPlaceholderLabel": { "message": "Marcador" },
+  "replacerFormPlaceholderPlaceholder": { "message": "ej. /casa" },
+  "replacerFormTextLabel": { "message": "Texto de sustitución" },
+  "replacerFormTextPlaceholder": { "message": "El texto que sustituirá al marcador" },
+  "replacerSaved": { "message": "Replacer guardado" },
+  "replacerDeleted": { "message": "Replacer eliminado" },
+  "replacerCategoriesTitle": { "message": "Categorías" },
+  "replacerAddNew": { "message": "Añadir replacer" },
+  "replacerSearchPlaceholder": { "message": "Busca por título, marcador, texto o etiqueta..." },
+  "replacerSearchNoResults": { "message": "Ningún replacer coincide con la búsqueda." },
   "bookmarkletsUncategorized": { "message": "Sin categoría" },
   "bookmarkletsCategoryDeleteConfirm": {
     "message": "Haz clic de nuevo para eliminar la categoría"

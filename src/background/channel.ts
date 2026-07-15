@@ -19,6 +19,7 @@ import {
   type OpenResumerChatRequest,
   type GenerateBookmarkletRequest,
   type SearchBookmarkletsRequest,
+  type SearchReplacersRequest,
 } from '@/shared/messages'
 import { openEnvironment } from './openEnvironment'
 import {
@@ -36,6 +37,7 @@ import {
   generalChat,
   generateBookmarkletMetadata,
   searchBookmarklets,
+  searchReplacers,
 } from './llmClient'
 import { getNetworkLog } from './networkInspector'
 
@@ -345,6 +347,38 @@ grip.hook('searchBookmarklets', {
 })
 
 grip.register({
+  name: 'searchReplacers',
+  validate(args: SearchReplacersRequest) {
+    if (typeof args.query !== 'string' || args.query.trim() === '')
+      throw new Error('query is required.')
+  },
+  async business(args: SearchReplacersRequest) {
+    const config = await getPreference('llmConfig')
+    if (!config) {
+      return {
+        type: 'searchReplacersResult',
+        ok: false,
+        errorCode: 'unknown',
+        detail: 'No LLM configured.',
+      }
+    }
+    const result = await searchReplacers(config, args.query)
+    return {
+      type: 'searchReplacersResult',
+      ok: result.ok,
+      ids: result.ids,
+      errorCode: result.errorCode,
+      detail: result.detail,
+    }
+  },
+})
+grip.hook('searchReplacers', {
+  after({ result }, context: Context) {
+    if (result.isSuccess) context.sendResponse(result.result)
+  },
+})
+
+grip.register({
   name: 'getNetworkLog',
   validate() {},
   business(_args: unknown, context?: object) {
@@ -398,6 +432,7 @@ const CHANNEL_FUNCTIONS_NEEDING_FAILURE_REPLY = [
   'openResumerChat',
   'generateBookmarklet',
   'searchBookmarklets',
+  'searchReplacers',
   'getNetworkLog',
 ] as const
 

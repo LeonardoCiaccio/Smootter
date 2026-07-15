@@ -3,6 +3,7 @@ import { computed, inject, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import {
   ArrowDownTrayIcon,
+  ArrowsRightLeftIcon,
   ArrowUpTrayIcon,
   ChatBubbleLeftRightIcon,
   Cog6ToothIcon,
@@ -29,6 +30,7 @@ const channel = inject(channelKey)
 const homeLabel = chrome.i18n.getMessage('home')
 const toolsLabel = chrome.i18n.getMessage('tools')
 const bookmarkletsLabel = chrome.i18n.getMessage('bookmarklets')
+const replacerLabel = chrome.i18n.getMessage('replacer')
 const networkLabel = chrome.i18n.getMessage('network')
 const chatLabel = chrome.i18n.getMessage('chat')
 
@@ -37,6 +39,7 @@ const isHomeActive = computed(() => route.path === '/')
 // Builder is reached from the tools list, not a separate area same active state as Tools.
 const isToolsActive = computed(() => route.path === '/tools' || route.path === '/builder')
 const isBookmarkletsActive = computed(() => route.path === '/bookmarklets')
+const isReplacerActive = computed(() => route.path === '/replacer')
 const isNetworkActive = computed(() => route.path === '/network')
 const isChatActive = computed(() => route.path === '/chat')
 
@@ -89,6 +92,13 @@ async function onImportFileChange(event: Event): Promise<void> {
         :title="bookmarkletsLabel"
       >
         <FolderIcon :class="ui.toolbarAccessoryIcon" />
+      </RouterLink>
+      <RouterLink
+        to="/replacer"
+        :class="isReplacerActive ? ui.toolbarAccessoryButtonActive : ui.toolbarAccessoryButton"
+        :title="replacerLabel"
+      >
+        <ArrowsRightLeftIcon :class="ui.toolbarAccessoryIcon" />
       </RouterLink>
       <RouterLink to="/network" :class="isNetworkActive ? ui.toolbarAccessoryButtonActive : ui.toolbarAccessoryButton" :title="networkLabel">
         <SignalIcon :class="ui.toolbarAccessoryIcon" />

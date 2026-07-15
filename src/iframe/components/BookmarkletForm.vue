@@ -48,6 +48,9 @@ const descriptionPlaceholder = chrome.i18n.getMessage('bookmarkletsFormDescripti
 const tagsLabel = chrome.i18n.getMessage('bookmarkletsFormTagsLabel')
 const saveLabel = chrome.i18n.getMessage('bookmarkletsSave')
 const generateLabel = chrome.i18n.getMessage('bookmarkletsGenerate')
+const categoryLabel = chrome.i18n.getMessage('bookmarkletsFormCategoryLabel')
+const newCategoryTitle = chrome.i18n.getMessage('bookmarkletsCategoryNewOption')
+const newCategoryPlaceholder = chrome.i18n.getMessage('bookmarkletsCategoryNewPlaceholder')
 
 const channel = inject(channelKey)
 const toast = useToast()
@@ -238,7 +241,11 @@ async function onSubmit(): Promise<void> {
       <CategoryCombobox
         v-model:category-id="categoryId"
         :categories="props.categories"
-        @created="(category) => emit('categoryCreated', category)"
+        :save-category="saveCategory"
+        :category-label="categoryLabel"
+        :new-category-title="newCategoryTitle"
+        :new-category-placeholder="newCategoryPlaceholder"
+        @created="(category) => emit('categoryCreated', category as StoredCategory)"
       />
 
       <div :class="ui.bookmarkletsFormActions">
