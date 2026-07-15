@@ -75,6 +75,14 @@ function connectChannel(): void {
   chrome.runtime.onMessage.addListener(handleWorkerMessage)
 }
 
+// Closes on Escape when focus is on the host page itself (not inside the iframe, which has its
+// own listener see the iframe app's escapeClose plugin, reachable only through the channel).
+function connectKeyboard(): void {
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && isVisible()) hide()
+  })
+}
+
 // ---- Build ----
 // The maximum valid CSS z-index (2^31 - 1): nothing on the page can legitimately stack above
 // it, so there's no need to scan the DOM for the current highest value querySelectorAll('*')
@@ -152,4 +160,5 @@ function handleInjection(): void {
 }
 
 connectChannel()
+connectKeyboard()
 handleInjection()

@@ -177,12 +177,18 @@ function insertIconIntoTargets(): void {
     const icon = ICON_PROTOTYPE.cloneNode(true) as HTMLButtonElement
     target.appendChild(icon)
 
-    target.addEventListener('mouseenter', () => {
+    const onTargetHover = (): void => {
       cancelHide()
       activeTarget = target
       activeIcon = icon
       positionIcon(target, icon)
-    })
+    }
+    target.addEventListener('mouseenter', onTargetHover)
+    // Also on mousemove, not just mouseenter: if the mouse is already inside the target when
+    // insertIconIntoTargets() runs (e.g. content added dynamically under an already-hovering
+    // cursor), mouseenter never fires the icon would otherwise stay hidden until the mouse
+    // actually leaves and re-enters. mousemove picks it up immediately instead.
+    target.addEventListener('mousemove', onTargetHover)
     target.addEventListener('mouseleave', () => scheduleHide(icon))
     icon.addEventListener('mouseenter', cancelHide)
     icon.addEventListener('mouseleave', () => scheduleHide(icon))
