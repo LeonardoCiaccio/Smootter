@@ -3,7 +3,7 @@ import { ref } from 'vue'
 import { ArrowPathIcon, XMarkIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { useLlmConfigForm } from '../../composables/useLlmConfigForm'
-import { PRIVACY_POLICY_URL } from '@/shared/privacyPolicy'
+import { PRIVACY_POLICY_URL } from '@/shared/externalLinks'
 
 const emit = defineEmits<{ close: []; saved: [] }>()
 const { form, testing, verdict, errorMessage, test, persist } = useLlmConfigForm()

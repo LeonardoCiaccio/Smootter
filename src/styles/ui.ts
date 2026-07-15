@@ -32,7 +32,7 @@ export const ui = {
   layoutCenter: 'relative w-full max-w-7xl h-full overflow-hidden',
   // Toolbar: app info (left) · built-in accessory tools (center) · actions (right)
   toolbar: 'grid flex-shrink-0 grid-cols-[1fr_auto_1fr] items-center gap-4 px-5 py-4',
-  toolbarAppInfo: 'flex items-center gap-2 justify-self-start text-gray-900 dark:text-gray-100',
+  toolbarAppInfo: 'flex items-center gap-2 justify-self-start text-gray-900 dark:text-gray-100 hover:opacity-80',
   toolbarLogo: 'h-5 w-5',
   toolbarAppName: 'text-sm font-semibold',
   toolbarAppVersion: 'text-xs opacity-60',
@@ -55,6 +55,7 @@ export const ui = {
   toolbarIcon: 'h-4 w-4',
   // Footer: general info (copyright, version)
   footer: 'flex-shrink-0 px-5 py-2.5 text-center text-[11px] text-gray-400 dark:text-gray-500',
+  footerLink: 'underline underline-offset-2 hover:no-underline',
   statusText: 'text-lg font-semibold text-gray-900 dark:text-gray-100',
   homeShell: 'flex flex-col',
   // Shown while dragging a file over the home area, to import it as a tool.

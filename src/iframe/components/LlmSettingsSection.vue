@@ -4,7 +4,7 @@ import { ArrowPathIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { useToast } from '../plugins/toast'
 import { useLlmConfigForm } from '../composables/useLlmConfigForm'
-import { PRIVACY_POLICY_URL } from '@/shared/privacyPolicy'
+import { PRIVACY_POLICY_URL } from '@/shared/externalLinks'
 
 const toast = useToast()
 const { form, testing, verdict, errorMessage, loadSaved, test, persist, clear } = useLlmConfigForm()

@@ -20,6 +20,7 @@ import { channelKey } from '@/shared/vuePlugins/messaging'
 import { useTheme } from '@/shared/vuePlugins/theme'
 import { exportEverything } from '@/shared/exportImport'
 import { startImport } from '../composables/importFlow'
+import { PROJECT_URL } from '@/shared/externalLinks'
 
 const manifest = chrome.runtime.getManifest()
 const appName = manifest.name
@@ -73,11 +74,11 @@ async function onImportFileChange(event: Event): Promise<void> {
 
 <template>
   <div :class="ui.toolbar">
-    <div :class="ui.toolbarAppInfo">
+    <a :href="PROJECT_URL" target="_blank" rel="noopener noreferrer" :class="ui.toolbarAppInfo">
       <img :src="logoUrl" :class="ui.toolbarLogo" alt="" />
       <span :class="ui.toolbarAppName">{{ appName }}</span>
       <span :class="ui.toolbarAppVersion">{{ appVersion }}</span>
-    </div>
+    </a>
 
     <div :class="ui.toolbarAccessories">
       <RouterLink to="/" :class="isHomeActive ? ui.toolbarAccessoryButtonActive : ui.toolbarAccessoryButton" :title="homeLabel">
