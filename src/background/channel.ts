@@ -20,7 +20,9 @@ import {
   type GenerateBookmarkletRequest,
   type SearchBookmarkletsRequest,
   type SearchReplacersRequest,
+  type LookupReplacerRequest,
 } from '@/shared/messages'
+import { getReplacerByPlaceholder } from '@/shared/replacerDb'
 import { openEnvironment } from './openEnvironment'
 import {
   getPreference,
@@ -383,6 +385,29 @@ grip.hook('searchReplacers', {
 })
 
 grip.register({
+  name: 'lookupReplacer',
+  validate(args: LookupReplacerRequest) {
+    if (typeof args.placeholder !== 'string' || args.placeholder.trim() === '')
+      throw new Error('placeholder is required.')
+  },
+  async business(args: LookupReplacerRequest) {
+    // Checked on every single lookup, not just when replacer.js gets injected: this is what
+    // lets the user disable the service and have it stop acting immediately, without needing
+    // to reload every tab that already has the content script running.
+    const config = await getSmootterServices()
+    if (!config.replacer) return { type: 'lookupReplacerResult', text: null }
+
+    const replacer = await getReplacerByPlaceholder(args.placeholder)
+    return { type: 'lookupReplacerResult', text: replacer?.text ?? null }
+  },
+})
+grip.hook('lookupReplacer', {
+  after({ result }, context: Context) {
+    if (result.isSuccess) context.sendResponse(result.result)
+  },
+})
+
+grip.register({
   name: 'getNetworkLog',
   validate() {},
   business(_args: unknown, context?: object) {
@@ -437,6 +462,7 @@ const CHANNEL_FUNCTIONS_NEEDING_FAILURE_REPLY = [
   'generateBookmarklet',
   'searchBookmarklets',
   'searchReplacers',
+  'lookupReplacer',
   'getNetworkLog',
 ] as const
 

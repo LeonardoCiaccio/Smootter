@@ -240,3 +240,9 @@ function init(): void {
 }
 
 init()
+
+// Forces TS to treat this file as a module (its own scope) instead of a global script: without
+// any import/export, the type-checker merges every such content script's top-level names into
+// one shared global scope, so two files declaring the same function name (e.g. init()) collide
+// at type-check time even though each is built and injected as a fully separate bundle.
+export {}

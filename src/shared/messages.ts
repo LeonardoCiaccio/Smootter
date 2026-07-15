@@ -268,6 +268,23 @@ export interface SearchReplacersResult {
 }
 
 /**
+ * Sent by replacer.ts on every completed "/placeholder " word it sees, from any page. The
+ * background is the single source of truth for whether the service is actually enabled it
+ * checks that on every call (see channel.ts), not just at injection time, so toggling the
+ * preference off protects even a replacer.ts instance still running from an earlier page load.
+ */
+export interface LookupReplacerRequest {
+  type: 'lookupReplacer'
+  placeholder: string
+}
+
+/** null covers both "disabled" and "no match" replacer.ts doesn't need to tell them apart. */
+export interface LookupReplacerResult {
+  type: 'lookupReplacerResult'
+  text: string | null
+}
+
+/**
  * The fixed fallback bucket for a response that matches none of the user's mime category
  * rules (see MimeCategoryRule in shared/preferences.ts) always present in the sidebar,
  * never one of the user-defined names.
@@ -326,6 +343,7 @@ export type ChannelRequest =
   | GenerateBookmarkletRequest
   | SearchBookmarkletsRequest
   | SearchReplacersRequest
+  | LookupReplacerRequest
   | GetNetworkLogRequest
 
 /** Messages sent from the background to the UI. */
@@ -344,6 +362,7 @@ export type ChannelResponse =
   | OpenResumerChatResult
   | SearchBookmarkletsResult
   | SearchReplacersResult
+  | LookupReplacerResult
   | NetworkLogResult
   | NetworkEntryCapturedBroadcast
   | ChannelError
