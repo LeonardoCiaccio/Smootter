@@ -73,6 +73,24 @@ Any editable field on any page: plain `<input>`/`<textarea>` elements and rich-t
 `contenteditable` areas (Gmail's compose box, Slack, WhatsApp Web, and similar).
 The trigger is always the same: type the placeholder, then a space.
 
+## Formatting (Markdown)
+
+The text of a replacer (static or the AI's reply) can use Markdown — `**bold**`,
+`*italic*`, `` `code` ``, `[links](https://…)`, and so on.
+
+Whether it actually *renders* depends on where you use it:
+
+- In a **rich-text field** (Gmail's compose box, Slack, WhatsApp Web — anything
+  that isn't a plain `<input>`/`<textarea>`), Markdown is rendered inline: your
+  `**bold**` becomes real bold text.
+- In a **plain `<input>` or `<textarea>`**, there's no rich text to render into —
+  those fields only ever hold plain characters, so the Markdown syntax itself
+  (the asterisks, backticks, etc.) is inserted as literal text, unrendered.
+
+If you're writing a replacer meant for a plain field (a search box, a simple form),
+skip Markdown syntax entirely; it'll just show up as stray punctuation. Save it for
+replacers you use in rich-text compose boxes.
+
 ## Organizing your replacers
 
 - **Tags** — free-form, searchable, shown as chips.

@@ -14,6 +14,7 @@ permissions:
 
 jobs:
   CLAAssistant:
+    name: CLA Assistant
     runs-on: ubuntu-latest
     steps:
       - name: CLA Assistant
@@ -29,6 +30,7 @@ jobs:
           path-to-document: 'https://github.com/LeonardoCiaccio/Smootter/blob/main/CLA.md'
           branch: 'cla-signatures'
           allowlist: LeonardoCiaccio
+          custom-pr-sign-comment: 'I have read and agree to the Smootter CLA (CLA.md).'
           custom-notsigned-prcomment: |
             Thanks for the contribution! Before it can be merged, please read the
             [Contributor License Agreement](https://github.com/LeonardoCiaccio/Smootter/blob/main/CLA.md)
