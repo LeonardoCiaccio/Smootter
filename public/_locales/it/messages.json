@@ -210,7 +210,6 @@
   "bookmarkletsFormTagsLabel": { "message": "Tag" },
   "bookmarkletsFormTagsPlaceholder": { "message": "Aggiungi un tag e premi invio" },
   "bookmarkletsFormCategoryLabel": { "message": "Categoria" },
-  "bookmarkletsCategoryNewOption": { "message": "+ Nuova categoria" },
   "bookmarkletsCategoryNewPlaceholder": {
     "message": "Nome categoria, es. AA/BB/CC per sottocategorie"
   },
@@ -278,6 +277,7 @@
   "replacerFormTitlePlaceholder": { "message": "es. Indirizzo di casa" },
   "replacerFormPlaceholderLabel": { "message": "Segnaposto" },
   "replacerFormPlaceholderPlaceholder": { "message": "es. /casa" },
+  "replacerPlaceholderTaken": { "message": "Questo segnaposto è già usato da un altro replacer." },
   "replacerFormTextLabel": { "message": "Testo sostitutivo" },
   "replacerFormTextPlaceholder": { "message": "Il testo che sostituirà il segnaposto" },
   "replacerSaved": { "message": "Replacer salvato" },

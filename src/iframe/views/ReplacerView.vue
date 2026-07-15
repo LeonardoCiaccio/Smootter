@@ -144,6 +144,7 @@ watch(replacerRefreshSignal, reloadData)
     <div v-if="isEmpty" :class="ui.bookmarkletsEmptyWrapper">
       <ReplacerForm
         :categories="categories"
+        :replacers="replacers"
         :tag-suggestions="tagSuggestions"
         :existing-replacer="null"
         @saved="onSaved"
@@ -183,6 +184,7 @@ watch(replacerRefreshSignal, reloadData)
           <ReplacerForm
             v-else
             :categories="categories"
+            :replacers="replacers"
             :tag-suggestions="tagSuggestions"
             :existing-replacer="selectedReplacer"
             @saved="onSaved"

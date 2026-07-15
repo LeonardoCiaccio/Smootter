@@ -49,8 +49,7 @@ const tagsLabel = chrome.i18n.getMessage('bookmarkletsFormTagsLabel')
 const saveLabel = chrome.i18n.getMessage('bookmarkletsSave')
 const generateLabel = chrome.i18n.getMessage('bookmarkletsGenerate')
 const categoryLabel = chrome.i18n.getMessage('bookmarkletsFormCategoryLabel')
-const newCategoryTitle = chrome.i18n.getMessage('bookmarkletsCategoryNewOption')
-const newCategoryPlaceholder = chrome.i18n.getMessage('bookmarkletsCategoryNewPlaceholder')
+const categoryPathPlaceholder = chrome.i18n.getMessage('bookmarkletsCategoryNewPlaceholder')
 
 const channel = inject(channelKey)
 const toast = useToast()
@@ -59,13 +58,16 @@ function resetFrom(existing: StoredBookmarklet | null): void {
   title.value = existing?.title ?? props.initialTitle
   description.value = existing?.description ?? ''
   tags.value = existing ? [...existing.tags] : []
-  categoryId.value = existing?.categoryId ?? props.categories[0]?.id ?? ''
+  const existingCategory = existing
+    ? props.categories.find((category) => category.id === existing.categoryId)
+    : undefined
+  categoryPath.value = existingCategory?.name ?? props.categories[0]?.name ?? ''
 }
 
 const title = ref('')
 const description = ref('')
 const tags = ref<string[]>([])
-const categoryId = ref('')
+const categoryPath = ref('')
 resetFrom(props.existingBookmarklet)
 
 // The URL can change (navigating the sidebar's "add" action re-checks the current page) 
@@ -105,26 +107,27 @@ watch(
   { immediate: true },
 )
 
-const canSave = computed(() => title.value.trim() !== '' && categoryId.value !== '')
+const canSave = computed(() => title.value.trim() !== '' && categoryPath.value.trim() !== '')
 
 const generating = ref(false)
 const showConfigModal = ref(false)
 
-/** Reuses an existing category by (normalized) name if one matches, otherwise creates it. */
-async function resolveCategoryByName(name: string): Promise<void> {
-  const normalized = normalizeCategoryName(name)
-  if (normalized === '') return
+/**
+ * Reuses an existing category by (normalized) name if one matches, otherwise creates it. Only
+ * called once, from onSubmit: the free-text field the user's been typing into never touches
+ * the database on its own, so an abandoned or half-typed category path never gets persisted.
+ */
+async function resolveCategoryId(path: string): Promise<string> {
+  const normalized = normalizeCategoryName(path)
+  if (normalized === '') return UNCATEGORIZED_CATEGORY_ID
 
   const existing = props.categories.find((category) => category.name === normalized)
-  if (existing) {
-    categoryId.value = existing.id
-    return
-  }
+  if (existing) return existing.id
 
   const category: StoredCategory = { id: crypto.randomUUID(), name: normalized }
   await saveCategory(category)
   emit('categoryCreated', category)
-  categoryId.value = category.id
+  return category.id
 }
 
 /**
@@ -167,7 +170,8 @@ async function onGenerate(): Promise<void> {
   if (response.title && title.value.trim() === '') title.value = response.title
   if (response.description) description.value = response.description
   if (response.tags) tags.value = response.tags
-  if (response.category) await resolveCategoryByName(response.category)
+  // Just fills the field the category isn't created until the whole form is actually saved.
+  if (response.category) categoryPath.value = response.category
 }
 
 function onConfigSaved(): void {
@@ -184,6 +188,7 @@ const alreadySavedNotice = computed(() => {
 async function onSubmit(): Promise<void> {
   if (!canSave.value) return
 
+  const categoryId = await resolveCategoryId(categoryPath.value)
   const now = Date.now()
   const bookmarklet: StoredBookmarklet = {
     id: props.existingBookmarklet?.id ?? crypto.randomUUID(),
@@ -191,7 +196,7 @@ async function onSubmit(): Promise<void> {
     url: linkUrl.value,
     description: description.value.trim(),
     tags: tags.value,
-    categoryId: categoryId.value,
+    categoryId,
     createdAt: props.existingBookmarklet?.createdAt ?? now,
     updatedAt: now,
     // saveBookmarklet() always recomputes this from the other fields.
@@ -239,13 +244,10 @@ async function onSubmit(): Promise<void> {
       </label>
 
       <CategoryCombobox
-        v-model:category-id="categoryId"
+        v-model:category-path="categoryPath"
         :categories="props.categories"
-        :save-category="saveCategory"
-        :category-label="categoryLabel"
-        :new-category-title="newCategoryTitle"
-        :new-category-placeholder="newCategoryPlaceholder"
-        @created="(category) => emit('categoryCreated', category as StoredCategory)"
+        :label="categoryLabel"
+        :placeholder="categoryPathPlaceholder"
       />
 
       <div :class="ui.bookmarkletsFormActions">

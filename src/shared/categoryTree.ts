@@ -19,17 +19,22 @@ export interface CategoryTreeNode<T extends CategoryLike = CategoryLike> {
   children: CategoryTreeNode<T>[]
 }
 
-/** The segments of a category name/path, trimmed and stripped of empties. */
+/** Title Case a single segment: "giardino sul retro" → "Giardino Sul Retro". */
+function titleCase(segment: string): string {
+  return segment.replace(/\S+/g, (word) => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+}
+
+/** The segments of a category name/path, trimmed, Title Cased, and stripped of empties. */
 function pathSegments(name: string): string[] {
   return name
     .split('/')
-    .map((segment) => segment.trim())
+    .map((segment) => titleCase(segment.trim().replace(/\s+/g, ' ')))
     .filter((segment) => segment !== '')
 }
 
 /**
- * Canonical form of a category name/path: consistent segment spacing, so
- * "AA/BB" and "AA / BB " (same path, sloppy typing) can't ever end up as two
+ * Canonical form of a category name/path: consistent segment spacing and casing, so "AA/BB",
+ * "aa / bb ", and "Aa/Bb" (same path, sloppy or inconsistent typing) can't ever end up as
  * separate category records. Must be applied before ever saving a category.
  */
 export function normalizeCategoryName(name: string): string {

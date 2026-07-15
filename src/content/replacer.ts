@@ -18,9 +18,12 @@
  * wrapper of its own, and when Chrome forces it to run as a classic script, its top-level
  * declarations land in the shared global scope of the page's isolated world where they can
  * collide with another independently-minified content script's same-named bindings. IIFE gives
- * this file its own scope. Also never import runtime code from shared/: a real import pulls in a
- * second chunk that a dynamically-registered classic-script content script can't load.
+ * this file its own scope. Importing from shared/ is safe here specifically because each
+ * content-script build pass is single-entry (see vite.config.ts) with nothing else for Rollup
+ * to split a shared chunk against unlike resumer.ts's original bug, from before that per-entry
+ * pass split existed, where two entries in one multi-entry pass shared (and broke) a chunk.
  */
+import { renderInlineMarkdown } from '@/shared/renderMarkdown'
 
 // Deliberately excludes "password": expanding a saved snippet into a password field makes no
 // sense and would be a bad place to have this feature ever active.
@@ -80,7 +83,10 @@ function replaceInContentEditable(placeholder: string, replacement: string): voi
   // real edit would, which is what most rich-text/contenteditable widgets listen for.
   const charsToRemove = placeholder.length + 1
   for (let i = 0; i < charsToRemove; i++) selection.modify('extend', 'backward', 'character')
-  document.execCommand('insertText', false, `${replacement} `)
+  // Rich text here (Gmail, Slack, WhatsApp Web, ...) can actually render markdown, unlike a
+  // plain input/textarea inline (not block) so **bold** expands without an unwanted paragraph
+  // break. Sanitized: an imported replacer's text could be someone else's (see replacerTransfer.ts).
+  document.execCommand('insertHTML', false, `${renderInlineMarkdown(replacement)} `)
 }
 
 function onLookupResult(

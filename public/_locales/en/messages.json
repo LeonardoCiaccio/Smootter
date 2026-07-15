@@ -208,7 +208,6 @@
   "bookmarkletsFormTagsLabel": { "message": "Tags" },
   "bookmarkletsFormTagsPlaceholder": { "message": "Add a tag and press enter" },
   "bookmarkletsFormCategoryLabel": { "message": "Category" },
-  "bookmarkletsCategoryNewOption": { "message": "+ New category" },
   "bookmarkletsCategoryNewPlaceholder": {
     "message": "Category name, e.g. AA/BB/CC for subcategories"
   },
@@ -276,6 +275,7 @@
   "replacerFormTitlePlaceholder": { "message": "e.g. Home address" },
   "replacerFormPlaceholderLabel": { "message": "Placeholder" },
   "replacerFormPlaceholderPlaceholder": { "message": "e.g. /home" },
+  "replacerPlaceholderTaken": { "message": "This placeholder is already used by another replacer." },
   "replacerFormTextLabel": { "message": "Replacement text" },
   "replacerFormTextPlaceholder": { "message": "The text that will replace the placeholder" },
   "replacerSaved": { "message": "Replacer saved" },

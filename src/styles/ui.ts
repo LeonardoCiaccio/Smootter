@@ -17,6 +17,11 @@ export const ui = {
   // dark mode and unstylable otherwise); [-moz-appearance:textfield] is Firefox's equivalent.
   input:
     'w-full resize-none rounded-tool border border-gray-300 bg-white px-3 py-2 text-gray-900 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500 [-moz-appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
+  // Same as `input`, flagged invalid (e.g. a duplicate value a field's own identity must be
+  // unique for see ReplacerForm's placeholder check).
+  inputInvalid:
+    'w-full resize-none rounded-tool border border-rose-400 bg-white px-3 py-2 text-gray-900 focus:outline-none dark:border-rose-600 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',
+  inputErrorText: 'text-xs font-medium text-rose-600 dark:text-rose-400',
   // App shell: toolbar (top) + boxed content row (middle, flex-1) + footer (bottom).
   // isolate: contains the glow's negative z-index to this stacking context, so it can't
   // escape past appShell's own background and get painted over by it.
@@ -234,23 +239,14 @@ export const ui = {
   bookmarkletDetailLink: 'block truncate text-sm text-cyan-600 hover:underline dark:text-cyan-400',
   inputReadonly:
     'w-full truncate rounded-tool border border-gray-200 bg-gray-50 px-3 py-2 text-sm text-gray-500 dark:border-gray-800 dark:bg-gray-800/50 dark:text-gray-400',
-  // Category combobox: a custom trigger+menu (native <select> can't be themed) plus a
-  // compact "+" icon button that swaps in a name input.
-  categoryCombobox: 'flex flex-col gap-1.5 text-left',
-  categoryComboboxRow: 'flex items-center gap-2',
+  // Category combobox: free-text input (see CategoryCombobox.vue) with a themed suggestion
+  // dropdown (native <select> can't be themed).
   categoryComboboxAnchor: 'relative min-w-0 flex-1',
-  categoryComboboxTrigger:
-    'flex w-full items-center justify-between gap-2 rounded-tool border border-gray-300 bg-white px-3 py-2 text-left text-sm text-gray-900 transition-colors hover:border-cyan-500 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:hover:border-cyan-400',
-  categoryComboboxTriggerText: 'truncate',
-  categoryComboboxChevron: 'h-4 w-4 flex-shrink-0 text-gray-400 dark:text-gray-500',
   // Shared dropdown menu look also used by the tag input's suggestion list.
   categoryComboboxMenu:
     'absolute left-0 right-0 top-full z-20 mt-1 max-h-48 overflow-y-auto rounded-tool border border-gray-200 bg-white py-1 shadow-lg dark:border-gray-700 dark:bg-gray-800',
   categoryComboboxOption:
     'block w-full truncate px-3 py-1.5 text-left text-sm text-gray-700 transition-colors hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700',
-  categoryComboboxOptionActive: 'bg-cyan-50 text-cyan-700 dark:bg-cyan-950 dark:text-cyan-300',
-  categoryAddButton:
-    'flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-tool border border-gray-300 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-gray-100',
   // Tags: chip input with a themed custom suggestion dropdown (reuses the combobox menu look).
   tagsInputAnchor: 'relative',
   tagsInputWrapper:
