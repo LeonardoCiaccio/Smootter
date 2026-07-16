@@ -172,6 +172,10 @@
   "llmTestErrorNoTools": { "message": "Dieses Modell unterstützt keine Tools." },
   "llmTestErrorUnknown": { "message": "Unbekannter Fehler." },
   "llmPromptPlaceholder": { "message": "Beschreibe das gewünschte Tool..." },
+  "toolCallProgressFetch": {
+    "message": "Fetch: $URL$",
+    "placeholders": { "url": { "content": "$1" } }
+  },
   "llmPromptSend": { "message": "Senden" },
   "llmChatEmpty": { "message": "Beschreibe das Tool, das du bauen möchtest." },
   "wizardClearCode": { "message": "Code leeren" },

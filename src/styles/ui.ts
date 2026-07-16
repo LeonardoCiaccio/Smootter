@@ -414,6 +414,8 @@ export const ui = {
   wizardChatBubbleAssistant:
     'prose prose-sm dark:prose-invert max-w-[85%] flex-shrink-0 break-words self-start rounded-2xl rounded-bl-sm bg-gray-100 px-3.5 py-2 text-gray-800 dark:bg-gray-800 dark:text-gray-100 prose-p:my-0 prose-headings:my-1 prose-ul:my-1 prose-ol:my-1 prose-pre:my-1',
   wizardChatInputWrapper: 'relative w-full flex-shrink-0',
+  wizardChatToolProgress:
+    'truncate px-1 pb-1 text-xs text-gray-400 dark:text-gray-500 font-mono',
   wizardChatInput:
     'h-16 w-full resize-none rounded-tool border border-gray-300 bg-white py-2 pl-3 pr-12 text-sm text-gray-900 focus:outline-none dark:border-gray-700 dark:bg-gray-800 dark:text-gray-100 dark:placeholder-gray-500',
   wizardChatSendButton:

@@ -349,6 +349,18 @@ export interface NetworkEntryCapturedBroadcast {
   entry: NetworkEntry
 }
 
+/**
+ * Broadcast the moment the LLM actually calls a tool (fetch_url, in practice), so an open chat
+ * panel can show live "what is it doing right now" feedback instead of a silent wait. Fire and
+ * forget: no reply, no correlation id, one active chat is the assumption LlmChatPanel just
+ * clears it once its own request settles.
+ */
+export interface ToolCallProgressBroadcast {
+  type: 'toolCallProgress'
+  tool: string
+  detail?: string
+}
+
 /** Messages sent from the UI to the background. */
 export type ChannelRequest =
   | PingRequest
@@ -390,4 +402,5 @@ export type ChannelResponse =
   | LookupReplacerAiResult
   | NetworkLogResult
   | NetworkEntryCapturedBroadcast
+  | ToolCallProgressBroadcast
   | ChannelError
