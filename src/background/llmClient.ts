@@ -272,6 +272,27 @@ function describeError(error: unknown): string {
   return String(error)
 }
 
+const URL_PATTERN = /https?:\/\/[^\s)\]"'<>]+/g
+
+function extractUrls(text: string): string[] {
+  return text.match(URL_PATTERN) ?? []
+}
+
+/**
+ * Prompt wording alone didn't stop the model from citing a URL it never actually fetched (it
+ * would "reconstruct" a plausible-looking one for a real brand instead see buildChatSystemPrompt's
+ * anti-fabrication rule). This checks it mechanically: any URL in the reply that isn't in the set
+ * of URLs actually fetched (successfully) in this conversation is fabricated, full stop.
+ */
+function findFabricatedUrls(replyText: string, verifiedUrls: ReadonlySet<string>): string[] {
+  return extractUrls(replyText).filter((url) => !verifiedUrls.has(url))
+}
+
+/** Last-resort cleanup when there's no loop budget left to ask the model to fix it itself. */
+function stripUnverifiedUrls(replyText: string, verifiedUrls: ReadonlySet<string>): string {
+  return replyText.replace(URL_PATTERN, (url) => (verifiedUrls.has(url) ? url : '[unverified link removed]'))
+}
+
 // The URL comes from the model, not the user it could be steered there by content the model
 // read (prompt injection, see the system prompt notice in buildBookmarkletSystemPrompt-style
 // callers). host_permissions is <all_urls>, so without this, "fetch this URL" reaches the
@@ -597,7 +618,8 @@ function buildChatSystemPrompt(pageUrl: string | undefined): string {
       '2. Answer questions about the page the user currently has open, when relevant (see below for how that page is given to you).\n' +
       "3. Answer open-ended, general-knowledge questions on any topic that requires real research — current events, prices, comparisons, availability, anything you can't already answer with certainty. This is not a fallback for when the user explicitly says \"search\": it's the default whenever the answer depends on real-world information you don't already have verified in this conversation.",
     'There is no separate search tool only `fetch_url`, which fetches one specific URL. To research something freely (not a page you already have a URL for), fetch `https://html.duckduckgo.com/html/?q=<query, URL-encoded>` it returns plain server-rendered HTML with real result links and snippets, unlike a regular search engine page.',
-    "A URL is only valid to include in your answer if it is copied verbatim from a fetch_url result you actually received in this conversation (e.g. a result link from the DuckDuckGo search page). Never construct, guess, or \"reconstruct from memory\" a URL even for a real, well-known brand or site, even if the pattern seems obvious knowing that a company's site typically looks a certain way is not the same as having its real, current URL in front of you, and a wrong guess is indistinguishable from a lie to the person reading it. If a search only turned up pages you couldn't actually read (e.g. JavaScript-rendered store pages fetch_url returns their raw HTML, empty of real content), say exactly that a store name without a link beats a fabricated one every time. The same standard applies to prices, names, dates, or any other specific fact: only state it if it came from something you actually fetched, never from what \"usually\" is true.",
+    "A search is two steps, never one: the search results page only tells you a candidate might be relevant, it is not itself a verified source. Step one, search and pick the candidate link(s) worth checking. Step two, fetch_url each candidate individually before citing it never cite a result straight from the search listing on snippet text alone. If fetching a candidate comes back empty, broken, or otherwise unusable (e.g. a JavaScript-rendered page fetch_url can't actually read), discard that candidate entirely it is not a usable result just because it appeared in the search listing and try another one instead of falling back to it anyway.",
+    "A URL is only valid to include in your answer if it is copied verbatim from a fetch_url result you actually received in this conversation (e.g. a result link from the DuckDuckGo search page, or the page you fetched to verify it). Never construct, guess, or \"reconstruct from memory\" a URL even for a real, well-known brand or site, even if the pattern seems obvious knowing that a company's site typically looks a certain way is not the same as having its real, current URL in front of you, and a wrong guess is indistinguishable from a lie to the person reading it. If nothing you found could actually be verified this way, say exactly that a store name without a link beats a fabricated one every time. The same standard applies to prices, names, dates, or any other specific fact: only state it if it came from something you actually fetched and read, never from what \"usually\" is true.",
     "Always deliver your final answer through `reply` never as plain text outside of it.",
     FETCH_URL_TRUST_NOTICE,
     `Reply in the language of locale "${chrome.i18n.getUILanguage()}", regardless of what language the user writes in unless they clearly want another language.`,
@@ -627,6 +649,10 @@ export async function generalChat(
     ...messages.map((message) => ({ role: message.role, content: message.content })),
   ]
 
+  // Every URL actually fetched (successfully) in this conversation the only URLs the final
+  // reply is allowed to cite. Populated as fetch_url calls happen below.
+  const verifiedUrls = new Set<string>()
+
   for (let iteration = 0; iteration < MAX_TOOL_ITERATIONS; iteration++) {
     const isLastIteration = iteration === MAX_TOOL_ITERATIONS - 1
     const result = isLastIteration
@@ -643,12 +669,20 @@ export async function generalChat(
     const name = toolCall?.function?.name
     if (!toolCall || !name) {
       const content = result.message.content?.trim()
-      if (content) return { ok: true, reply: content }
+      if (content) return { ok: true, reply: stripUnverifiedUrls(content, verifiedUrls) }
       return { ok: false, errorCode: 'noToolSupport' }
     }
 
     if (name === 'fetch_url') {
       const toolResult = await resolveFetchToolCall(toolCall)
+      if (!toolResult.includes('"error"')) {
+        try {
+          const args = JSON.parse(toolCall.function?.arguments ?? '{}') as { url?: string }
+          if (typeof args.url === 'string') verifiedUrls.add(args.url)
+        } catch {
+          // arguments failed to parse resolveFetchToolCall already reported that in toolResult
+        }
+      }
       pushToolResult(conversation, toolCall, result.message.content ?? null, toolResult)
       continue
     }
@@ -656,7 +690,20 @@ export async function generalChat(
     if (name === 'reply') {
       try {
         const args = JSON.parse(toolCall.function?.arguments ?? '{}') as { reply?: string }
-        return { ok: true, reply: typeof args.reply === 'string' ? args.reply : '' }
+        const replyText = typeof args.reply === 'string' ? args.reply : ''
+        const fabricated = findFabricatedUrls(replyText, verifiedUrls)
+        if (fabricated.length === 0) return { ok: true, reply: replyText }
+        if (isLastIteration) return { ok: true, reply: stripUnverifiedUrls(replyText, verifiedUrls) }
+
+        pushToolResult(
+          conversation,
+          toolCall,
+          result.message.content ?? null,
+          JSON.stringify({
+            error: `Rejected: this reply cites a URL that was never actually fetched in this conversation: ${fabricated[0]}. Either remove it (name the source in plain text, without a link) or fetch it for real with fetch_url, then call reply again.`,
+          }),
+        )
+        continue
       } catch (error) {
         return { ok: false, errorCode: 'unknown', detail: describeError(error) }
       }
