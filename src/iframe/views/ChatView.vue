@@ -50,7 +50,8 @@ function onArticleParam(articleParam: unknown): void {
   try {
     const instruction = chrome.i18n.getMessage('resumerSummaryInstruction')
     const content = `${instruction}:\n\n${decodeBase64(articleParam)}`
-    void chatPanel.value?.sendPrompt(content, instruction)
+    const progressText = chrome.i18n.getMessage('resumerChatProgress', [instruction])
+    void chatPanel.value?.sendPrompt(content, instruction, progressText)
   } catch {
     // Malformed param nothing to recover, just drop it below.
   }
