@@ -76,8 +76,13 @@ watch(() => props.messages.length, scrollToBottom)
  * know whether it's now safe to clear ?article= from the route a caller that clears it right
  * after opening the config modal would force a remount (App.vue keys the route on the full path,
  * query included) and wipe the just-set "show the config modal" state before it ever rendered.
+ *
+ * `initialProgressText`, when given, seeds the same live-status line fetch_url calls update (see
+ * toolProgressText below) right away instead of leaving it blank until the first tool call e.g.
+ * the Resumer flow has real work to show ("Resumer: <instruction>") before the model ever calls a
+ * tool, since it's summarizing text already handed to it, not researching something new.
  */
-async function send(overrideText?: string, displayText?: string): Promise<boolean> {
+async function send(overrideText?: string, displayText?: string, initialProgressText?: string): Promise<boolean> {
   if (!channel || generating.value) return false
   const text = (overrideText ?? prompt.value).trim()
   if (text === '') return false
@@ -89,7 +94,7 @@ async function send(overrideText?: string, displayText?: string): Promise<boolea
   // config sail through this check and fail silently later at the actual chat call.
   const configured = Boolean(llmConfig?.endpoint) && Boolean(llmConfig?.model)
   if (!configured) {
-    pendingSend = { overrideText, displayText }
+    pendingSend = { overrideText, displayText, initialProgressText }
     showConfigModal.value = true
     return false
   }
@@ -102,7 +107,7 @@ async function send(overrideText?: string, displayText?: string): Promise<boolea
   if (overrideText === undefined) prompt.value = ''
 
   generating.value = true
-  toolProgressText.value = ''
+  toolProgressText.value = initialProgressText ?? ''
   const response =
     props.mode === 'chat'
       ? await channel.send({ type: 'chatMessage', messages: nextMessages })
@@ -134,21 +139,26 @@ async function send(overrideText?: string, displayText?: string): Promise<boolea
 // Set right before showConfigModal opens: what to resend once the user finishes configuring,
 // since a bare retry would otherwise pick up the (empty) textarea instead of the original
 // request the config modal interrupted (e.g. resumer.ts's article hand-off).
-let pendingSend: { overrideText?: string; displayText?: string } | undefined
+let pendingSend: { overrideText?: string; displayText?: string; initialProgressText?: string } | undefined
 
 function onConfigSaved(): void {
   showConfigModal.value = false
   const resend = pendingSend
   pendingSend = undefined
-  void send(resend?.overrideText, resend?.displayText)
+  void send(resend?.overrideText, resend?.displayText, resend?.initialProgressText)
 }
 
-defineExpose({ sendPrompt: (text: string, displayText?: string) => send(text, displayText) })
+defineExpose({
+  sendPrompt: (text: string, displayText?: string, initialProgressText?: string) =>
+    send(text, displayText, initialProgressText),
+})
 
 const title = props.title ?? chrome.i18n.getMessage('wizardStepChatTitle')
 const subtitle = props.subtitle ?? chrome.i18n.getMessage('wizardStepChatSubtitle')
 const emptyText = props.emptyText ?? chrome.i18n.getMessage('llmChatEmpty')
-const promptPlaceholder = chrome.i18n.getMessage('llmPromptPlaceholder')
+const promptPlaceholder = chrome.i18n.getMessage(
+  props.mode === 'chat' ? 'llmChatPromptPlaceholder' : 'llmPromptPlaceholder',
+)
 const sendLabel = chrome.i18n.getMessage('llmPromptSend')
 </script>
 

@@ -46,6 +46,10 @@
   "chatClear": { "message": "Effacer le chat de cette page" },
   "chatClearConfirm": { "message": "Cliquez à nouveau pour effacer" },
   "resumerSummaryInstruction": { "message": "Résumez cet article en 5 points importants" },
+  "resumerChatProgress": {
+    "message": "Resumer : $INSTRUCTION$",
+    "placeholders": { "instruction": { "content": "$1" } }
+  },
   "resumerIconTitle": { "message": "Résumer avec Smootter" },
   "smootterServicesGroupTitle": { "message": "Smootters" },
   "smootterServicesDescription": {
@@ -170,6 +174,7 @@
   "llmTestErrorNoTools": { "message": "Ce modèle ne prend pas en charge les tools." },
   "llmTestErrorUnknown": { "message": "Erreur inconnue." },
   "llmPromptPlaceholder": { "message": "Décrivez l'outil que vous voulez..." },
+  "llmChatPromptPlaceholder": { "message": "Posez n'importe quelle question..." },
   "toolCallProgressFetch": {
     "message": "Fetch : $URL$",
     "placeholders": { "url": { "content": "$1" } }
