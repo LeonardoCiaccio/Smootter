@@ -346,12 +346,10 @@ function pushToolResult(
   conversation.push({ role: 'tool', tool_call_id: toolCallId, content: toolResultContent })
 }
 
-/** One actual HTTP round-trip; `toolChoice` lets the caller force vs. merely offer tool use. */
-async function requestChatCompletion(
+async function callChatCompletions(
   config: LlmConfig,
   messages: ConversationMessage[],
   tools: readonly unknown[],
-  toolChoice: 'auto' | 'required',
 ): Promise<
   | { ok: true; message: ConversationMessage }
   | { ok: false; errorCode: LlmErrorCode; detail?: string }
@@ -368,7 +366,11 @@ async function requestChatCompletion(
         model: config.model,
         messages,
         tools,
-        tool_choice: toolChoice,
+        // 'required' forces a tool call every turn, but some providers/gateways (e.g. OpenCode
+        // Zen) reject it outright with a 400. 'auto' is honored everywhere and models still call
+        // a tool on their own when one applies the loop below already treats a plain-text,
+        // no-tool-call reply as valid, so nothing downstream depends on it being forced.
+        tool_choice: 'auto',
         max_tokens: config.maxOutputTokens,
       }),
       signal: AbortSignal.timeout(REQUEST_TIMEOUT_MS),
@@ -397,34 +399,6 @@ async function requestChatCompletion(
   }
 
   return { ok: true, message: data.choices?.[0]?.message ?? { role: 'assistant' } }
-}
-
-/**
- * `tool_choice: 'auto'` leaves the model free to skip every tool and answer in plain text a
- * weaker or lazier model does this even when a tool (fetch_url, in particular) was clearly
- * needed, no matter how the system prompt words it: prompt wording can't override an API knob
- * that says tool use is optional. So: try 'auto' first (cheap, and the common case where no tool
- * was needed anyway). If the model skipped every tool, retry the exact same request with
- * `tool_choice: 'required'` to force it to actually use one. Some providers/gateways (e.g.
- * OpenCode Zen) reject 'required' outright with an HTTP error if that happens, the original
- * 'auto' answer is used instead of failing the whole request just for taking the request at
- * its (permissive) word.
- */
-async function callChatCompletions(
-  config: LlmConfig,
-  messages: ConversationMessage[],
-  tools: readonly unknown[],
-): Promise<
-  | { ok: true; message: ConversationMessage }
-  | { ok: false; errorCode: LlmErrorCode; detail?: string }
-> {
-  const autoResult = await requestChatCompletion(config, messages, tools, 'auto')
-  if (!autoResult.ok) return autoResult
-  if (autoResult.message.tool_calls?.length) return autoResult
-  if (tools.length === 0) return autoResult
-
-  const forcedResult = await requestChatCompletion(config, messages, tools, 'required')
-  return forcedResult.ok ? forcedResult : autoResult
 }
 
 /** Verifies the endpoint is reachable, the key is accepted, and the model actually calls tools. */
@@ -580,15 +554,14 @@ const CHAT_TOOLS = [CHAT_REPLY_TOOL, FETCH_TOOL] as const
 function buildChatSystemPrompt(pageUrl: string | undefined): string {
   const parts = [
     "You are Smootter's assistant, in a general-purpose Chat view — not the tool-building wizard elsewhere in the app. If asked who you are or what your name is, say you're Smootter's assistant never the underlying model or provider you run on. Otherwise, this is an ordinary conversation: answer whatever the user asks questions, explanations, summaries, research, brainstorming, casual conversation. There is nothing to build here and no fixed subject.",
-    'Default to searching, not guessing. There is no separate search tool only `fetch_url`, which needs an actual URL: for a free query, fetch `https://html.duckduckgo.com/html/?q=<your query, URL-encoded>` (plain server-rendered HTML with real result links and snippets, unlike a regular search engine page). Before calling `reply`, ask yourself: does this answer depend on a specific fact, price, name, date, or comparison I am not already certain of from this exact conversation? If yes, call fetch_url (search or a direct URL) first, even if you could produce a plausible-sounding answer without it a plausible guess is not an acceptable substitute for a real answer. Skip searching only for greetings, opinions, or conversation that has no factual claim to verify.',
-    'Anything already in this conversation (an article pasted in, a page fetched earlier) is a source to reason about and reference, never a boundary on what you are allowed to look into. A follow-up question is a new question, not a request to only extrapolate from what you already have answer it the same way you would if it were asked cold: search for whatever it actually needs, don\'t treat existing context as if it were the only material available.',
+    "You can fetch a URL to get real data before answering (research something online, or read a page's raw HTML) whenever guessing would be worse than checking. Always deliver your final answer through `reply` never as plain text outside of it.",
     FETCH_URL_TRUST_NOTICE,
     `Reply in the language of locale "${chrome.i18n.getUILanguage()}", regardless of what language the user writes in unless they clearly want another language.`,
   ]
 
   if (pageUrl) {
     parts.push(
-      `Background only, not a scope: the user currently has this page open (${pageUrl}). Bring it up only if they actually mean "this page" or ask something only this specific page answers. Never let it narrow or substitute for a real search on an unrelated question. Note: fetching only returns server-rendered HTML, empty or incomplete for a page built by client-side JavaScript (most modern web apps) say so rather than guessing at content you can't actually see.`,
+      `The user currently has this page open: ${pageUrl}. If they say "this page" or similar, they mean this URL fetch it if you need to see its content. Note: fetching only returns the server-rendered HTML, so it will be empty or incomplete for a page built by client-side JavaScript (most modern web apps) say so rather than guessing at content you can't actually see.`,
     )
   }
 
