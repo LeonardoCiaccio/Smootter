@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inject, nextTick, ref, watch } from 'vue'
+import { inject, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { ArrowPathIcon, PaperAirplaneIcon } from '@heroicons/vue/24/outline'
 import { ui } from '@/styles/ui'
 import { channelKey } from '@/shared/vuePlugins/messaging'
@@ -38,6 +38,23 @@ const generating = ref(false)
 const messagesEl = ref<HTMLDivElement>()
 
 const showConfigModal = ref(false)
+
+// Live "what is it doing right now" feedback: one line, replaced on every tool call, cleared the
+// moment the request settles (reply or error) not tied to `generating` alone, since a stale
+// broadcast from a previous request could otherwise linger into the next one.
+const toolProgressText = ref('')
+let unsubscribeToolProgress: (() => void) | undefined
+
+onMounted(() => {
+  unsubscribeToolProgress = channel?.subscribe((message) => {
+    if (message.type !== 'toolCallProgress') return
+    toolProgressText.value =
+      message.tool === 'fetch_url'
+        ? chrome.i18n.getMessage('toolCallProgressFetch', [message.detail ?? ''])
+        : message.tool
+  })
+})
+onUnmounted(() => unsubscribeToolProgress?.())
 
 async function scrollToBottom(): Promise<void> {
   await nextTick()
@@ -85,11 +102,13 @@ async function send(overrideText?: string, displayText?: string): Promise<boolea
   if (overrideText === undefined) prompt.value = ''
 
   generating.value = true
+  toolProgressText.value = ''
   const response =
     props.mode === 'chat'
       ? await channel.send({ type: 'chatMessage', messages: nextMessages })
       : await channel.send({ type: 'generateCode', messages: nextMessages, existingCode: props.existingCode })
   generating.value = false
+  toolProgressText.value = ''
 
   const expectedType = props.mode === 'chat' ? 'chatMessageResult' : 'generateCodeResult'
   if (response.type !== expectedType || !response.ok) {
@@ -158,6 +177,8 @@ const sendLabel = chrome.i18n.getMessage('llmPromptSend')
         />
       </template>
     </div>
+
+    <p v-if="generating && toolProgressText" :class="ui.wizardChatToolProgress">{{ toolProgressText }}</p>
 
     <div :class="ui.wizardChatInputWrapper">
       <textarea

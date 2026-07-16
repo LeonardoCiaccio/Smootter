@@ -170,6 +170,10 @@
   "llmTestErrorNoTools": { "message": "Ce modèle ne prend pas en charge les tools." },
   "llmTestErrorUnknown": { "message": "Erreur inconnue." },
   "llmPromptPlaceholder": { "message": "Décrivez l'outil que vous voulez..." },
+  "toolCallProgressFetch": {
+    "message": "Fetch : $URL$",
+    "placeholders": { "url": { "content": "$1" } }
+  },
   "llmPromptSend": { "message": "Envoyer" },
   "llmChatEmpty": { "message": "Décrivez l'outil que vous voulez créer." },
   "wizardClearCode": { "message": "Effacer le code" },
