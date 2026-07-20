@@ -179,6 +179,11 @@ function insertIconIntoTargets(): void {
 
     const onTargetHover = (): void => {
       cancelHide()
+      // Cancelling only clears the pending timer it never ran hideIcon() on whatever was
+      // showing before. Jumping straight from one target to another (e.g. scrolling fast through
+      // a feed of many articles, like Reddit) skips the mouseleave-triggered hide entirely, so
+      // the previous icon would otherwise stay visible forever piling up, one per post hovered.
+      if (activeIcon && activeIcon !== icon) hideIcon(activeIcon)
       activeTarget = target
       activeIcon = icon
       positionIcon(target, icon)
