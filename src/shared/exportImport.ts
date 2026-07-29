@@ -6,7 +6,7 @@
  * anything beyond a plain tools-only file (see needsImportConfirmation).
  */
 import { getAllTools, saveTool, type StoredTool } from './toolsDb'
-import { getAllBookmarklets, getAllCategories } from './bookmarkletsDb'
+import { getAllBookmarklets, getAllCategories, getAllFavicons, saveFavicon, type StoredFavicon } from './bookmarkletsDb'
 import { getAllReplacers, getAllReplacerCategories } from './replacerDb'
 import { downloadJson, parseToolsValue, toolToExportable } from './toolsTransfer'
 import {
@@ -34,6 +34,7 @@ import { isLocalLlmEndpoint } from './llmEndpoint'
 interface Bundle {
   tools?: unknown
   bookmarklets?: unknown
+  favicons?: unknown
   replacers?: unknown
   llmConfig?: unknown
   networkConfig?: unknown
@@ -79,6 +80,13 @@ function isNetworkConfig(value: unknown): value is NetworkConfig {
   )
 }
 
+/** Minimal shape check for a cached favicon entry (see bookmarkletsDb's StoredFavicon). */
+function isStoredFavicon(value: unknown): value is StoredFavicon {
+  if (typeof value !== 'object' || value === null) return false
+  const record = value as Record<string, unknown>
+  return typeof record.domain === 'string' && record.domain !== '' && typeof record.dataUrl === 'string'
+}
+
 /** Every key must be a boolean matches DEFAULT_SMOOTTER_SERVICES's shape exactly. */
 function isSmootterServicesConfig(value: unknown): value is SmootterServicesConfig {
   if (typeof value !== 'object' || value === null) return false
@@ -93,11 +101,12 @@ function isSmootterServicesConfig(value: unknown): value is SmootterServicesConf
  * re-enables exactly what was enabled on export, not silently defaulting them back off.
  */
 export async function exportEverything(): Promise<void> {
-  const [tools, bookmarklets, bookmarkletCategories, replacers, replacerCategories, llmConfig, networkConfig, smootterServices] =
+  const [tools, bookmarklets, bookmarkletCategories, favicons, replacers, replacerCategories, llmConfig, networkConfig, smootterServices] =
     await Promise.all([
       getAllTools(),
       getAllBookmarklets(),
       getAllCategories(),
+      getAllFavicons(),
       getAllReplacers(),
       getAllReplacerCategories(),
       getPreference('llmConfig'),
@@ -118,6 +127,7 @@ export async function exportEverything(): Promise<void> {
     bookmarklets: bookmarklets.map((bookmarklet) =>
       bookmarkletToExportable(bookmarklet, bookmarkletCategories),
     ),
+    favicons,
     replacers: replacers.map((replacer) => replacerToExportable(replacer, replacerCategories)),
     llmConfig: exportedLlmConfig,
     networkConfig,
@@ -128,6 +138,10 @@ export async function exportEverything(): Promise<void> {
 export interface ParsedImport {
   tools: StoredTool[]
   bookmarkletCandidates: BookmarkletImportCandidate[]
+  // Favicons ride along with bookmarklets, not a separate user-facing selection: they're
+  // meaningless without the bookmarklets they illustrate, so there's nothing to choose
+  // independently see applyParsedImport, gated on selection.bookmarklets alone.
+  favicons: StoredFavicon[]
   replacerCandidates: ReplacerImportCandidate[]
   llmConfig: ExportedLlmConfig | null
   networkConfig: NetworkConfig | null
@@ -140,6 +154,7 @@ export interface ParsedImport {
 export async function parseImportFiles(files: File[]): Promise<ParsedImport> {
   const tools: StoredTool[] = []
   const bookmarkletCandidates: BookmarkletImportCandidate[] = []
+  const favicons: StoredFavicon[] = []
   const replacerCandidates: ReplacerImportCandidate[] = []
   let llmConfig: ExportedLlmConfig | null = null
   let networkConfig: NetworkConfig | null = null
@@ -173,6 +188,9 @@ export async function parseImportFiles(files: File[]): Promise<ParsedImport> {
             failed++
           }
         }
+        if (Array.isArray(parsed.favicons)) {
+          favicons.push(...parsed.favicons.filter(isStoredFavicon))
+        }
         if (
           parsed.replacers !== undefined &&
           !(Array.isArray(parsed.replacers) && parsed.replacers.length === 0)
@@ -196,7 +214,7 @@ export async function parseImportFiles(files: File[]): Promise<ParsedImport> {
     }
   }
 
-  return { tools, bookmarkletCandidates, replacerCandidates, llmConfig, networkConfig, smootterServices, failed }
+  return { tools, bookmarkletCandidates, favicons, replacerCandidates, llmConfig, networkConfig, smootterServices, failed }
 }
 
 /** A file that's just tools the common case skips the confirmation step entirely. */
@@ -261,6 +279,7 @@ export async function applyParsedImport(
       categoryCache,
       bookmarkletsByUrl,
     )
+    for (const favicon of parsed.favicons) await saveFavicon(favicon)
   }
 
   if (selection.replacers && parsed.replacerCandidates.length > 0) {
