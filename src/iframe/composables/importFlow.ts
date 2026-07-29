@@ -23,11 +23,25 @@ const toast = useToast()
 export const pendingImport = ref<ParsedImport | null>(null)
 
 async function finishImport(parsed: ParsedImport, selection: ImportSelection): Promise<void> {
-  const { toolsImported, bookmarkletsImported, replacersImported, llmConfigNeedsApiKey } =
-    await applyParsedImport(parsed, selection)
+  // An unhandled rejection here (a DB write failing, say) must never silently swallow the whole
+  // import: without this, a partial save left the user thinking nothing happened at all, with no
+  // error and no fresh data (see bookmarkletsDb.saveFavicon's clone-safety fix, found this way).
+  let result: Awaited<ReturnType<typeof applyParsedImport>>
+  try {
+    result = await applyParsedImport(parsed, selection)
+  } catch (error) {
+    toast.error(chrome.i18n.getMessage('toolsImportError'))
+    console.error('[Smootter] import failed:', error)
+    return
+  }
+
+  const { toolsImported, bookmarkletsImported, replacersImported, llmConfigNeedsApiKey } = result
   if (toolsImported > 0) notifyToolsChanged()
   if (bookmarkletsImported > 0) notifyBookmarkletsChanged()
   if (replacersImported > 0) notifyReplacerChanged()
+  // llmConfig/networkConfig/smootterServices need no signal here: their Options sections each
+  // listen to chrome.storage.onChanged directly (see useLlmConfigForm.ts,
+  // NetworkSettingsSection.vue), which fires regardless of which context wrote the change.
 
   const imported = toolsImported + bookmarkletsImported + replacersImported
   if (imported > 0) toast.success(chrome.i18n.getMessage('toolsImportSuccess', [String(imported)]))

@@ -193,12 +193,14 @@ export async function deleteTagEverywhere(tag: string): Promise<StoredBookmarkle
   return updated
 }
 
-/** Insert or update a domain's cached favicon. */
-async function saveFavicon(favicon: StoredFavicon): Promise<void> {
+/** Insert or update a domain's cached favicon. Exported so export/import can carry these too. */
+export async function saveFavicon(favicon: StoredFavicon): Promise<void> {
   const db = await openDb()
   return new Promise((resolve, reject) => {
     const transaction = db.transaction(FAVICONS_STORE, 'readwrite')
-    transaction.objectStore(FAVICONS_STORE).put(favicon)
+    // An imported favicon comes from `pendingImport`, a Vue ref() its Proxy wrapper isn't
+    // structured-clone-safe (same reason saveTool/saveBookmarklet/saveReplacer all do this).
+    transaction.objectStore(FAVICONS_STORE).put(JSON.parse(JSON.stringify(favicon)))
     transaction.oncomplete = () => resolve()
     transaction.onerror = () => reject(transaction.error)
   })
@@ -211,6 +213,17 @@ async function getFavicon(domain: string): Promise<string | undefined> {
     const transaction = db.transaction(FAVICONS_STORE, 'readonly')
     const request = transaction.objectStore(FAVICONS_STORE).get(domain)
     request.onsuccess = () => resolve((request.result as StoredFavicon | undefined)?.dataUrl)
+    request.onerror = () => reject(request.error)
+  })
+}
+
+/** Every cached favicon, for export so a bundle carries the icons its bookmarklets need. */
+export async function getAllFavicons(): Promise<StoredFavicon[]> {
+  const db = await openDb()
+  return new Promise((resolve, reject) => {
+    const transaction = db.transaction(FAVICONS_STORE, 'readonly')
+    const request = transaction.objectStore(FAVICONS_STORE).getAll()
+    request.onsuccess = () => resolve(request.result as StoredFavicon[])
     request.onerror = () => reject(request.error)
   })
 }
